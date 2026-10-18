@@ -15,7 +15,8 @@
     "generate-dialogue": "node src/dialogue/pipeline.ts",
     "dev": "esbuild src/web/main.ts --bundle --format=esm --target=es2022 --sourcemap --outdir=web/dist --servedir=web --serve=8027",
     "build": "esbuild src/web/main.ts --bundle --format=esm --target=es2022 --minify --sourcemap --outfile=web/dist/main.js",
-    "test": "node --test src/game.test.ts"
+    "test": "node --test src/game.test.ts",
+    "logo": "node src/web/export-logo.ts"
   },
   "devDependencies": {
     "@types/node": "^26.6.5",

@@ -11,6 +11,7 @@ import type { Evidence, GameState, Leg, LogEntry, Move } from "../game.ts";
 import { portrait, roomPic, stage } from "./art.ts";
 import { playAccusation, playIntro, reducedMotion } from "./cinema.ts";
 import { INK_DEFS } from "./ink.ts";
+import { lockup, mark } from "./logo.ts";
 import { paintReplay, replayHTML, replayHold, replaySteps } from "./replay.ts";
 import { weaponPic } from "./weapons.ts";
 
@@ -170,8 +171,8 @@ function briefingHTML(): string {
   return `<main class="briefing">
     <div class="ticket">
       <p class="eyebrow">Southampton &middot; New York</p>
-      <h1>RMS Meridian</h1>
-      <p class="sub">The last night of the crossing, 1927</p>
+      <h1 class="masthead">${lockup()}</h1>
+      <p class="sub">The last night of the crossing</p>
       <p class="case-label">${esc(caseLabel)}</p>
       <div class="story">
         <p>At eleven o'clock, ${portrait(c.victim)} <strong>${esc(v.name)}</strong>, ${esc(v.role)}, is found dead on the Boat Deck.</p>
@@ -213,7 +214,7 @@ function gameHTML(): string {
 function headerHTML(): string {
   const pips = Array.from({ length: AP_BUDGET }, (_, i) => `<span class="pip${i < AP_BUDGET - state.remaining ? " spent" : ""}"></span>`).join("");
   return `<header class="bar">
-    <div class="brand">${button("RMS Meridian", "briefing", {}, { cls: "wordmark", label: "Back to the briefing" })}<span class="muted">${esc(caseLabel)}</span></div>
+    <div class="brand">${mark()}${button("RMS Meridian", "briefing", {}, { cls: "wordmark", label: "Back to the briefing" })}<span class="muted">${esc(caseLabel)}</span></div>
     <div class="meter" role="img" aria-label="${state.remaining} of ${AP_BUDGET} actions left"><div class="pips">${pips}</div><span><strong>${state.remaining}</strong> left</span></div>
     <div class="bar-actions">
       ${button("How to play", "rules", {}, { cls: "ghost" })}

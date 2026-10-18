@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+    <path d="M38 38L57 57" stroke="var(--brass-2, #d8b77a)" stroke-width="11.5" stroke-linecap="round"/>
+    <path d="M38 38L57 57" stroke="var(--ink, #2b241c)" stroke-width="8" stroke-linecap="round"/>
+    <path d="M35.5 35.5L41.5 41.5" stroke="var(--brass-2, #d8b77a)" stroke-width="11"/>
+    <circle cx="26" cy="26" r="20.5" fill="var(--brass-2, #d8b77a)" stroke="var(--ink, #2b241c)" stroke-width="2.6"/>
+    <circle cx="26" cy="26" r="15" fill="var(--paper, #f6efdc)" stroke="var(--ink, #2b241c)" stroke-width="1.8"/>
+    <clipPath id="mark-glass"><circle cx="26" cy="26" r="14"/></clipPath>
+    <g clip-path="url(#mark-glass)">
+      <path d="M20 24.6l.9-6.4h3.2l-.9 6.4z" fill="var(--brass-2, #d8b77a)"/><path d="M20.9 18.2h3.2l-.3 2.2h-3.2z" fill="var(--ink, #2b241c)"/><path d="M25 24.6l.9-6.4h3.2l-.9 6.4z" fill="var(--brass-2, #d8b77a)"/><path d="M25.9 18.2h3.2l-.3 2.2h-3.2z" fill="var(--ink, #2b241c)"/><path d="M30 24.6l.9-6.4h3.2l-.9 6.4z" fill="var(--brass-2, #d8b77a)"/><path d="M30.9 18.2h3.2l-.3 2.2h-3.2z" fill="var(--ink, #2b241c)"/>
+      <path d="M17.5 27v-2.6h18v2.6z" fill="var(--paper, #f6efdc)" stroke="var(--ink, #2b241c)" stroke-width=".9"/>
+      <path d="M12 26.6h27l-2.4 5.6H15z" fill="var(--ink, #2b241c)"/>
+      <path d="M14.4 31h22.6l-.4 1.2H15z" fill="var(--red, #9a2f2a)"/>
+      <path d="M10 35.4q4-1.6 8 0t8 0 8 0 8 0M12 38.6q4-1.4 7 0t7 0 7 0" fill="none" stroke="var(--ink, #2b241c)" stroke-width="1"/>
+    </g>
+  </svg>

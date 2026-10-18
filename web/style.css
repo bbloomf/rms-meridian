@@ -234,6 +234,26 @@ button.icon {
   margin-bottom: 0.1em;
 }
 
+.ticket h1.masthead {
+  margin: 0.2em auto 0.3em;
+}
+
+.lockup {
+  display: grid;
+  justify-items: center;
+  gap: 4px;
+}
+
+.lockup .emblem {
+  width: clamp(150px, 38vw, 210px);
+  color: var(--ink);
+  translate: 3% 0; /* balance the handle */
+}
+
+.lockup .wordmark-art {
+  width: min(400px, 100%);
+}
+
 .ticket .sub {
   text-align: center;
   font-style: italic;
@@ -316,6 +336,13 @@ button.icon {
   align-items: baseline;
   gap: 12px;
   min-width: 0;
+}
+
+.brand .mark {
+  width: 26px;
+  height: 26px;
+  flex: none;
+  align-self: center;
 }
 
 .brand .muted {
