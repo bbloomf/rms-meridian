@@ -1,0 +1,28 @@
+{
+  "name": "meridian-mystery",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "A ten-minute murder mystery aboard a 1920s ocean liner",
+  "engines": {
+    "node": ">=23.6"
+  },
+  "scripts": {
+    "case": "node src/cli.ts",
+    "stats": "node src/cli.ts --stats 500",
+    "typecheck": "tsc --noEmit",
+    "validate-dialogue": "node src/dialogue/validate.ts",
+    "generate-dialogue": "node src/dialogue/pipeline.ts",
+    "dev": "esbuild src/web/main.ts --bundle --format=esm --target=es2022 --sourcemap --outdir=web/dist --servedir=web --serve=8027",
+    "build": "esbuild src/web/main.ts --bundle --format=esm --target=es2022 --minify --sourcemap --outfile=web/dist/main.js",
+    "test": "node --test src/game.test.ts"
+  },
+  "devDependencies": {
+    "@types/node": "^26.6.5",
+    "esbuild": "^0.28.2",
+    "typescript": "^7.0.2"
+  },
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.135.0"
+  }
+}

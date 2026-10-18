@@ -1,0 +1,134 @@
+{
+  "character": "egg",
+  "source": {
+    "model": "claude-opus-5-5",
+    "generatedAt": "2026-10-17T00:00:00.000Z",
+    "note": "Written in a Claude Code session from the bible and pipeline prompt (no API key available); validated with src/dialogue/validate.ts."
+  },
+  "lines": {
+    "greeting": [
+      "Oh! Inspector. I'm sorry, I've never been questioned before. Not by a real one. Is {victim} really—? Oh dear.",
+      "I keep thinking about {victim}. I'll answer anything. I'll probably answer too much. I do that.",
+      "Please don't mind my hands, they always shake. It isn't guilt. It's just hands.",
+      "In novels this is where the detective is terribly kind to the nervous girl. I do hope you've read the same novels.",
+      "{Victim.full}, dead. I wrote a scene like this once, and it was nothing like this. Nothing at all.",
+      "Sorry — I was told to come. Should I sit? I'll sit. Sorry."
+    ],
+    "whereabouts": [
+      "I was {room}, {time}. I think. Yes. I'm almost sure.",
+      "{Time}? Oh — {roomName}. Definitely {roomName}.",
+      "{RoomName}, {time}. I remember because the light was doing something interesting.",
+      "I was {room}. {Time}, that would have been. Is that helpful? I'd like to be helpful.",
+      "Let me think — {time} — yes, {room}. Sorry. Yes.",
+      "{Time} I was {room}, if that's what you need. It'll be in my notebook somewhere.",
+      "I'm fairly certain I was {room} {time}. Fairly. No — certain.",
+      "{RoomName}. {Time}. I'm sorry, is that a suspicious place to be? It didn't feel suspicious."
+    ],
+    "sawOne": [
+      "{Other} was there. {Other.subject} didn't notice me. People don't, mostly.",
+      "I saw {other}. I'm afraid I stared a bit. I stare at everyone; it's for the book.",
+      "Only {other}. We nodded. Well, I nodded. I'm not sure {other.subject} did.",
+      "{Other}, yes. I'd know {other.object} anywhere.",
+      "There was {other}. I didn't say anything. I never know what to say.",
+      "Just {other}, I think. Yes. Just {other}."
+    ],
+    "sawSeveral": [
+      "{Others}. Quite a little scene, really. I wanted to write it all down.",
+      "There were {others}. I stood near the wall. I'm good at walls.",
+      "Oh, {others}. Everyone talking and me not.",
+      "I saw {others}. I could tell you what each of them was wearing, if that helps? No? Sorry.",
+      "{Others} were there. I counted. I always count people; it's a nervous thing.",
+      "Let me see — {others}. Yes, I'm sure. I notice people more than they notice me."
+    ],
+    "sawVictim": [
+      "{Victim} was there. Alive. I keep thinking that — alive.",
+      "I saw {victim}. {Victim.subject} smiled at me. Or near me. Oh, it's horrible.",
+      "{Victim} — yes. If I'd known, I'd have said something. Anything.",
+      "I saw {victim}. I've been trying to remember {victim.possessive} face exactly, and I can't, and I'm meant to be a writer.",
+      "Oh. {Victim}. Yes. That's the last time I— oh dear.",
+      "{Victim} was there, looking perfectly ordinary. That's what's so dreadful. Ordinary."
+    ],
+    "sawNoOne": [
+      "No one. I'm sorry. I know that sounds bad.",
+      "Nobody, I'm afraid. I'm often in nobody's company.",
+      "I didn't see anyone. I was rather wrapped up in my own head. I usually am.",
+      "Not a soul. It was very quiet. I like quiet. Is that suspicious?",
+      "No one. Oh, that's no use to you at all, is it?",
+      "Nobody saw me and I saw nobody. That's — not good, is it?"
+    ],
+    "confrontCrack": [
+      "{Witness} saw me? Oh no. Oh, I'm so sorry, I'll tell you everything—",
+      "Oh. Oh, {witness} said that. All right. All right. I lied. I'm terrible at it.",
+      "I knew someone would see. I knew it. Please don't be angry—",
+      "I can't— Yes. {Witness} is right. I'm sorry. Here's the truth."
+    ],
+    "confrontDeflect": [
+      "{Witness} must be mistaken. I — I'm sure {witness.subject}'s mistaken.",
+      "No. No, I know what I said. I'm not changing it. Even if my voice is shaking.",
+      "I'm sorry, but {witness} is wrong. People mix me up with the furniture.",
+      "I've told you where I was. Please don't make me say it again; I'll only get it muddled."
+    ],
+    "accusedWrongly": [
+      "Me? With {weapon}? I can't even open my own suitcase!",
+      "I didn't! I couldn't! I faint at paper cuts, Inspector!",
+      "Oh, this is exactly what happens in chapter nine, and it's always wrong in chapter nine.",
+      "Please — I liked {victim}. I like nearly everyone. I'm so frightened."
+    ],
+    "accusedRightly": [
+      "I— yes. Yes. {Weapon}. I didn't mean— I did mean it. I'm sorry. I'm so sorry.",
+      "You worked it out. Of course you did. I'd have written you exactly like that. {Victim} would have liked you.",
+      "{Victim.subject} read my notebook, Inspector. Every page. {Victim.subject} was going to tell everyone what I'd written.",
+      "It was {roomName}. It was so quick. I keep waiting to wake up."
+    ],
+    "opinion.marble": [
+      "{Other} frightens me. {Other.subject} looks at you as though working out what you'd fetch.",
+      "I based a villain on {other} once. Then I worried that was unfair. Then I met {other.object} again.",
+      "{Other.subject} has very cold hands. I shook one. I'm not sure why I'm telling you that."
+    ],
+    "opinion.folder": [
+      "{Other} is very correct. Everything about {other.object} is ironed.",
+      "{Other.subject} keeps asking why I want the passenger list. I can't exactly tell {other.object}.",
+      "I think {other} is lonely. A purser's office must be a lonely place."
+    ],
+    "opinion.mallet": [
+      "{Other} is marvellous. {Other.subject} told me I need fresh air. {Other.subject}'s probably right.",
+      "I'd like to be more like {other}. Loud. Certain. Good at hitting things.",
+      "{Other.subject} once carried my deckchair without being asked. I nearly cried."
+    ],
+    "opinion.bear": [
+      "{Other} tells me everything about everyone. I'm afraid I write it all down.",
+      "{Other.subject}'s very kind to me. Overwhelming, but kind. Like weather.",
+      "I don't think {other} has ever had a secret {other.subject} didn't share by teatime."
+    ],
+    "opinion.pail": [
+      "{Other} brings me ginger biscuits for the seasickness. {Other.subject} doesn't have to. {Other.subject} just does.",
+      "Oh — {other}. {Other.subject}'s very— nice. To everyone. Not just me. Obviously.",
+      "{Other.subject} notices things. I think {other.subject} would make a good writer, actually."
+    ],
+    "eulogy.marble": [
+      "{Other}? Dead? But {other.subject} was so — solid. I didn't think anything could happen to {other.object}.",
+      "I was frightened of {other.object}, and now I feel awful about it.",
+      "{Other.subject} never once said good morning to me. I don't know why that's the thing I keep thinking of."
+    ],
+    "eulogy.folder": [
+      "Poor {other}. {Other.subject} was always so worried about doing things properly.",
+      "{Other.subject} told me off for being on the wrong deck once. Now I'd give anything to be told off.",
+      "Who'll keep the ledgers now? Sorry. That's a stupid thing to say. I say stupid things when I'm upset."
+    ],
+    "eulogy.mallet": [
+      "Not {other}. {Other.subject} was the strongest person aboard. If it could happen to {other.object}—",
+      "{Other.subject} told me to stand up straight. I'm standing up straight now. For {other.object}.",
+      "{Other} was going to win the tournament. Everyone said so. {Other.subject} said so loudest."
+    ],
+    "eulogy.bear": [
+      "{Other} called me little Edith. Nobody else ever called me anything.",
+      "The ship's so quiet without {other.object}. You don't realise how much someone talks until they stop.",
+      "{Other.subject} knew everyone's secrets. Do you think that's why? Oh, I hope that's not why."
+    ],
+    "eulogy.pail": [
+      "{Other}? Oh no. Oh no. {Other.subject} brought me biscuits only yesterday.",
+      "{Other.subject} was kind to me when no one needed to be. I'm sorry, give me a moment.",
+      "{Other.subject} saw everything on this ship. I suppose someone didn't like being seen."
+    ]
+  }
+}

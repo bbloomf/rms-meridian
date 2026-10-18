@@ -1,0 +1,134 @@
+{
+  "character": "bear",
+  "source": {
+    "model": "claude-opus-5-5",
+    "generatedAt": "2026-10-17T00:00:00.000Z",
+    "note": "Written in a Claude Code session from the bible and pipeline prompt (no API key available); validated with src/dialogue/validate.ts."
+  },
+  "lines": {
+    "greeting": [
+      "Darling Inspector, sit down, you look famished. Poor {victim}! I shan't sleep a wink, I shan't.",
+      "Oh, {victim}! I can't believe it. Harold always said ships were unlucky. Have a macaroon, they're very calming.",
+      "Ask me anything, darling. I know everything about everybody aboard, though I'd never dream of repeating it. Well. Hardly ever.",
+      "{Victim.full}, of all people. I was only saying at dinner— never mind what I was saying. Tea, Inspector?",
+      "My dear man, what a night. I've had two brandies and I'm about to have a third. Do join me.",
+      "You'll want my movements, I suppose. Harold used to want my movements. Fat lot of good it did him."
+    ],
+    "whereabouts": [
+      "{RoomName}, darling. {Time}. I remember because my feet were killing me.",
+      "Oh, I was {room}, {time}. I'm almost always somewhere, Inspector.",
+      "{Time}? Let me think, dear. {RoomName}! Yes. Definitely.",
+      "I was {room} {time}, darling. Harold always said I had a memory like an elephant. A well-dressed one.",
+      "{Time}? {RoomName}, darling. I'd swear to it on Harold's grave.",
+      "{RoomName}, dear, {time}. I may be old, but I don't forget a thing.",
+      "Now then, {time}... {room}. Yes, darling, I'm quite sure.",
+      "I was {room}, darling, {time}. Write it down before I start embroidering."
+    ],
+    "sawOne": [
+      "{Other} was there, darling. Looking very handsome or very tired, I couldn't decide which.",
+      "Oh, {other}! We had a lovely little chat. Well, I chatted.",
+      "I saw {other}. I always see {other}. {Other.subject} can't hide from me, poor thing.",
+      "{Other}! I waved. I'm not sure {other.subject} waved back, but I'm counting it.",
+      "Only {other}. And between you and me, {other.subject} looked as though {other.subject}'d been up to something.",
+      "There was {other}, darling. I told {other.object} all about Harold. Again."
+    ],
+    "sawSeveral": [
+      "Oh, {others}! Quite a party, darling.",
+      "{Others}. I made sure to speak to every one of them. Twice.",
+      "There were {others}, all looking terribly guilty about something. People do, around me.",
+      "I saw {others}, dear. Such fun. I do love a crowd.",
+      "{Others} were there. I could tell you what each of them had to drink, if you like?",
+      "Let me see: {others}. And me, of course. The life and soul, Harold called me."
+    ],
+    "sawVictim": [
+      "Oh, {victim} was there, darling. Alive as you or me. I'll never forgive myself for not saying something nice.",
+      "I saw {victim}. {Victim.subject} looked a little peaky, now I think of it. Or am I imagining it? I do imagine things.",
+      "{Victim}, yes! We'd talked about a nightcap later. Oh, Inspector.",
+      "I saw {victim}, dear. I'd been meaning to tell {victim.object} the most delicious piece of gossip, and now I never shall.",
+      "{Victim} was there. I gave {victim.object} a little squeeze on the arm. I'm so glad I did.",
+      "Oh, I saw {victim}. Harold went just like that, you know. Here one minute. Do pass the handkerchief."
+    ],
+    "sawNoOne": [
+      "No one, darling, and wasn't that a shame. I do hate an empty room.",
+      "Nobody at all. I very nearly talked to myself.",
+      "Not a soul, dear. Most unlike me.",
+      "No one. I know! Me! Without an audience!",
+      "Nobody, Inspector. Not even a steward with a tray, which I call poor service.",
+      "I didn't see anyone, darling. I looked, believe me."
+    ],
+    "confrontCrack": [
+      "{Witness} told you? Oh, the tattletale. Well. I never could keep a secret, darling.",
+      "Oh dear. Oh, Inspector. Pour me another and I'll tell you the whole thing.",
+      "{Witness} saw me? Then there's no use pretending. Harold always said I was hopeless at it.",
+      "Oh, very well, darling. It's almost a relief. Sit down, this is rather good."
+    ],
+    "confrontDeflect": [
+      "{Witness}? Darling, {witness.subject} couldn't tell me from a potted palm.",
+      "Oh, I'm sure {witness} means well, but {witness.subject}'s quite wrong, dear.",
+      "I've told you where I was, Inspector, and I'm sticking to it like a limpet.",
+      "Darling, I'm sixty-three. If I say where I was, that's where I was."
+    ],
+    "accusedWrongly": [
+      "Me? With {weapon}? Darling, I can't lift my own hatbox!",
+      "Inspector! I adored {victim}. Well, I liked {victim.object}. Well, I tolerated {victim.object}. But murder!",
+      "Oh, how thrilling. And how utterly wrong. Harold would be laughing his head off.",
+      "Darling, if I'd killed anyone I'd have told everybody by breakfast. You know I would."
+    ],
+    "accusedRightly": [
+      "Oh, darling. Yes. {Victim} found the crate, you see, and {victim.subject} would have told the customs men.",
+      "{Weapon}. I didn't know I had it in me. Harold would be astonished.",
+      "Very well, Inspector. {RoomName}. It was over so fast. I've never kept a secret in my life, and I'm not starting now.",
+      "{Victim.subject} was going to ruin everything, darling. Everything. I'm so sorry. No, I'm not. Yes, I am."
+    ],
+    "opinion.marble": [
+      "{Other}! Rich, handsome, and utterly impossible. I intend to marry {other.object} by Easter.",
+      "{Other.subject} pretends not to notice me. Harold pretended too, for eleven years. Then he proposed.",
+      "{Other} is a challenge, darling, and I've never met one I couldn't talk into submission."
+    ],
+    "opinion.folder": [
+      "{Other} is such a useful man, darling. {Other.subject} knows every cabin number aboard.",
+      "I tease {other} dreadfully. {Other.subject} goes pink to the ears. It's the highlight of my day.",
+      "{Other.subject}'s more of a dark horse than you'd think, darling. All those ledgers. All those late nights."
+    ],
+    "opinion.mallet": [
+      "{Other}! The daughter I never had. If only {other.subject}'d wear a nicer frock.",
+      "{Other.subject} pretends to be all hard edges, darling. Soft as butter underneath.",
+      "{Other} could knock a man flat with a mallet. I keep telling {other.object} that's not the way to catch one."
+    ],
+    "opinion.egg": [
+      "{Other}! A sweet little mouse. I feed {other.object} biscuits and gossip.",
+      "{Other.subject} writes everything down, darling. I've decided to be flattered.",
+      "{Other} needs a good meal and a young man. In that order."
+    ],
+    "opinion.pail": [
+      "{Other} is a darling boy. I tip {other.object} lavishly and {other.subject} tells me everything.",
+      "{Other.subject} sees everything on this ship, dear. That's why I'm so very generous with {other.object}.",
+      "If I were thirty years younger— well, forty. Oh, all right, forty-five."
+    ],
+    "eulogy.marble": [
+      "{Other}! Oh, darling, I was going to marry {other.object}. I'd chosen the hymns.",
+      "{Other.subject} never once returned my smile. And now {other.subject} never shall. Pass the brandy.",
+      "Rich, handsome, cold as a fishmonger's slab. I'd have warmed {other.object} up. I would have."
+    ],
+    "eulogy.folder": [
+      "Poor {other}! I teased {other.object} so. I hope {other.subject} knew it was fondness.",
+      "{Other.subject} knew every cabin on the ship. Who'll tell me who's in which now?",
+      "Such a careful man. Careful about everything. Not careful enough, it seems."
+    ],
+    "eulogy.mallet": [
+      "{Other}! My girl. My dear, impossible girl.",
+      "{Other.subject} never would wear the frock I bought {other.object}. I'd let {other.object} wear trousers to my funeral, if only—",
+      "So strong, so full of life. I always thought {other.subject}'d outlive us all."
+    ],
+    "eulogy.egg": [
+      "{Other}! That sweet little mouse. Who'd harm a mouse?",
+      "I'd brought {other.object} a tin of shortbread for the morning. I can't bear to look at it.",
+      "{Other.subject} wrote down everything I said, darling. I suppose someone didn't care to be written down."
+    ],
+    "eulogy.pail": [
+      "{Other}! My darling boy. Oh, Inspector, give me a moment.",
+      "{Other.subject} told me everything. Perhaps {other.subject} told someone else something, too.",
+      "Who'll fetch my cocoa now? Oh, listen to me. Cocoa. The poor, poor boy."
+    ]
+  }
+}

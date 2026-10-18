@@ -1,0 +1,134 @@
+{
+  "character": "marble",
+  "source": {
+    "model": "claude-opus-5-5",
+    "generatedAt": "2026-10-17T00:00:00.000Z",
+    "note": "Written in a Claude Code session from the bible and pipeline prompt (no API key available); validated with src/dialogue/validate.ts."
+  },
+  "lines": {
+    "greeting": [
+      "Make it brief, Inspector. I have cables to answer, and {victim} is beyond any help of mine.",
+      "{Victim.full}. Dead. Regrettable, and inconvenient. Ask your questions.",
+      "I assume you'll want my movements. I assume, too, that you'll be quick about it.",
+      "A death aboard ship is bad for everyone's business, Inspector. Mine included. Proceed.",
+      "I did not care for {victim}, and I shan't pretend otherwise. That is not the same as wishing {victim.object} dead.",
+      "Sit down if you must. I'll give you five minutes, which is four more than I gave my last board meeting."
+    ],
+    "whereabouts": [
+      "I was {room}, {time}.",
+      "{Time}? {RoomName}.",
+      "{RoomName}, {time}. I keep to a schedule, Inspector.",
+      "{Time} I was {room}. Write it down.",
+      "If you must have it: {room}, {time}.",
+      "{RoomName}. {Time}, or near enough. I don't carry a stopwatch.",
+      "{Time}, I was {room}. That is all there is to it.",
+      "You'll find I was {room} {time}. Next question."
+    ],
+    "sawOne": [
+      "{Other} was there. I paid no attention.",
+      "Only {other}, which hardly counts as company.",
+      "I saw {other}. We did not speak. We seldom do.",
+      "{Other}. {Other.subject} saw me too, I expect, if {other.subject} was paying attention.",
+      "There was {other}. Ask {other.object} yourself.",
+      "{Other} was present. I didn't come aboard to make friends."
+    ],
+    "sawSeveral": [
+      "{Others}. A crowd, by my standards.",
+      "{Others} were there. Not one of them worth the fare.",
+      "I saw {others}. I spoke to none of them.",
+      "{Others}, all talking at once. I ignored them.",
+      "There were {others}. Count them yourself if you doubt me.",
+      "{Others}. Don't expect me to vouch for any of them."
+    ],
+    "sawVictim": [
+      "{Victim} was there. Alive, and as tiresome as ever.",
+      "I saw {victim}. {Victim.subject} seemed perfectly well. That is the last I can tell you about {victim.object}.",
+      "{Victim} was there, yes. We exchanged a look. Not a friendly one.",
+      "Yes, {victim}. Had I known it was the last time, I'd have been more civil. Possibly.",
+      "{Victim} was there. If you're asking whether {victim.subject} looked worried: no.",
+      "I saw {victim}. Make of that what you will."
+    ],
+    "sawNoOne": [
+      "No one. I prefer it that way.",
+      "Nobody. Solitude is the only luxury on this ship worth the price.",
+      "I saw no one, and no one saw me. I imagine that's inconvenient for you.",
+      "Not a soul.",
+      "No one. I was thinking, Inspector. Some of us do.",
+      "Nobody at all. Is that a crime aboard the Meridian?"
+    ],
+    "confrontCrack": [
+      "{Witness} said that, did {witness.subject}? Very well. Since you insist on being tiresome.",
+      "I see {witness} has been talking. Then you may as well have the truth, and keep it to yourself.",
+      "Damn {witness}. Close the door, Inspector. This goes no further.",
+      "Hm. I underestimated {witness}. A rare mistake. All right."
+    ],
+    "confrontDeflect": [
+      "{Witness} is mistaken. People frequently are, in my experience.",
+      "You'd take the word of {witness} over mine? Then you're a poorer judge than I took you for.",
+      "{Witness} saw what {witness.subject} wanted to see. My answer stands.",
+      "I've nothing to add. If {witness} has a better memory than mine, let {witness.object} prove it."
+    ],
+    "accusedWrongly": [
+      "Me? With {weapon}? My lawyers will have your pension, Inspector.",
+      "I didn't kill {victim}. I'd have had someone else do it, and done it properly.",
+      "You've made a costly error, and I always collect on those.",
+      "Absurd. You have a theory and no proof, and I've ruined better men for less."
+    ],
+    "accusedRightly": [
+      "{Weapon}. Clumsy of me to leave it where I did. Yes. I killed {victim}.",
+      "Very well. {Victim} knew things about my affairs that would have finished me in New York. I made a business decision.",
+      "I don't expect you to understand. {Victim.subject} was a liability, and I have always dealt with liabilities.",
+      "Congratulations, Inspector. First man to outmanoeuvre me in twenty years. Yes: {roomName}, {weapon}, and I don't regret it."
+    ],
+    "opinion.folder": [
+      "Folder? A clerk with a ledger and ideas above his station.",
+      "{Other} counts things. Spoons, tips, other people's money. I'd keep an eye on {other.object}.",
+      "{Other} has been looking at me oddly since Southampton. I don't care to be looked at oddly."
+    ],
+    "opinion.mallet": [
+      "Miss Mallet knocks small balls through hoops for a living. I'm told that's a profession now.",
+      "{Other} has opinions, and a very loud voice to carry them in.",
+      "{Other.subject} dislikes me. The feeling is entirely mutual, and considerably better informed."
+    ],
+    "opinion.bear": [
+      "Mrs Bear has buried one husband and is shopping for another. I am not for sale. Not at her prices.",
+      "{Other} is loud, rich and relentless. Two of those I can respect.",
+      "{Other.subject} talks. Constantly. Somewhere in all that talking, occasionally, there is money."
+    ],
+    "opinion.egg": [
+      "The Egg girl? The one with the notebook. She jumps whenever I enter a room.",
+      "{Other} writes things down. I find that a deeply unattractive habit in a fellow passenger.",
+      "Harmless, I should think. Most people who apologise that often are."
+    ],
+    "opinion.pail": [
+      "The steward? Adequate. Overfamiliar. Expects to be tipped for breathing.",
+      "{Other} knows every corridor on this ship. Draw your own conclusions.",
+      "I don't notice stewards, Inspector. That is rather the point of them."
+    ],
+    "eulogy.folder": [
+      "Folder's dead? Then someone has saved the Line a salary.",
+      "I can't say I'll miss {other.object}. {Other.subject} looked at my bills as if they were confessions.",
+      "{Other} kept records. I should find out what happened to them, if I were you."
+    ],
+    "eulogy.mallet": [
+      "Miss Mallet. Forthright to the end, I imagine. It must have been a short argument.",
+      "I didn't like {other.object}. But {other.subject} was honest, which is rarer on this ship than you'd think.",
+      "{Other.subject} would have won that tournament. A waste."
+    ],
+    "eulogy.bear": [
+      "Mrs Bear. Well. The ship will be considerably quieter.",
+      "{Other.subject} had money and no sense, and someone has taken advantage of one or the other.",
+      "I won't pretend to grief, Inspector. But I wouldn't have wished it on {other.object}."
+    ],
+    "eulogy.egg": [
+      "The Egg girl? Good God. Who would bother?",
+      "{Other.subject} was harmless. That's what makes it ugly.",
+      "{Other.subject} was forever scribbling. I'd find that notebook before anyone else does."
+    ],
+    "eulogy.pail": [
+      "The steward. I suppose someone else will have to bring the coffee now.",
+      "{Other.subject} saw too much. Stewards do. It is an occupational hazard.",
+      "I barely knew {other.object}. One doesn't know stewards. Still. Nobody should end up on the Boat Deck like that."
+    ]
+  }
+}

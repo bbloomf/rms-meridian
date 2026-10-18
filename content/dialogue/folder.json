@@ -1,0 +1,134 @@
+{
+  "character": "folder",
+  "source": {
+    "model": "claude-opus-5-5",
+    "generatedAt": "2026-10-17T00:00:00.000Z",
+    "note": "Written in a Claude Code session from the bible and pipeline prompt (no API key available); validated with src/dialogue/validate.ts."
+  },
+  "lines": {
+    "greeting": [
+      "Inspector. A dreadful business. I have already prepared a list of everyone's cabin numbers, should it assist.",
+      "{Victim.full}. I logged the report myself. I never thought I should have to enter a death in the ledger.",
+      "Regulation forty-one requires me to co-operate fully with any lawful inquiry, Inspector. I intend to exceed it.",
+      "Please be brief. The accounts must be closed before New York, murder or no murder.",
+      "I had {victim}'s account open on my desk only this evening. One doesn't expect— well. Shall we begin?",
+      "Do sit, Inspector. Mind the inkwell. I keep things orderly, and I'd ask you to keep them so."
+    ],
+    "whereabouts": [
+      "{RoomName}, {time}. I noted the minute; I can fetch the log if you require it.",
+      "I was {room} {time}. To be precise about it.",
+      "{Time}? {RoomName}. Write it down correctly, please; people so often get it wrong.",
+      "{Time} I was {room}. I keep a strict timetable, Inspector, as the regulations require.",
+      "I was {room}, {time}. That is the exact position.",
+      "{RoomName}. {Time}, near enough. I dislike 'near enough', but there it is.",
+      "For the record: {room}, {time}.",
+      "{Time}, Inspector, I was {room}. You may quote me."
+    ],
+    "sawOne": [
+      "{Other} was present. I made a note of it.",
+      "I observed {other}. {Other.subject} did not see me, I believe.",
+      "Only {other}. I nodded; it is customary.",
+      "{Other} was there. I can give you {other.possessive} cabin number, if that is of use.",
+      "There was {other}. Whether {other.subject} had any business being there is another matter.",
+      "{Other}. I recorded it in my pocketbook at the time."
+    ],
+    "sawSeveral": [
+      "{Others}. I counted them, as is my habit.",
+      "There were {others}. Rather a crowd for the hour.",
+      "I observed {others}. All accounted for.",
+      "{Others} were present. I could list them alphabetically, if you prefer.",
+      "{Others}. Not one of them had a word for me, naturally.",
+      "Let me consult my notes. Yes: {others}."
+    ],
+    "sawVictim": [
+      "{Victim} was there. Alive, and complaining about the service, as I recall.",
+      "I saw {victim}. I entered nothing remarkable in my book. I wish now that I had.",
+      "{Victim}, yes. {Victim.subject} asked me something about the accounts. I said I would look into it.",
+      "I observed {victim}. {Victim.subject} seemed entirely well. I can't account for what came after.",
+      "{Victim} was present. I made a note. I make a note of everyone.",
+      "Yes, I saw {victim}. I keep thinking of it. A purser oughtn't to keep thinking of things."
+    ],
+    "sawNoOne": [
+      "No one. The regulations do not require company.",
+      "Nobody, Inspector. I prefer to work undisturbed.",
+      "I saw no one. I should have noted it if I had.",
+      "Not a soul. I checked.",
+      "No one at all. My pocketbook is quite blank on the point.",
+      "Nobody. Is that irregular? I don't believe it's irregular."
+    ],
+    "confrontCrack": [
+      "{Witness} said that? I— Very well. I shall have to amend the record.",
+      "Ah. Regulation— no. There isn't a regulation for this. I'll tell you.",
+      "{Witness} has a good memory. Inconveniently good. Please close the door.",
+      "I see. I— I must ask that this not go in your report. Not in full."
+    ],
+    "confrontDeflect": [
+      "{Witness} is mistaken. I keep a written record; {witness.subject} keeps none.",
+      "With respect, Inspector, my account is correct to the minute. {Witness}'s is not.",
+      "I shall not amend my statement on the word of {witness}. It would be irregular.",
+      "{Witness} saw someone, perhaps. Not me. Half the crew wear navy blue."
+    ],
+    "accusedWrongly": [
+      "Me? With {weapon}? Inspector, I am an assistant purser. I file things.",
+      "This is most irregular. I shall be making a written complaint to the Line.",
+      "I did not kill {victim}. I have never broken a regulation in my life. Not a serious one.",
+      "Murder? I can barely bring myself to fine a steward for a lost teaspoon."
+    ],
+    "accusedRightly": [
+      "{Victim} had seen the ledgers, Inspector. The real ones. I couldn't let that reach the Line.",
+      "{Weapon}. Yes. It was untidy. I dislike untidiness more than I can say.",
+      "I borrowed. Only borrowed. {Victim.subject} called it theft, and was going to say so in New York.",
+      "{RoomName}, {weapon}, and twenty-two years of spotless service gone. I should like it noted that I confessed promptly."
+    ],
+    "opinion.marble": [
+      "{Other} is a most distinguished passenger. Most distinguished. I couldn't possibly comment on {other.possessive} account.",
+      "{Other.subject} tips in promises, Inspector. I have a drawer full of them.",
+      "I hold {other} in the very highest regard. As does {other.possessive} bank, I'm sure. For now."
+    ],
+    "opinion.mallet": [
+      "{Other} has complained about {other.possessive} cabin three times. I have the forms.",
+      "{Other.subject} is very loud. I'm told it's a sporting quality.",
+      "{Other} called me a fusspot. I have noted it."
+    ],
+    "opinion.bear": [
+      "{Other} is— very friendly. Very. I try to keep the desk between us.",
+      "{Other.subject} asks a great many questions about cabin numbers. I give {other.object} none. Well. Very few.",
+      "{Other} calls me a useful man. I'm not sure it's a compliment. I'm not sure I mind."
+    ],
+    "opinion.egg": [
+      "{Other} keeps asking for the passenger list. Regulation nine forbids it. I've told {other.object} so twice.",
+      "{Other.subject} writes things down. I write things down. But I know why I do it.",
+      "A nervous young lady. I suspect {other.object} of something. I've no idea what. That's what worries me."
+    ],
+    "opinion.pail": [
+      "{Other} is a steward of the second grade, and cheeky with it.",
+      "I have reason to believe {other} runs a card game below decks. I simply haven't caught {other.object} yet.",
+      "{Other.subject} calls me 'sir' in a manner I find impossible to put on a form."
+    ],
+    "eulogy.marble": [
+      "{Other}. Dead. And {other.possessive} account still outstanding. I'm sorry; it's habit.",
+      "A very distinguished passenger. I shall see that {other.possessive} effects are properly inventoried.",
+      "I had my disagreements with {other.object}. Financial ones. I shan't speak of them now."
+    ],
+    "eulogy.mallet": [
+      "{Other}. I gave {other.object} the worst cabin on the deck. I wish I hadn't.",
+      "{Other.subject} complained three times. I'd give a good deal to hear a fourth.",
+      "Very forthright. Very. I filed every one of {other.possessive} complaints. I shall keep them now."
+    ],
+    "eulogy.bear": [
+      "{Other}. {Other.subject} called me a useful man. Nobody else ever has.",
+      "The ship will be very quiet. I never thought I should regret quiet.",
+      "{Other.subject} teased me dreadfully. I'm afraid I rather looked forward to it."
+    ],
+    "eulogy.egg": [
+      "Poor {other}. All those requests for the passenger list. I should have just given it to {other.object}.",
+      "{Other.subject} was harmless, I'm sure. I'm almost sure. I was never quite sure.",
+      "A young lady travelling alone. The Line will have to write to {other.possessive} family. I suppose I shall draft it."
+    ],
+    "eulogy.pail": [
+      "{Other}. Cheeky, idle, and the best steward on B Deck. Don't tell anyone I said so.",
+      "I'd been trying to catch {other.object} at cards all voyage. Now I never shall.",
+      "I shall have to reassign {other.possessive} duties. I don't know who'll do them with that grin."
+    ]
+  }
+}

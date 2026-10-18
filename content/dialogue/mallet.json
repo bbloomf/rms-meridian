@@ -1,0 +1,134 @@
+{
+  "character": "mallet",
+  "source": {
+    "model": "claude-opus-5-5",
+    "generatedAt": "2026-10-17T00:00:00.000Z",
+    "note": "Written in a Claude Code session from the bible and pipeline prompt (no API key available); validated with src/dialogue/validate.ts."
+  },
+  "lines": {
+    "greeting": [
+      "Right, Inspector. {Victim}, dead. Let's get on with it, shall we?",
+      "Ask what you like. I'll answer straight. That's more than you'll get from some aboard.",
+      "Good God. {Victim.full}. I was talking to {victim.object} only this afternoon.",
+      "Don't dawdle, Inspector. Whoever did this is still on the ship, and I've a tournament on Thursday.",
+      "Sit down, then. And don't treat me as though I'm about to faint. I've never fainted in my life.",
+      "Dreadful business. Rotten, unsporting business. Fire away."
+    ],
+    "whereabouts": [
+      "{RoomName}. {Time}. Next.",
+      "I was {room}, {time}.",
+      "{Time}? {RoomName}. Simple as that.",
+      "{Time} I was {room}. Write it down and move on.",
+      "{RoomName}, {time}. I don't go in for fuss.",
+      "I was {room} {time}, Inspector. No mystery there.",
+      "{Time}, {room}. Straight answer to a straight question.",
+      "If you must know: {room}, {time}."
+    ],
+    "sawOne": [
+      "{Other} was there. Ask {other.object}.",
+      "Just {other}. We didn't chat.",
+      "I saw {other}. {Other.subject} saw me too, so don't bother trying to catch me out.",
+      "{Other}. That's all.",
+      "There was {other}. I'd have preferred my own company, frankly.",
+      "Only {other}. Gave {other.object} a nod. Fair enough?"
+    ],
+    "sawSeveral": [
+      "{Others}. Proper crowd.",
+      "{Others} were there. Too much chatter for my liking.",
+      "I saw {others}. Count them yourself.",
+      "There were {others}. Like a club lawn on a bank holiday.",
+      "{Others}. None of them any use as witnesses, I shouldn't think.",
+      "Oh, {others}. All getting under my feet."
+    ],
+    "sawVictim": [
+      "{Victim} was there. Large as life. Hard to believe.",
+      "I saw {victim}. {Victim.subject} looked perfectly fine. Fit as a fiddle.",
+      "{Victim}, yes. We had words. Not that kind of words. Ordinary words.",
+      "Yes, I saw {victim}. Wish I'd stuck closer, now.",
+      "{Victim} was there. If I'd known, I'd have done something. I'm not the sort to stand by.",
+      "I saw {victim}, alive and well. That's the last time I'll ever say that, isn't it."
+    ],
+    "sawNoOne": [
+      "No one. Suits me.",
+      "Nobody. I like a bit of peace before a match.",
+      "Not a soul. Don't look at me like that.",
+      "No one. And before you ask, no, I can't prove it.",
+      "Nobody at all. Is that a foul now?",
+      "I saw no one. Quiet as a lawn at dawn."
+    ],
+    "confrontCrack": [
+      "{Witness} said that? Fine. Fair cop. Here's the truth, then.",
+      "Blast. All right, Inspector. You've got me bang to rights.",
+      "{Witness} always did have sharp eyes. Very well. I'll come clean.",
+      "Oh, for heaven's sake. Yes, all right. It's not what you think, though."
+    ],
+    "confrontDeflect": [
+      "{Witness} is wrong. Flat wrong. I've said where I was.",
+      "I don't care what {witness} says. My answer stands.",
+      "Impertinent. I won't dignify that. Next question.",
+      "{Witness} needs spectacles. I'm not changing a word."
+    ],
+    "accusedWrongly": [
+      "Me? With {weapon}? I'd have used a mallet, and I'd have done it in front of everyone.",
+      "That's a foul, Inspector, and you know it. I didn't kill {victim}.",
+      "Rubbish. I play fair. Always have. Ask anyone.",
+      "Say that again and I'll have you off the lawn. I'm innocent, and I'll prove it."
+    ],
+    "accusedRightly": [
+      "{Victim} knew about my wrist, Inspector. {Victim.subject} was going to tell the tournament committee. I couldn't let that happen.",
+      "All right. {Weapon}. One swing. Never missed a shot in my life.",
+      "Game over, then. Yes, it was me, in {roomName}. I'll not snivel about it.",
+      "You've played a better game than I did. {Victim.subject} pushed me too far. That's all I'll say."
+    ],
+    "opinion.marble": [
+      "{Other}? Pompous bully. Clever, though. I'll give {other.object} that.",
+      "{Other.subject} thinks a woman with a mallet is a vulgar spectacle. I think a man in that waistcoat is.",
+      "I enjoy needling {other}. It's the only decent sport aboard."
+    ],
+    "opinion.folder": [
+      "{Other}? Fusspot. Gave me the worst cabin on the deck and wrote me a receipt for it.",
+      "{Other.subject} quotes regulations at you like a referee with no game to referee.",
+      "I've complained to {other} three times. I'll make it four before New York."
+    ],
+    "opinion.bear": [
+      "{Other} mothers me. Suffocating. I'm rather fond of {other.object}, actually.",
+      "{Other.subject} wants me in a frock. Pink, for preference. Over my dead body.",
+      "{Other} talks enough for six. Kind heart, though. Kindest aboard."
+    ],
+    "opinion.egg": [
+      "{Other} needs fresh air and a backbone. I'm working on both.",
+      "Nice girl, {other}. Jumps at {other.possessive} own shadow. I keep telling {other.object} to stand up straight.",
+      "Anyone who bullies {other} answers to me."
+    ],
+    "opinion.pail": [
+      "{Other} rigged me up a practice lawn on deck. Best man on this ship.",
+      "I trust {other}. Only person aboard I do.",
+      "{Other.subject} sees everything and says half of it. That's the right ratio."
+    ],
+    "eulogy.marble": [
+      "{Other}. Can't say I liked {other.object}. Can't say {other.subject} deserved this, either.",
+      "We sparred every day. I'll miss the sparring. Not {other.object}. The sparring.",
+      "{Other.subject} was clever. Cleverer than {other.subject} let on. Somebody was cleverer still."
+    ],
+    "eulogy.folder": [
+      "{Other}. Fusspot. Harmless fusspot. Dash it all.",
+      "I complained about {other.object} three times. Feel a bit of a cad about it now.",
+      "{Other.subject} never did anything without a form. Hope someone fills one out for {other.object} properly."
+    ],
+    "eulogy.bear": [
+      "Not {other}. Anyone but {other}.",
+      "{Other.subject} wanted to see me married. Said {other.subject}'d dance at the wedding. Damn.",
+      "{Other.subject} fussed over me like a mother hen. I'd give my best mallet to be fussed over once more."
+    ],
+    "eulogy.egg": [
+      "{Other}? That poor kid. I was supposed to be looking out for {other.object}.",
+      "{Other.subject} never hurt a fly. Whoever did this, I want them, Inspector.",
+      "I kept telling {other.object} to toughen up. Wasn't {other.possessive} fault, was it."
+    ],
+    "eulogy.pail": [
+      "{Other}. {Other.subject} built me a lawn on a ship. Who does that?",
+      "Best man aboard. Find who did this, Inspector, or I will.",
+      "I trusted {other.object}. I don't trust many. Now it's one fewer."
+    ]
+  }
+}
