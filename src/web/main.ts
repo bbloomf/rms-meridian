@@ -1,6 +1,7 @@
 // Browser front end: the briefing, the notebook (timeline, rooms, weapons), the
-// interview panel and the accusation. The page is rebuilt from the game state
-// after every action; the state itself is rebuilt from the saved moves.
+// interview panel and the accusation. The page is redrawn from the game state
+// after every action, one region at a time; the state itself is rebuilt from
+// the saved moves.
 
 import { CAST, ROOMS, SLOTS, WEAPONS, inRoom, the } from "../data.ts";
 import type { CharId, RoomId, WeaponId } from "../data.ts";
@@ -55,6 +56,7 @@ let scene: { who: CharId; slot: number } | null = lastScene(); // the account sh
 let scenePlay = false; // animate the scene on the next render only
 let justSearched: RoomId | null = null;
 let notice: string | null = null;
+let noticeId = 0; // counts notices, so a repeated one is announced again
 let latestFrom = state.log.length; // log entries from the most recent move are highlighted
 let sheetOpen = false; // phone-width sheet showing the latest reply
 let copied = false;
@@ -111,6 +113,7 @@ function act(move: Move): void {
   const problem = check(state, move);
   if (problem) {
     notice = problem;
+    noticeId += 1;
     render();
     return;
   }
@@ -118,6 +121,7 @@ function act(move: Move): void {
   saved.moves = [...saved.moves, move];
   state = play(c, saved.moves);
   persist();
+  announce(state.log.slice(latestFrom));
   notice = null;
   confronting = null;
   hintOpen = false;
@@ -213,35 +217,42 @@ function briefingHTML(): string {
 
 // ── Notebook ──────────────────────────────────────────────────────────────
 
-function gameHTML(): string {
+/** The notebook's frame: empty regions that render() fills and keeps up to date. */
+function shellHTML(): string {
   const v = CAST[c.victim];
-  return `${headerHTML()}
+  const region = (name: Region) => `<div data-region="${name}"></div>`;
+  return `<header class="bar">
+    <div class="brand">${mark()}${button("RMS Meridian", "briefing", {}, { cls: "wordmark", label: "Back to the briefing" })}<span class="muted">${esc(caseLabel)}</span></div>
+    ${region("header")}
+  </header>
   <p class="case-line">${portrait(c.victim)} <span><strong>${esc(v.name)}</strong>, ${esc(v.role)}, found dead on the Boat Deck. Time of death between ${windowLabel()}.</span></p>
   <div class="layout">
     <section class="board">
-      ${hintHTML()}
-      ${noticeHTML()}
-      ${timelineHTML()}
-      ${roomsHTML()}
-      ${weaponsHTML()}
+      ${region("hint")}
+      ${region("notice")}
+      ${region("timeline")}
+      <section class="card rooms"><div class="card-head"><h2>Rooms in play</h2><p class="muted">The murder happened in one of these. Only crew have keys to crew-only rooms.</p></div><div class="room-grid">${c.rooms.map(() => "<div></div>").join("")}</div></section>
+      ${region("weapons")}
     </section>
-    <aside class="interview">${interviewHTML()}</aside>
+    <aside class="interview">
+      ${region("dossier")}
+      ${region("scene")}
+      <div class="transcript" id="transcript"><h2>Transcript</h2><p class="muted">Nothing on record yet.</p></div>
+    </aside>
   </div>
-  ${sheetHTML()}
-  ${modal ? modalHTML(modal) : ""}`;
+  ${region("sheet")}
+  ${region("modal")}`;
 }
 
+/** The changing part of the header; the brand beside it is drawn once, in shellHTML. */
 function headerHTML(): string {
   const pips = Array.from({ length: AP_BUDGET }, (_, i) => `<span class="pip${i < AP_BUDGET - state.remaining ? " spent" : ""}"></span>`).join("");
-  return `<header class="bar">
-    <div class="brand">${mark()}${button("RMS Meridian", "briefing", {}, { cls: "wordmark", label: "Back to the briefing" })}<span class="muted">${esc(caseLabel)}</span></div>
-    <div class="meter" role="img" aria-label="${state.remaining} of ${AP_BUDGET} actions left"><div class="pips">${pips}</div><span><strong>${state.remaining}</strong> left</span></div>
+  return `<div class="meter" role="img" aria-label="${state.remaining} of ${AP_BUDGET} actions left"><div class="pips">${pips}</div><span><strong>${state.remaining}</strong> left</span></div>
     <div class="bar-actions">
       ${button("How to play", "rules", {}, { cls: "ghost" })}
       ${state.over ? "" : button(saved.moves.length === 0 ? "Where do I start?" : "What next?", "hint", {}, { cls: `ghost hint-btn${hintOpen ? " on" : ""}`, pressed: hintOpen })}
       ${state.over ? button("See verdict", "result", {}, { cls: "primary" }) : button("Accuse", "accuse", {}, { cls: "primary" })}
-    </div>
-  </header>`;
+    </div>`;
 }
 
 function noticeHTML(): string {
@@ -385,21 +396,29 @@ function confrontPickerHTML(): string {
   </div>`;
 }
 
-function roomsHTML(): string {
-  const tiles = c.rooms
-    .map((room) => {
-      const r = ROOMS[room];
-      const result = state.searched[room];
-      const kept = c.weapons.filter((w) => c.weaponHome[w] === room);
-      return `<div class="room${result ? " searched" : ""}${result?.struggle ? " struggle" : ""}${justSearched === room ? " just" : ""}">
-        ${roomPic(room)}
-        <h3>${esc(r.name)}${r.crewOnly ? ' <span class="tag crew">crew only</span>' : ""}</h3>
-        <p class="kept muted">${kept.length ? `Kept here: ${esc(kept.map((w) => WEAPONS[w].name).join(", "))}` : "No weapons kept here"}</p>
-        ${result ? `<p class="finding">${esc(describeSearch(result))}</p>` : state.over ? "" : button(`Search <span class="cost">1</span>`, "search", { room }, { cls: "search", label: `Search ${r.name}` })}
-      </div>`;
-    })
-    .join("");
-  return `<section class="card rooms"><div class="card-head"><h2>Rooms in play</h2><p class="muted">The murder happened in one of these. Only crew have keys to crew-only rooms.</p></div><div class="room-grid">${tiles}</div></section>`;
+// Each tile carries a full room drawing, so tiles are cached by what they show
+// and a tile is redrawn only when that changes.
+const tileCache = new Map<string, string>();
+
+function tileKey(room: RoomId): string {
+  return `${room}|${JSON.stringify(state.searched[room] ?? null)}|${justSearched === room}|${state.over}`;
+}
+
+function roomTileHTML(room: RoomId): string {
+  const key = tileKey(room);
+  const hit = tileCache.get(key);
+  if (hit) return hit;
+  const r = ROOMS[room];
+  const result = state.searched[room];
+  const kept = c.weapons.filter((w) => c.weaponHome[w] === room);
+  const html = `<div class="room${result ? " searched" : ""}${result?.struggle ? " struggle" : ""}${justSearched === room ? " just" : ""}">
+    ${roomPic(room)}
+    <h3>${esc(r.name)}${r.crewOnly ? ' <span class="tag crew">crew only</span>' : ""}</h3>
+    <p class="kept muted">${kept.length ? `Kept here: ${esc(kept.map((w) => WEAPONS[w].name).join(", "))}` : "No weapons kept here"}</p>
+    ${result ? `<p class="finding">${esc(describeSearch(result))}</p>` : state.over ? "" : button(`Search <span class="cost">1</span>`, "search", { room }, { cls: "search", label: `Search ${r.name}` })}
+  </div>`;
+  tileCache.set(key, html);
+  return html;
 }
 
 function weaponsHTML(): string {
@@ -422,7 +441,7 @@ function weaponsHTML(): string {
 
 // ── Interview panel and transcript ────────────────────────────────────────
 
-function interviewHTML(): string {
+function dossierHTML(): string {
   const p = CAST[selected];
   const tabs = c.suspects
     .map((s) => button(`${portrait(s)}<span>${esc(short(s))}</span>`, "select", { who: s }, { cls: "tab", pressed: s === selected, label: CAST[s].name }))
@@ -444,12 +463,19 @@ function interviewHTML(): string {
       <div class="chips">${slotButtons}</div>
       <p class="label">What do you make of&hellip; <span class="free">free</span></p>
       <div class="chips">${chats}</div>
-    </div>
-    ${scene ? sceneHTML(scene.who, scene.slot) : ""}
-    <div class="transcript" id="transcript" aria-live="polite">
-      <h2>Transcript</h2>
-      ${state.log.length ? state.log.map((e, i) => entryHTML(e, fresh && i >= latestFrom)).join("") : '<p class="muted">Nothing on record yet.</p>'}
     </div>`;
+}
+
+/** Plain text of a log entry, for the screen-reader announcement. */
+function entryText(e: LogEntry): string {
+  switch (e.kind) {
+    case "question":
+      return `You: ${e.text}`;
+    case "line":
+      return `${CAST[e.speaker].name}: ${e.text}`;
+    case "narration":
+      return e.text;
+  }
 }
 
 function entryHTML(e: LogEntry, fresh: boolean): string {
@@ -468,7 +494,7 @@ function entryHTML(e: LogEntry, fresh: boolean): string {
 // An account drawn as the suspect tells it. Caught out, it shakes and gets a
 // stamp; cracked, it splits apart to show where they really were.
 
-function sceneHTML(who: CharId, slot: number, compact = false): string {
+function sceneHTML(who: CharId, slot: number, play: boolean, compact = false): string {
   const st = state.answers[who]?.[slot];
   if (!st) return "";
   const conf = state.confrontations.find((x) => x.who === who && x.slot === slot && x.outcome !== "baseless");
@@ -499,19 +525,19 @@ function sceneHTML(who: CharId, slot: number, compact = false): string {
     caption = `As ${P.short} tells it: ${inRoom(st.claim)} at ${time}. No one to confirm it.`;
   }
   return `<figure class="scene-card${compact ? " compact" : ""}">
-    <div class="scene ${mode}${scenePlay ? " play" : ""}">${layers}${stamp}</div>
+    <div class="scene ${mode}${play ? " play" : ""}">${layers}${stamp}</div>
     <figcaption>${esc(caption)}</figcaption>
   </figure>`;
 }
 
 const narrow = matchMedia("(max-width: 1000px)"); // the sheet only shows at these widths (style.css)
 
-function sheetHTML(): string {
+function sheetHTML(play: boolean): string {
   const fresh = state.log.slice(latestFrom);
   if (!sheetOpen || fresh.length === 0 || modal || !narrow.matches) return "";
   const last = saved.moves[saved.moves.length - 1];
-  const pic = scene && (last?.kind === "ask" || last?.kind === "confront") && last.who === scene.who && last.slot === scene.slot ? sceneHTML(scene.who, scene.slot, true) : "";
-  return `<div class="sheet" aria-live="polite">${button("&times;", "sheet-close", {}, { cls: "ghost icon", label: "Close" })}${pic}${fresh.map((e) => entryHTML(e, false)).join("")}</div>`;
+  const pic = scene && (last?.kind === "ask" || last?.kind === "confront") && last.who === scene.who && last.slot === scene.slot ? sceneHTML(scene.who, scene.slot, play, true) : "";
+  return `<div class="sheet">${button("&times;", "sheet-close", {}, { cls: "ghost icon", label: "Close" })}${pic}${fresh.map((e) => entryHTML(e, false)).join("")}</div>`;
 }
 
 // ── Modals ────────────────────────────────────────────────────────────────
@@ -683,6 +709,17 @@ function playReplay(): void {
 const app = document.getElementById("app")!;
 document.body.insertAdjacentHTML("afterbegin", INK_DEFS); // the pen-and-ink filter and hatching every drawing uses
 
+// One live region for the whole page, outside #app so redraws never touch it.
+// After a move it holds just that move's lines, which screen readers read out.
+const announcer = document.createElement("div");
+announcer.className = "sr";
+announcer.setAttribute("aria-live", "polite");
+document.body.append(announcer);
+
+function announce(entries: LogEntry[]): void {
+  announcer.replaceChildren(...entries.map((e) => Object.assign(document.createElement("p"), { textContent: entryText(e) })));
+}
+
 app.addEventListener("click", (event) => {
   const el = (event.target as HTMLElement).closest<HTMLElement>("[data-action]");
   if (!el || (el instanceof HTMLButtonElement && el.disabled)) return;
@@ -843,6 +880,7 @@ function closeModal(): void {
 }
 
 document.addEventListener("keydown", (event) => {
+  if (event.key === "Tab") return trapFocus(event);
   if (event.key !== "Escape" || document.body.classList.contains("cinema-open")) return;
   if (modal) closeModal();
   else if (confronting) confronting = null;
@@ -851,6 +889,21 @@ document.addEventListener("keydown", (event) => {
   else return;
   render();
 });
+
+/** Tab and Shift-Tab wrap around inside an open modal. The page behind it is inert. */
+function trapFocus(event: KeyboardEvent): void {
+  const box = view === "game" && modal ? app.querySelector<HTMLElement>(".modal") : null;
+  if (!box || document.body.classList.contains("cinema-open")) return;
+  const stops = [...box.querySelectorAll<HTMLElement>("button:not(:disabled), a[href], input, select, textarea, [tabindex]:not([tabindex='-1'])")];
+  if (!stops.length) return;
+  const first = stops[0];
+  const last = stops[stops.length - 1];
+  const at = document.activeElement;
+  if (event.shiftKey ? at === first || !box.contains(at) : at === last || !box.contains(at)) {
+    event.preventDefault();
+    (event.shiftKey ? last : first).focus();
+  }
+}
 
 async function copyResult(): Promise<void> {
   try {
@@ -882,14 +935,81 @@ function refocus(spot: { key: string; index: number } | null): boolean {
   return !!el;
 }
 
+// ── Rendering ─────────────────────────────────────────────────────────────
+// The notebook is a fixed frame (shellHTML) of regions. Each render rebuilds a
+// region's HTML only when the key of what it shows has changed, so a click
+// that changes one thing doesn't redraw every room through the ink filter.
+
+type Region = "header" | "hint" | "notice" | "timeline" | "weapons" | "dossier" | "scene" | "sheet" | "modal";
+
+let shownView: typeof view | null = null;
+const shown = new Map<Region, string>(); // each region's key as last drawn
+let shownTiles: string[] = [];
+let shownLog = 0; // transcript entries on the page
+
+function regionEl(name: Region): HTMLElement {
+  return app.querySelector<HTMLElement>(`[data-region="${name}"]`)!;
+}
+
+/** Redraws a region if its key changed. `force` redraws it anyway, to replay its entrance. */
+function patch(name: Region, html: string, key = html, force = false): void {
+  if (!force && shown.get(name) === key) return;
+  regionEl(name).innerHTML = html;
+  shown.set(name, key);
+}
+
+function paintGame(): void {
+  // Entrance animations from the last render have had their one render.
+  if (!scenePlay) app.querySelectorAll(".scene.play").forEach((el) => el.classList.remove("play"));
+  app.querySelectorAll(".transcript .fresh").forEach((el) => el.classList.remove("fresh"));
+
+  patch("header", headerHTML());
+  patch("hint", hintHTML());
+  const n = noticeHTML();
+  patch("notice", n, `${noticeId}|${n}`);
+  patch("timeline", timelineHTML());
+  const tiles = app.querySelector(".room-grid")!.children;
+  c.rooms.forEach((room, i) => {
+    const key = tileKey(room);
+    if (shownTiles[i] !== key) tiles[i].outerHTML = roomTileHTML(room);
+    shownTiles[i] = key;
+  });
+  patch("weapons", weaponsHTML());
+  patch("dossier", dossierHTML());
+  patch("scene", scene ? sceneHTML(scene.who, scene.slot, scenePlay) : "", scene ? sceneHTML(scene.who, scene.slot, false) : "", scenePlay);
+
+  // The log only grows, so new entries are appended.
+  const log = state.log;
+  if (log.length !== shownLog) {
+    const html = log.slice(shownLog).map((e, i) => entryHTML(e, fresh && shownLog + i >= latestFrom)).join("");
+    const transcript = document.getElementById("transcript")!;
+    if (shownLog === 0) transcript.innerHTML = `<h2>Transcript</h2>${html}`;
+    else transcript.insertAdjacentHTML("beforeend", html);
+    shownLog = log.length;
+  }
+
+  patch("sheet", sheetHTML(scenePlay), sheetHTML(false), scenePlay);
+  patch("modal", modal ? modalHTML(modal) : "");
+  const box = regionEl("modal");
+  for (const el of app.children) if (el !== box) (el as HTMLElement).inert = modal !== null;
+}
+
 function render(): void {
   const spot = focusSpot();
+  const focused = document.activeElement;
   const modalWasOpen = !!document.querySelector(".modal");
   const scrolls = SCROLLERS.map((sel) => {
     const el = app.querySelector<HTMLElement>(sel);
     return el ? [el.scrollLeft, el.scrollTop] : null;
   });
-  app.innerHTML = view === "briefing" ? briefingHTML() : gameHTML();
+  if (view !== shownView) {
+    app.innerHTML = view === "briefing" ? briefingHTML() : shellHTML();
+    shownView = view;
+    shown.clear();
+    shownTiles = [];
+    shownLog = 0;
+  }
+  if (view === "game") paintGame();
   document.body.classList.toggle("modal-open", view === "game" && modal !== null);
   SCROLLERS.forEach((sel, i) => {
     const el = app.querySelector<HTMLElement>(sel);
@@ -899,15 +1019,18 @@ function render(): void {
   });
   const transcript = document.getElementById("transcript");
   if (transcript && (fresh || !scrolls[SCROLLERS.indexOf(".transcript")])) transcript.scrollTop = transcript.scrollHeight;
+  // Regions that weren't redrawn may still glow from an earlier hint.
   const h = currentHint();
-  if (h) app.querySelectorAll(`[data-key="${CSS.escape(hintTarget(h))}"]`).forEach((el) => el.classList.add("hinted"));
+  const target = h ? hintTarget(h) : null;
+  app.querySelectorAll<HTMLElement>(".hinted").forEach((el) => el.classList.toggle("hinted", el.dataset.key === target));
+  if (target) app.querySelectorAll(`[data-key="${CSS.escape(target)}"]`).forEach((el) => el.classList.add("hinted"));
   if (modal && !modalWasOpen) {
     modalOpener = spot;
     app.querySelector<HTMLElement>(".modal button:not(.close)")?.focus();
   } else if (!modal && modalWasOpen) {
     refocus(modalOpener);
     modalOpener = null;
-  } else refocus(spot);
+  } else if (!focused?.isConnected) refocus(spot); // its region was redrawn
   scenePlay = false;
   justSearched = null;
   fresh = false;
