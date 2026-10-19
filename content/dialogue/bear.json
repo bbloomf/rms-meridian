@@ -17,12 +17,12 @@
     "whereabouts": [
       "{RoomName}, darling. {Time}. I remember because my feet were killing me.",
       "Oh, I was {room}, {time}. I'm almost always somewhere, Inspector.",
-      "{Time}? Let me think, dear. {RoomName}! Yes. Definitely.",
-      "I was {room} {time}, darling. Harold always said I had a memory like an elephant. A well-dressed one.",
-      "{Time}? {RoomName}, darling. I'd swear to it on Harold's grave.",
-      "{RoomName}, dear, {time}. I may be old, but I don't forget a thing.",
-      "Now then, {time}... {room}. Yes, darling, I'm quite sure.",
-      "I was {room}, darling, {time}. Write it down before I start embroidering."
+      "{Time}? Let me think, dear. {RoomName}! The cushions there are divine.",
+      "I was {room} {time}, darling. Harold said I'd turn up wherever there was sherry.",
+      "{Time}? {RoomName}, darling. Harold would have hated it. Too many draughts.",
+      "{RoomName}, dear, {time}. Do write it in a nice hand.",
+      "Now then, {time}... {room}. There. Aren't I good?",
+      "I was {room}, darling, {time}. Now, are you married, Inspector?"
     ],
     "sawOne": [
       "{Other} was there, darling. Looking very handsome or very tired, I couldn't decide which.",
@@ -37,7 +37,7 @@
       "{Others}. I made sure to speak to every one of them. Twice.",
       "There were {others}, all looking terribly guilty about something. People do, around me.",
       "I saw {others}, dear. Such fun. I do love a crowd.",
-      "{Others} were there. I could tell you what each of them had to drink, if you like?",
+      "{Others} were there. I could tell you what they were all drinking.",
       "Let me see: {others}. And me, of course. The life and soul, Harold called me."
     ],
     "sawVictim": [
@@ -54,7 +54,7 @@
       "Not a soul, dear. Most unlike me.",
       "No one. I know! Me! Without an audience!",
       "Nobody, Inspector. Not even a steward with a tray, which I call poor service.",
-      "I didn't see anyone, darling. I looked, believe me."
+      "I didn't see anyone, darling. I was simply starved of conversation."
     ],
     "confrontCrack": [
       "{Witness} told you? Oh, the tattletale. Well. I never could keep a secret, darling.",
@@ -79,6 +79,12 @@
       "{Weapon}. I didn't know I had it in me. Harold would be astonished.",
       "Very well, Inspector. {RoomName}. It was over so fast. I've never kept a secret in my life, and I'm not starting now.",
       "{Victim.subject} was going to ruin everything, darling. Everything. I'm so sorry. No, I'm not. Yes, I am."
+    ],
+    "accusedPartly": [
+      "Oh, darling, yes, it was me. But you've got it all muddled. It was {weapon}, {room}. Do get it right for the papers.",
+      "Yes, Inspector, I did it. Not like that, though. {Weapon}, {room}. Harold always said I was particular.",
+      "Well, you've got the right woman, darling, and very little else. {Weapon}. {Room}. There.",
+      "Oh, very well. Yes. But it was {weapon}, dear, {room}. If you're going to hang me, hang me accurately."
     ],
     "opinion.marble": [
       "{Other}! Rich, handsome, and utterly impossible. I intend to marry {other.object} by Easter.",

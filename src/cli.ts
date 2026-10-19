@@ -129,7 +129,7 @@ function printDialogueExtras(c: Case, spoil: boolean): void {
       const confession = cracks && secret ? ` ${CAST[s].secrets.find((x) => x.id === secret.secretId)!.confession}` : "";
       console.log(`  Confronted: "${line}${confession}"`);
     }
-    console.log(`  Accused: "${voice.accused(killer, c.solution.weapon, c.solution.room)}"`);
+    console.log(`  Accused: "${voice.accused({ who: killer, weapon: true, room: true }, c.solution.weapon, c.solution.room)}"`);
   }
 }
 

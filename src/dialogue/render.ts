@@ -73,15 +73,12 @@ export function voiceFor(c: Case, speaker: CharId) {
   const file = loadDialogue(speaker);
   if (!file) return null;
   const used = new Map<string, number>();
-  // `keep` narrows the pool for one use, and gets its own turn order.
-  const say = (key: string, ctx: Omit<Context, "speaker">, keep?: (line: string) => boolean): string => {
-    const all = file.lines[key];
-    const pool = keep ? all?.filter(keep) : all;
+  const say = (key: string, ctx: Omit<Context, "speaker">): string => {
+    const pool = file.lines[key];
     if (!pool?.length) throw new Error(`${speaker} has no lines for ${key}`);
-    const turn = keep ? `${key}:narrowed` : key;
-    const order = makeRng(mixSeed(c.seed, hash(`${c.attempt}:${speaker}:${turn}`))).shuffle(pool);
-    const n = used.get(turn) ?? 0;
-    used.set(turn, n + 1);
+    const order = makeRng(mixSeed(c.seed, hash(`${c.attempt}:${speaker}:${key}`))).shuffle(pool);
+    const n = used.get(key) ?? 0;
+    used.set(key, n + 1);
     return fill(order[n % order.length], { ...ctx, speaker });
   };
 
@@ -90,24 +87,29 @@ export function voiceFor(c: Case, speaker: CharId) {
     testimony: (slot: number): string => {
       const st = c.testimony[speaker][slot];
       const parts = [say("whereabouts", { room: st.claim, slot })];
-      const rest = st.sightings.filter((p) => p !== c.victim);
-      if (st.sightings.includes(c.victim)) parts.push(say("sawVictim", { victim: c.victim }));
-      // After the victim, "Only Folder" would contradict the line before it.
-      const alsoVictim = st.sightings.includes(c.victim) ? (line: string) => !/^(Only|Just)\b/.test(line) : undefined;
-      if (rest.length === 1) parts.push(say("sawOne", { other: rest[0] }, alsoVictim));
-      if (rest.length > 1) parts.push(say("sawSeveral", { others: rest }));
-      if (st.sightings.length === 0) parts.push(say("sawNoOne", {}));
+      const seen = [...st.sightings].sort((a, b) => Number(b === c.victim) - Number(a === c.victim)); // the victim first
+      // The victim gets a line of their own only when seen alone. In company
+      // they join the list, which keeps the account short enough to read.
+      if (seen.length === 0) parts.push(say("sawNoOne", {}));
+      else if (seen.length > 1) parts.push(say("sawSeveral", { others: seen }));
+      else if (seen[0] === c.victim) parts.push(say("sawVictim", { victim: c.victim }));
+      else parts.push(say("sawOne", { other: seen[0] }));
       return parts.join(" ");
     },
     opinion: (other: CharId) => say(other === c.victim ? `eulogy.${other}` : `opinion.${other}`, { other }),
     confront: (witness: CharId, cracks: boolean) => say(cracks ? "confrontCrack" : "confrontDeflect", { witness }),
-    /** A right accusation is answered with the true weapon and room; a wrong one with the accused ones. */
-    accused: (correct: boolean, weapon: WeaponId, room: RoomId) =>
-      say(correct ? "accusedRightly" : "accusedWrongly", {
-        victim: c.victim,
-        weapon: correct ? c.solution.weapon : weapon,
-        room: correct ? c.solution.room : room,
-      }),
+    /**
+     * A wrong name is answered with the accused weapon and room. The killer
+     * answers with the true ones, correcting the Inspector if either was wrong.
+     */
+    accused: (right: { who: boolean; weapon: boolean; room: boolean }, weapon: WeaponId, room: RoomId) =>
+      !right.who
+        ? say("accusedWrongly", { victim: c.victim, weapon, room })
+        : say(right.weapon && right.room ? "accusedRightly" : "accusedPartly", {
+            victim: c.victim,
+            weapon: c.solution.weapon,
+            room: c.solution.room,
+          }),
   };
 }
 

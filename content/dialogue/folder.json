@@ -15,14 +15,14 @@
       "Do sit, Inspector. Mind the inkwell. I keep things orderly, and I'd ask you to keep them so."
     ],
     "whereabouts": [
-      "{RoomName}, {time}. I noted the minute; I can fetch the log if you require it.",
-      "I was {room} {time}. To be precise about it.",
+      "{RoomName}, {time}. I trust this won't take long; the manifests won't finish themselves.",
+      "I was {room} {time}. In triplicate, if you need it.",
       "{Time}? {RoomName}. Write it down correctly, please; people so often get it wrong.",
       "{Time} I was {room}. I keep a strict timetable, Inspector, as the regulations require.",
-      "I was {room}, {time}. That is the exact position.",
+      "I was {room}, {time}. Kindly initial the margin.",
       "{RoomName}. {Time}, near enough. I dislike 'near enough', but there it is.",
       "For the record: {room}, {time}.",
-      "{Time}, Inspector, I was {room}. You may quote me."
+      "{Time}, Inspector, I was {room}. Next item."
     ],
     "sawOne": [
       "{Other} was present. I made a note of it.",
@@ -51,10 +51,10 @@
     "sawNoOne": [
       "No one. The regulations do not require company.",
       "Nobody, Inspector. I prefer to work undisturbed.",
-      "I saw no one. I should have noted it if I had.",
-      "Not a soul. I checked.",
+      "I saw no one. The corridors are very quiet at that hour.",
+      "Not a soul. Very restful.",
       "No one at all. My pocketbook is quite blank on the point.",
-      "Nobody. Is that irregular? I don't believe it's irregular."
+      "Nobody. Is that irregular? There's no form for it."
     ],
     "confrontCrack": [
       "{Witness} said that? I— Very well. I shall have to amend the record.",
@@ -79,6 +79,12 @@
       "{Weapon}. Yes. It was untidy. I dislike untidiness more than I can say.",
       "I borrowed. Only borrowed. {Victim.subject} called it theft, and was going to say so in New York.",
       "{RoomName}, {weapon}, and twenty-two years of spotless service gone. I should like it noted that I confessed promptly."
+    ],
+    "accusedPartly": [
+      "I did it, Inspector. But the record must be accurate: {weapon}, {room}. Kindly amend your notes.",
+      "Yes. Though your particulars are wrong. It was {weapon}, {room}. I cannot sign a confession with errors in it.",
+      "I confess. I must, however, correct a point or two of detail. {Weapon}. {Room}.",
+      "It was me. Not as you describe it. {Weapon}, {room}. Twenty-two years of service, and the paperwork's wrong at the end."
     ],
     "opinion.marble": [
       "{Other} is a most distinguished passenger. Most distinguished. I couldn't possibly comment on {other.possessive} account.",

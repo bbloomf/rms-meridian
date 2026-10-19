@@ -1,10 +1,11 @@
 // node --test src/game.test.ts
 import { test } from "node:test";
 import assert from "node:assert/strict";
-import { CAST, SLOTS } from "./data.ts";
+import { CAST, SLOTS, WEAPONS, inRoom } from "./data.ts";
 import { MAX_PINS, check, contradicts, evidence, play, rank } from "./game.ts";
 import type { Evidence, Move } from "./game.ts";
 import { AP_BUDGET, contradictions, generateCase } from "./solver.ts";
+import { voiceFor } from "./dialogue/render.ts";
 
 const SEEDS = Array.from({ length: 150 }, (_, i) => i + 1);
 
@@ -134,6 +135,32 @@ test("pins prove nothing about the wrong answer", () => {
     assert.ok(s.accusation!.pins.every((p) => p.supports === null), `seed ${seed}`);
     assert.equal(rank(s)!.stars, 0);
   }
+});
+
+test("the right killer with a wrong weapon or room confesses to the true ones", () => {
+  for (const seed of SEEDS.slice(0, 60)) {
+    const { case: c } = generateCase(seed);
+    const { killer, weapon, room } = c.solution;
+    const other = <T>(xs: T[], x: T) => xs.find((y) => y !== x)!;
+    for (const wrong of [{ weapon: other(c.weapons, weapon), room }, { weapon, room: other(c.rooms, room) }]) {
+      const s = play(c, [{ kind: "accuse", who: killer, ...wrong }]);
+      const reply = s.log.at(-1)!;
+      assert.equal(reply.kind, "line");
+      const text = reply.kind === "line" ? reply.text.toLowerCase() : "";
+      assert.ok(text.includes(WEAPONS[weapon].name) && text.includes(inRoom(room).toLowerCase()), `seed ${seed}: ${text}`);
+      assert.equal(rank(s)!.title, "The right name, but the wrong story");
+    }
+  }
+});
+
+test("accounts stay short enough to read in the phone's reply sheet", () => {
+  const lengths = SEEDS.flatMap((seed) => {
+    const { case: c } = generateCase(seed);
+    return c.suspects.flatMap((s) => SLOTS.map((_, slot) => voiceFor(c, s)!.testimony(slot).length));
+  });
+  const long = lengths.filter((n) => n > 220).length;
+  assert.ok(long / lengths.length < 0.01, `${long} of ${lengths.length} accounts are over 220 characters`);
+  assert.ok(Math.max(...lengths) <= 260, `longest account is ${Math.max(...lengths)} characters`);
 });
 
 test("a correct accusation with no proof earns at most two stars", () => {

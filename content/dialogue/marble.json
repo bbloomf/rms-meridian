@@ -80,6 +80,12 @@
       "I don't expect you to understand. {Victim.subject} was a liability, and I have always dealt with liabilities.",
       "Congratulations, Inspector. First man to outmanoeuvre me in twenty years. Yes: {roomName}, {weapon}, and I don't regret it."
     ],
+    "accusedPartly": [
+      "Yes, I killed {victim}. Your details, however, are wrong. {Weapon}, {room}. My lawyers will enjoy that.",
+      "You have the right man and the wrong story. {Weapon}, {room}. Do try to keep up.",
+      "Very well. It was me. But it was {weapon}, Inspector, {room}. Sloppy work wins no prizes.",
+      "Congratulations on half a deduction. {Weapon}. {Room}. Yes, I did it, and no, I don't regret it."
+    ],
     "opinion.folder": [
       "Folder? A clerk with a ledger and ideas above his station.",
       "{Other} counts things. Spoons, tips, other people's money. I'd keep an eye on {other.object}.",

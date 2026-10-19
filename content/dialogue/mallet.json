@@ -20,8 +20,8 @@
       "{Time}? {RoomName}. Simple as that.",
       "{Time} I was {room}. Write it down and move on.",
       "{RoomName}, {time}. I don't go in for fuss.",
-      "I was {room} {time}, Inspector. No mystery there.",
-      "{Time}, {room}. Straight answer to a straight question.",
+      "I was {room} {time}, Inspector. Keep up.",
+      "{Time}, {room}. Your serve.",
       "If you must know: {room}, {time}."
     ],
     "sawOne": [
@@ -52,7 +52,7 @@
       "No one. Suits me.",
       "Nobody. I like a bit of peace before a match.",
       "Not a soul. Don't look at me like that.",
-      "No one. And before you ask, no, I can't prove it.",
+      "No one. Didn't miss them, either.",
       "Nobody at all. Is that a foul now?",
       "I saw no one. Quiet as a lawn at dawn."
     ],
@@ -79,6 +79,12 @@
       "All right. {Weapon}. I don't miss, Inspector. Never have.",
       "Game over, then. Yes, it was me. {RoomName}, and I'll not snivel about it.",
       "You've played a better game than I did. {Victim.subject} pushed me too far. That's all I'll say."
+    ],
+    "accusedPartly": [
+      "Right name. Rotten shot otherwise. It was {weapon}, {room}. Get the score right before you hang me.",
+      "Yes, it was me. But it was {weapon}, Inspector, {room}. Lucky guess, the rest of it.",
+      "Fine. I did it. Not like that. {Weapon}, {room}. If you're going to win, win properly.",
+      "You've got me. Barely. {Weapon}, {room}. I'd have called that a mishit."
     ],
     "opinion.marble": [
       "{Other}? Pompous bully. Clever, though. I'll give {other.object} that.",

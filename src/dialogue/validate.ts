@@ -67,7 +67,7 @@ export function validateDialogue(file: DialogueFile): Issue[] {
         if (namePatterns(c).some((p) => p.test(bare))) fail(`names ${CAST[c].name} directly; use a slot`);
       }
       for (const room of ROOM_NAMES) if (bare.includes(room)) fail(`names a room (${room}); use a slot`);
-      if (topic !== "accusedRightly" && topic !== "accusedWrongly" && WEAPON_WORDS.test(bare)) {
+      if (!topic.startsWith("accused") && WEAPON_WORDS.test(bare)) {
         fail(`mentions a weapon (${bare.match(WEAPON_WORDS)![0]})`);
       }
       if (TIME_WORDS.test(bare)) fail("hard-codes a time; use {time}");

@@ -567,6 +567,11 @@ button.icon {
   font-style: italic;
 }
 
+.notice.info {
+  background: var(--paper);
+  border-color: var(--brass);
+}
+
 /* ── Timeline ──────────────────────────────────────────────── */
 
 .table-wrap {

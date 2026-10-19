@@ -170,7 +170,7 @@ export function play(c: Case, moves: Move[]): GameState {
         state.accusation = { who: move.who, weapon: move.weapon, room: move.room, right, solved, pins, proof };
         state.over = true;
         ask(move.who, `${CAST[move.who].name}, I accuse you of killing ${CAST[c.victim].name} with the ${WEAPONS[move.weapon].name}, ${inRoom(move.room)}.`);
-        say(move.who, voice(move.who).accused(right.who, move.weapon, move.room));
+        say(move.who, voice(move.who).accused(right, move.weapon, move.room));
         break;
       }
     }
@@ -340,7 +340,7 @@ export function rank(state: GameState): Rank | null {
   const a = state.accusation;
   if (!a) return null;
   const proven = Object.values(a.proof).filter(Boolean).length;
-  if (!a.solved) return { stars: 0, title: "The wrong name goes to New York", proven };
+  if (!a.solved) return { stars: 0, title: a.right.who ? "The right name, but the wrong story" : "The wrong name goes to New York", proven };
   const full = proven === 3;
   const thrifty = state.remaining >= THRIFTY;
   const stars = 1 + Number(full) + Number(thrifty);

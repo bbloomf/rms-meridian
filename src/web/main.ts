@@ -29,19 +29,73 @@ interface Saved {
 }
 
 // ── Case selection ────────────────────────────────────────────────────────
-// No ?case= means today's daily case (seeded by UTC date, same for everyone).
+// No ?case= means the daily case (seeded by UTC date, same for everyone). A
+// daily case left unfinished at UTC midnight stays open until it's finished or
+// the new one is begun, so an evening player doesn't lose it. ?today skips it.
 
-const requested = new URLSearchParams(location.search).get("case");
+const params = new URLSearchParams(location.search);
+const requested = params.get("case");
 const parsed = requested !== null && /^\d{1,9}$/.test(requested.trim()) ? Number(requested) : NaN;
 const daily = !Number.isFinite(parsed);
 if (requested !== null && daily) history.replaceState(null, "", location.pathname); // a junk ?case= falls back to the daily case, so say so in the URL
-const today = new Date();
-const seed = daily ? dailySeed(today) : parsed;
+const now = new Date();
+const yesterday = new Date(now.getTime() - 86_400_000);
+const carried = daily && !params.has("today") && !readSave(dailySeed(now))?.started && unfinished(dailySeed(yesterday));
+const caseDate = carried ? yesterday : now;
+const seed = daily ? dailySeed(caseDate) : parsed;
 const c = generateCase(seed).case;
 const caseLabel = daily
-  ? `Daily case · ${today.toLocaleDateString("en-GB", { day: "numeric", month: "long", timeZone: "UTC" })}`
+  ? `Daily case · ${caseDate.toLocaleDateString("en-GB", { day: "numeric", month: "long", timeZone: "UTC" })}`
   : `Case No. ${seed}`;
-const STORE_KEY = `meridian:v2:${seed}`; // v2: cases now require a provable killer, so v1 saves may be for a different case
+const STORE_KEY = storeKey(seed);
+pruneSaves();
+
+// v2: cases now require a provable killer, so v1 saves may be for a different case
+function storeKey(seed: number): string {
+  return `meridian:v2:${seed}`;
+}
+
+/** A save as stored, unchecked. */
+function readSave(seed: number): Partial<Saved> | null {
+  try {
+    const s = JSON.parse(localStorage.getItem(storeKey(seed)) ?? "null") as Partial<Saved> | null;
+    return s && typeof s === "object" ? s : null;
+  } catch {
+    return null;
+  }
+}
+
+function unfinished(seed: number): boolean {
+  const s = readSave(seed);
+  if (s?.started !== true || !Array.isArray(s.moves) || s.moves.length === 0) return false;
+  try {
+    return !play(generateCase(seed).case, s.moves).over;
+  } catch {
+    return false;
+  }
+}
+
+/** Saves are stamped when written. Drop any untouched for 30 days, and the unusable v1 saves. */
+function pruneSaves(): void {
+  try {
+    const cutoff = now.getTime() - 30 * 86_400_000;
+    for (let i = localStorage.length - 1; i >= 0; i--) {
+      const key = localStorage.key(i);
+      if (!key?.startsWith("meridian:") || key === STORE_KEY) continue;
+      let s: { savedAt?: unknown } | null = null;
+      try {
+        s = JSON.parse(localStorage.getItem(key) ?? "null");
+      } catch {
+        // unreadable: removed below
+      }
+      if (key.startsWith("meridian:v1:") || !s || typeof s !== "object") localStorage.removeItem(key);
+      else if (typeof s.savedAt !== "number") localStorage.setItem(key, JSON.stringify({ ...s, savedAt: now.getTime() })); // saved before stamping: start its clock now
+      else if (s.savedAt < cutoff) localStorage.removeItem(key);
+    }
+  } catch {
+    // Storage unavailable: nothing to tidy.
+  }
+}
 
 // ── UI state ──────────────────────────────────────────────────────────────
 
@@ -60,6 +114,7 @@ let noticeId = 0; // counts notices, so a repeated one is announced again
 let latestFrom = state.log.length; // log entries from the most recent move are highlighted
 let sheetOpen = false; // phone-width sheet showing the latest reply
 let copied = false;
+let carriedNote = carried; // "yesterday's case is still open", until a move or a dismissal
 let hintOpen = false; // the "What next?" card, until the next move
 let hintEnter = false; // fade the card in on the render that opens it
 let fresh = false; // highlight the latest log entries on this render only
@@ -75,9 +130,8 @@ function lastScene(): { who: CharId; slot: number } | null {
 function load(): Saved {
   const empty: Saved = { started: false, moves: [], marks: {}, hints: [] };
   try {
-    const raw = localStorage.getItem(STORE_KEY);
-    const s = raw ? (JSON.parse(raw) as Partial<Saved> | null) : null;
-    if (!s || typeof s !== "object") return empty;
+    const s = readSave(seed);
+    if (!s) return empty;
     // Check each field, so a damaged save can't leave a blank page.
     const obj = (x: unknown) => typeof x === "object" && x !== null && !Array.isArray(x);
     return {
@@ -93,7 +147,7 @@ function load(): Saved {
 
 function persist(): void {
   try {
-    localStorage.setItem(STORE_KEY, JSON.stringify(saved));
+    localStorage.setItem(STORE_KEY, JSON.stringify({ ...saved, savedAt: Date.now() }));
   } catch {
     // Storage can be unavailable (private mode, blocked site data). The game still works; it just won't resume.
   }
@@ -123,6 +177,7 @@ function act(move: Move): void {
   persist();
   announce(state.log.slice(latestFrom));
   notice = null;
+  carriedNote = false;
   confronting = null;
   hintOpen = false;
   fresh = true;
@@ -209,6 +264,7 @@ function briefingHTML(): string {
       <p class="beginner">New to detective work? Once you begin, press <strong>Where do I start?</strong> at the top of your notebook. Your sergeant will suggest a first move and explain why. Ask again whenever you're stuck.</p>
       <div class="briefing-actions">
         ${button(progress ? "Resume the investigation" : "Begin the investigation", "begin", {}, { cls: "primary big" })}
+        ${carried ? button("Start today's case instead", "today", {}, { cls: "link" }) : ""}
         ${daily ? button("Try a random case instead", "random", {}, { cls: "link" }) : button("Today's daily case", "daily", {}, { cls: "link" })}
       </div>
     </div>
@@ -259,6 +315,9 @@ function noticeHTML(): string {
   if (state.over) return "";
   if (state.remaining === 0) {
     return `<div class="notice midnight"><p>It's midnight. The Captain is at the wireless, waiting for a name.</p>${button("Make your accusation", "accuse", {}, { cls: "primary" })}</div>`;
+  }
+  if (carriedNote && !notice) {
+    return `<div class="notice info"><p>You hadn't finished yesterday's daily case, so it's still open. Today's will keep.</p>${button("Start today's instead", "today", {}, { cls: "ghost" })}${button("&times;", "dismiss", {}, { cls: "ghost icon", label: "Dismiss" })}</div>`;
   }
   return notice ? `<div class="notice" role="alert"><p>${esc(notice)}</p>${button("&times;", "dismiss", {}, { cls: "ghost icon", label: "Dismiss" })}</div>` : "";
 }
@@ -608,7 +667,7 @@ function resultHTML(): string {
       return `<li>${portrait(s.who)}<span><strong>${esc(p.name)}</strong> said ${p.pronouns.subject} was ${esc(inRoom(s.claim))} at ${SLOTS[s.slot].label}, but was ${esc(inRoom(s.room))}. &ldquo;${esc(confession)}&rdquo;</span></li>`;
     })
     .join("");
-  return `<p class="eyebrow">${a.solved ? "Case closed" : "The Captain sends the wrong name"}</p>
+  return `<p class="eyebrow">${a.solved ? "Case closed" : a.right.who ? "A confession, but not your version" : "The Captain sends the wrong name"}</p>
     <h2 id="modal-title">${esc(r.title)}</h2>
     <p class="stars"><span class="sr">${r.stars} of 3 stars</span><span aria-hidden="true">${"&#9733;".repeat(r.stars)}${'<span class="dim">&#9733;</span>'.repeat(3 - r.stars)}</span></p>
     ${reply && reply.kind === "line" ? `<div class="line big">${portrait(reply.speaker, "lg")}<p>&ldquo;${esc(reply.text)}&rdquo;</p></div>` : ""}
@@ -647,7 +706,7 @@ function shareText(): string {
   const r = rank(state)!;
   const trail = state.moves.map((m) => ({ search: "🔎", ask: "💬", confront: "⚡", chat: "", accuse: "" })[m.kind]).join("");
   const squares = [a.right.who, a.right.weapon, a.right.room].map((ok) => (ok ? "🟩" : "🟥")).join("");
-  const headline = a.solved ? `Solved with ${state.remaining} action${state.remaining === 1 ? "" : "s"} to spare ${"★".repeat(r.stars)}` : "Wrong name sent to New York";
+  const headline = a.solved ? `Solved with ${state.remaining} action${state.remaining === 1 ? "" : "s"} to spare ${"★".repeat(r.stars)}` : a.right.who ? "Right killer, wrong details" : "Wrong name sent to New York";
   const hints = saved.hints.length ? ` 💡${saved.hints.length}` : "";
   return `RMS Meridian · ${caseLabel}\n${headline}${hints}\n${squares}${r.proven ? ` ${"📌".repeat(r.proven)}` : ""} ${trail}`;
 }
@@ -747,6 +806,9 @@ app.addEventListener("click", (event) => {
     case "daily":
       location.href = location.pathname;
       return;
+    case "today":
+      location.href = `${location.pathname}?today`;
+      return;
     case "rules":
     case "accuse":
     case "result":
@@ -785,6 +847,7 @@ app.addEventListener("click", (event) => {
     }
     case "dismiss":
       notice = null;
+      carriedNote = false;
       break;
     case "sheet-close":
       sheetOpen = false;

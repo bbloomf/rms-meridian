@@ -17,6 +17,10 @@ import type { CharId } from "../data.ts";
 
 const person = (p: string) => [p, `${p}.full`, `${p}.subject`, `${p}.object`, `${p}.possessive`];
 
+// Lines shared by true answers and lies must not vouch for themselves or hedge,
+// or players read a random line as a tell.
+const SINCERITY = "swear|sure|certain|certainly|definitely|honest|honestly|truth|promise|word|believe|exact|exactly|precise|quote|prove|checked|noticed|mystery|straight|clear|embroider\\w*|log";
+
 export type Topic =
   | "greeting"
   | "whereabouts"
@@ -28,6 +32,7 @@ export type Topic =
   | "confrontDeflect"
   | "accusedWrongly"
   | "accusedRightly"
+  | "accusedPartly"
   | "opinion"
   | "eulogy";
 
@@ -61,7 +66,7 @@ export const TOPICS: Record<Topic, TopicSpec> = {
     required: [["room", "roomName"], ["time"]],
     variants: 8,
     maxLength: 160,
-    forbid: /\b(alone|by myself|nobody|no one|everyone|together|with)\b/i,
+    forbid: new RegExp(`\\b(alone|by myself|nobody|no one|everyone|together|with|${SINCERITY})\\b`, "i"),
   },
   sawOne: {
     brief:
@@ -73,7 +78,7 @@ export const TOPICS: Record<Topic, TopicSpec> = {
   },
   sawSeveral: {
     brief:
-      "Follows the whereabouts line: several people were there, given as a ready-joined list {others} (e.g. 'Folder and Mrs Bear'). Treat it as plural. Do not mention the place or time again.",
+      "Follows the whereabouts line: several people were there, given as a ready-joined list {others} (e.g. 'Folder and Mrs Bear'). Treat it as plural. The list may include the victim, seen alive, so don't vouch for or condemn everyone in it. Do not mention the place or time again.",
     allowed: ["others"],
     required: [["others"]],
     variants: 6,
@@ -81,7 +86,7 @@ export const TOPICS: Record<Topic, TopicSpec> = {
   },
   sawVictim: {
     brief:
-      "Follows the whereabouts line: they saw {victim} there, alive, not long before the murder. Others may also have been present (a separate line names them), so never imply the victim was the only one there.",
+      "Follows the whereabouts line: the only person they saw there was {victim}, alive, not long before the murder. (Seen in company, the victim is named in the sawSeveral list instead.)",
     allowed: person("victim"),
     required: [person("victim")],
     variants: 6,
@@ -89,11 +94,12 @@ export const TOPICS: Record<Topic, TopicSpec> = {
   },
   sawNoOne: {
     brief:
-      "Follows the whereabouts line: they saw no one. Used for true answers AND lies. Do not mention the place or time.",
+      "Follows the whereabouts line: they saw no one. Used for true answers AND lies, so a line must read the same either way: no hint of evasion or sincerity. Do not mention the place or time.",
     allowed: [],
     required: [],
     variants: 6,
     maxLength: 140,
+    forbid: new RegExp(`\\b(${SINCERITY})\\b`, "i"),
   },
   confrontCrack: {
     brief:
@@ -121,11 +127,19 @@ export const TOPICS: Record<Topic, TopicSpec> = {
   },
   accusedRightly: {
     brief:
-      "The Inspector correctly accuses them of murdering {victim} with {weapon} in {roomName}. They confess, in character. A motive may be hinted at, but it must fit their character bible.",
+      "The Inspector correctly accuses them of murdering {victim} with {weapon} in {roomName}. They confess, in character. A motive may be hinted at, but it must fit their character bible, and any cast member could be the victim, so it must not depend on who the victim is.",
     allowed: [...person("victim"), "weapon", "roomName"],
     required: [[...person("victim"), "weapon", "roomName"]],
     variants: 4,
     maxLength: 220,
+  },
+  accusedPartly: {
+    brief:
+      "The Inspector rightly names them as {victim}'s killer, but gets the weapon, the room or both wrong. They confess, in character, and set the record straight: it was {weapon}, {room}. Name both, since the line is used whichever part was wrong.",
+    allowed: [...person("victim"), "weapon", "room"],
+    required: [["weapon"], ["room"]],
+    variants: 4,
+    maxLength: 200,
   },
   opinion: {
     brief: "Asked what they make of {other}, who is alive and also a suspect.",

@@ -15,14 +15,14 @@
       "Sorry — I was told to come. Should I sit? I'll sit. Sorry."
     ],
     "whereabouts": [
-      "I was {room}, {time}. I think. Yes. I'm almost sure.",
-      "{Time}? Oh — {roomName}. Definitely {roomName}.",
+      "I was {room}, {time}. Sorry, I've gone all hot.",
+      "{Time}? Oh — {roomName}. Sorry, you made me jump.",
       "{RoomName}, {time}. I remember because the light was doing something interesting.",
       "I was {room}. {Time}, that would have been. Is that helpful? I'd like to be helpful.",
       "Let me think — {time} — yes, {room}. Sorry. Yes.",
-      "{Time} I was {room}, if that's what you need. It'll be in my notebook somewhere.",
-      "I'm fairly certain I was {room} {time}. Fairly. No — certain.",
-      "{RoomName}. {Time}. I'm sorry, is that a suspicious place to be? It didn't feel suspicious."
+      "{Time} I was {room}, if that's what you need. I'll put it in my notebook too.",
+      "I was {room} {time}. Oh, I've dropped my pencil.",
+      "{RoomName}. {Time}. Sorry, I'm not very good at being questioned."
     ],
     "sawOne": [
       "{Other} was there. {Other.subject} barely looked up. People don't, mostly.",
@@ -36,7 +36,7 @@
       "{Others}. Quite a little scene, really. I wanted to write it all down.",
       "There were {others}. I stood near the wall. I'm good at walls.",
       "Oh, {others}. Everyone talking and me not.",
-      "I saw {others}. I could tell you what each of them was wearing, if that helps? No? Sorry.",
+      "I saw {others}. I could tell you what they were all wearing. No? Sorry.",
       "{Others} were there. I counted. I always count people; it's a nervous thing.",
       "Let me see — {others}. Yes, I'm sure. I notice people more than they notice me."
     ],
@@ -79,6 +79,12 @@
       "You worked it out. Of course you did. I'd have written you exactly like that. {Victim} would have liked you.",
       "{Victim.subject} read my notebook, Inspector. Every page. {Victim.subject} was going to tell everyone what I'd written.",
       "It was {roomName}. It was so quick. I keep waiting to wake up."
+    ],
+    "accusedPartly": [
+      "I— yes. It was me. But not like that. It was {weapon}, {room}. I'm sorry. You'd want it right.",
+      "You've got me. You've got the rest wrong, though. {Weapon}, {room}. My editor would never let that through.",
+      "Yes. Yes, I did it. But {weapon}, Inspector. And {room}. I can't bear things being written down wrong.",
+      "It was me. It was {weapon}, though, {room}. I'm sorry, I'm correcting you, I'm so sorry."
     ],
     "opinion.marble": [
       "{Other} frightens me. {Other.subject} looks at you as though working out what you'd fetch.",

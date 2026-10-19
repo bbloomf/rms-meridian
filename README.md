@@ -11,7 +11,7 @@ npm run build    # bundle to web/dist/ for static hosting (serve the web/ folder
 npm test
 ```
 
-The game is static: the generator, solver and dialogue all run in the browser, so `web/` can be hosted anywhere. Progress on each case is kept in the browser's local storage.
+The game is static: the generator, solver and dialogue all run in the browser, so `web/` can be hosted anywhere. Progress on each case is kept in the browser's local storage, and saves untouched for 30 days are cleared. A daily case left unfinished at UTC midnight stays open until it's finished or the next one is begun (`?today` skips it).
 
 - `src/game.ts`: the rules for one play-through. A game is a list of moves; `play()` rebuilds the state from them, which is how saving and resuming work.
 - `src/hint.ts`: the beginner's "Where do I start?" / "What next?" advisor (see below).

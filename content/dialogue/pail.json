@@ -17,7 +17,7 @@
     "whereabouts": [
       "{RoomName}, sir. {Time}.",
       "I was {room}, {time}. Steward goes where he's sent.",
-      "{Time}? {RoomName}, Inspector. Clear as day.",
+      "{Time}? {RoomName}, Inspector. Same as most nights.",
       "{Time} I was {room}. You can put that in your little book.",
       "I was {room} {time}, near as makes no odds.",
       "{RoomName}. {Time}, give or take. They don't issue us pocket watches, see.",
@@ -50,10 +50,10 @@
     ],
     "sawNoOne": [
       "No one, sir. Quiet as a church.",
-      "Nobody. Nice change, if I'm honest.",
-      "Not a soul, Inspector. And I'd have noticed.",
+      "Nobody. Nice change, that.",
+      "Not a soul, Inspector. Rare, on this ship.",
       "No one. Shocking, I know. A steward with nobody to fetch for.",
-      "Nobody at all. You'll have to take my word, sir.",
+      "Nobody at all, sir. Not even a bell ringing.",
       "Didn't see a living soul. Not one."
     ],
     "confrontCrack": [
@@ -77,8 +77,14 @@
     "accusedRightly": [
       "Yeah. {Weapon}. {Victim.subject} found out about the game below decks and said {victim.subject}'d have me sacked. Sacked, Inspector.",
       "Fair play to you, Inspector. {RoomName}. Didn't think anyone ever looked at a steward that close.",
-      "{Victim} looked at me like I was dirt for six days. Only took one second to make it stop.",
-      "All right. It was me. {Victim.subject} wasn't going to tip, either. Sorry. Bad joke. I'm sorry."
+      "Six days of keeping my head down, Inspector, and {victim} was going to have me sacked over the cards. One second, and it was done.",
+      "All right. It was me, with {weapon}. This job's all I've got, sir. Turns out I'd do anything to keep it."
+    ],
+    "accusedPartly": [
+      "Yeah, it was me. Not how you said, though. {Weapon}, {room}. Might as well have it right.",
+      "Fair play, you got me. Got the rest wrong, mind. {Weapon}, {room}.",
+      "All right. I did it. But it was {weapon}, sir, {room}. Steward notices these things.",
+      "It was me. {Weapon}, though, {room}. Funny, the bits people get wrong."
     ],
     "opinion.marble": [
       "{Other}? Never tipped me once. Cold as {other.possessive} own marble, that one.",
