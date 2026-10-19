@@ -12,8 +12,8 @@ export { ROOM_ART };
 export const ICONS: Record<CharId, string> = {
   marble: '<path d="M4 4h16M5 6.5h14M6.5 6.5v11M10.2 6.5v11M13.8 6.5v11M17.5 6.5v11M5 17.5h14M3.5 20h17"/>',
   folder: '<rect x="5" y="3" width="14" height="18" rx="1"/><path d="M9 3v18M12 8h4M12 11.5h4M12 15h3"/>',
-  mallet: '<rect x="3" y="3.5" width="11" height="5" rx="1" transform="rotate(-20 8.5 6)"/><path d="M9.5 8.5l8 12"/>',
-  bear: '<ellipse cx="12" cy="15.5" rx="5" ry="4"/><circle cx="6.2" cy="9.6" r="1.9"/><circle cx="10" cy="6.4" r="1.9"/><circle cx="14" cy="6.4" r="1.9"/><circle cx="17.8" cy="9.6" r="1.9"/>',
+  mallet: '<g transform="translate(2.6 1.5) rotate(-38 12 12.6)"><rect x="5.8" y="2.4" width="12.4" height="5.2" rx="1.3"/><path d="M8.4 2.4v5.2M15.6 2.4v5.2M12 7.6v14.8"/></g>',
+  bear: '<path d="M5.34 9.33A2.8 2.8 0 1 1 9.01 6.01M18.66 9.33A2.8 2.8 0 1 0 14.99 6.01"/><circle cx="12" cy="13" r="7.6"/><ellipse cx="12" cy="16.1" rx="3.4" ry="2.7"/><path d="M10.9 14.7h2.2L12 15.8z"/><path d="M9.1 11.5h.01M14.9 11.5h.01" stroke-width="2.4"/>',
   egg: '<path d="M12 3c-3.6 0-6.5 6.3-6.5 10.4A6.5 6.5 0 0 0 12 20a6.5 6.5 0 0 0 6.5-6.6C18.5 9.3 15.6 3 12 3z"/>',
   pail: '<path d="M5 9h14l-1.8 11H6.8z"/><path d="M5 9c0-5.5 14-5.5 14 0"/><path d="M5.6 12.5h12.8"/>',
 };
