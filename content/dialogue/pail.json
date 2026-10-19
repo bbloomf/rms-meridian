@@ -25,12 +25,12 @@
       "Right then: {room}, {time}."
     ],
     "sawOne": [
-      "{Other} was there. Didn't see me, mind. They never do.",
+      "{Other} was there. Didn't so much as nod, mind. They never do.",
       "Just {other}, sir. Very interesting, what people get up to when they think nobody's looking.",
       "I saw {other}. Gave {other.object} a nod. Got nothing back. Usual.",
       "{Other}. I'll say no more. Well. I might, later.",
       "There was {other}, Inspector. Ask {other.object} what {other.subject} was doing; I'd like to know an' all.",
-      "Only {other}. Looked straight through me, like I was a coat stand."
+      "Only {other}. Looked at me like I was a coat stand."
     ],
     "sawSeveral": [
       "{Others}. Proper little gathering.",
@@ -59,7 +59,7 @@
     "confrontCrack": [
       "{Witness} said that, did {witness.subject}? Right. Fair enough. You'd best sit down, Inspector.",
       "Ah. Caught bang to rights. Go on, then, I'll tell you.",
-      "Should've known {witness} would spot me. Can't fool everybody. Here's how it was.",
+      "Should've known {witness} would give me away. Can't fool everybody. Here's how it was.",
       "All right, all right. Just don't tell the purser, eh?"
     ],
     "confrontDeflect": [
@@ -71,7 +71,7 @@
     "accusedWrongly": [
       "Me? With {weapon}? Leave off, Inspector. I'd lose my job.",
       "I never touched {victim}. Steward's word. Whatever that's worth to you lot.",
-      "Course it's the steward. It's always the steward, innit? Well, not this time.",
+      "Course it's the steward. It's always the steward, ain't it? Well, not this time.",
       "Begging your pardon, sir, but that's a lie, and a lazy one."
     ],
     "accusedRightly": [

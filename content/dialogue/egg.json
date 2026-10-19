@@ -25,7 +25,7 @@
       "{RoomName}. {Time}. I'm sorry, is that a suspicious place to be? It didn't feel suspicious."
     ],
     "sawOne": [
-      "{Other} was there. {Other.subject} didn't notice me. People don't, mostly.",
+      "{Other} was there. {Other.subject} barely looked up. People don't, mostly.",
       "I saw {other}. I'm afraid I stared a bit. I stare at everyone; it's for the book.",
       "Only {other}. We nodded. Well, I nodded. I'm not sure {other.subject} did.",
       "{Other}, yes. I'd know {other.object} anywhere.",
@@ -57,7 +57,7 @@
       "Nobody saw me and I saw nobody. That's — not good, is it?"
     ],
     "confrontCrack": [
-      "{Witness} saw me? Oh no. Oh, I'm so sorry, I'll tell you everything—",
+      "{Witness} said that? Oh no. Oh, I'm so sorry, I'll tell you everything—",
       "Oh. Oh, {witness} said that. All right. All right. I lied. I'm terrible at it.",
       "I knew someone would see. I knew it. Please don't be angry—",
       "I can't— Yes. {Witness} is right. I'm sorry. Here's the truth."

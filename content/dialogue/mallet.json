@@ -76,8 +76,8 @@
     ],
     "accusedRightly": [
       "{Victim} knew about my wrist, Inspector. {Victim.subject} was going to tell the tournament committee. I couldn't let that happen.",
-      "All right. {Weapon}. One swing. Never missed a shot in my life.",
-      "Game over, then. Yes, it was me, in {roomName}. I'll not snivel about it.",
+      "All right. {Weapon}. I don't miss, Inspector. Never have.",
+      "Game over, then. Yes, it was me. {RoomName}, and I'll not snivel about it.",
       "You've played a better game than I did. {Victim.subject} pushed me too far. That's all I'll say."
     ],
     "opinion.marble": [

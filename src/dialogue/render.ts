@@ -73,12 +73,15 @@ export function voiceFor(c: Case, speaker: CharId) {
   const file = loadDialogue(speaker);
   if (!file) return null;
   const used = new Map<string, number>();
-  const say = (key: string, ctx: Omit<Context, "speaker">): string => {
-    const pool = file.lines[key];
+  // `keep` narrows the pool for one use, and gets its own turn order.
+  const say = (key: string, ctx: Omit<Context, "speaker">, keep?: (line: string) => boolean): string => {
+    const all = file.lines[key];
+    const pool = keep ? all?.filter(keep) : all;
     if (!pool?.length) throw new Error(`${speaker} has no lines for ${key}`);
-    const order = makeRng(mixSeed(c.seed, hash(`${c.attempt}:${speaker}:${key}`))).shuffle(pool);
-    const n = used.get(key) ?? 0;
-    used.set(key, n + 1);
+    const turn = keep ? `${key}:narrowed` : key;
+    const order = makeRng(mixSeed(c.seed, hash(`${c.attempt}:${speaker}:${turn}`))).shuffle(pool);
+    const n = used.get(turn) ?? 0;
+    used.set(turn, n + 1);
     return fill(order[n % order.length], { ...ctx, speaker });
   };
 
@@ -89,7 +92,9 @@ export function voiceFor(c: Case, speaker: CharId) {
       const parts = [say("whereabouts", { room: st.claim, slot })];
       const rest = st.sightings.filter((p) => p !== c.victim);
       if (st.sightings.includes(c.victim)) parts.push(say("sawVictim", { victim: c.victim }));
-      if (rest.length === 1) parts.push(say("sawOne", { other: rest[0] }));
+      // After the victim, "Only Folder" would contradict the line before it.
+      const alsoVictim = st.sightings.includes(c.victim) ? (line: string) => !/^(Only|Just)\b/.test(line) : undefined;
+      if (rest.length === 1) parts.push(say("sawOne", { other: rest[0] }, alsoVictim));
       if (rest.length > 1) parts.push(say("sawSeveral", { others: rest }));
       if (st.sightings.length === 0) parts.push(say("sawNoOne", {}));
       return parts.join(" ");

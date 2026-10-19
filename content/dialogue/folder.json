@@ -26,7 +26,7 @@
     ],
     "sawOne": [
       "{Other} was present. I made a note of it.",
-      "I observed {other}. {Other.subject} did not see me, I believe.",
+      "I observed {other}. {Other.subject} did not acknowledge me, I believe.",
       "Only {other}. I nodded; it is customary.",
       "{Other} was there. I can give you {other.possessive} cabin number, if that is of use.",
       "There was {other}. Whether {other.subject} had any business being there is another matter.",
@@ -66,7 +66,7 @@
       "{Witness} is mistaken. I keep a written record; {witness.subject} keeps none.",
       "With respect, Inspector, my account is correct to the minute. {Witness}'s is not.",
       "I shall not amend my statement on the word of {witness}. It would be irregular.",
-      "{Witness} saw someone, perhaps. Not me. Half the crew wear navy blue."
+      "{Witness} is mistaken, perhaps. Not about me. Half the crew wear navy blue."
     ],
     "accusedWrongly": [
       "Me? With {weapon}? Inspector, I am an assistant purser. I file things.",

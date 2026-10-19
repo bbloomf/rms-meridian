@@ -65,7 +65,7 @@
     "confrontDeflect": [
       "{Witness} is mistaken. People frequently are, in my experience.",
       "You'd take the word of {witness} over mine? Then you're a poorer judge than I took you for.",
-      "{Witness} saw what {witness.subject} wanted to see. My answer stands.",
+      "{Witness} remembers what {witness.subject} wants to remember. My answer stands.",
       "I've nothing to add. If {witness} has a better memory than mine, let {witness.object} prove it."
     ],
     "accusedWrongly": [

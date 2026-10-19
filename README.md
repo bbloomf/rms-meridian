@@ -14,6 +14,7 @@ npm test
 The game is static: the generator, solver and dialogue all run in the browser, so `web/` can be hosted anywhere. Progress on each case is kept in the browser's local storage.
 
 - `src/game.ts`: the rules for one play-through. A game is a list of moves; `play()` rebuilds the state from them, which is how saving and resuming work.
+- `src/hint.ts`: the beginner's "Where do I start?" / "What next?" advisor (see below).
 - `src/web/main.ts`: the front end (briefing, timeline, rooms, weapons, interviews, accusation, verdict and share text). `web/style.css` holds the styles and animations.
 - `src/web/art.ts`: character icons, and the stage that draws an account the way the suspect tells it: a room, a clock and the people in it.
 - `src/web/ink.ts`: the pen-and-ink kit. One SVG filter wobbles and roughens every line like a dip pen on rough paper, and hatching patterns stand in for shading. They're added to the page once and shared by every drawing.
@@ -29,6 +30,14 @@ The game is static: the generator, solver and dialogue all run in the browser, s
 - **Search:** a lantern sweeps across the room tile; the murder room flashes red.
 - **Accusation:** everyone gathered in the Grand Saloon; a spotlight sweeps along the suspects and settles on the accused; your words, their reply, then killer/weapon/room cards flip to ✓ or ✗ and the stamp lands ("Case closed" or "Wrong name").
 - **What really happened:** the verdict replays the true night on a deck plan of the case's rooms. Tokens move from room to room at 10:00, 10:15, 10:30 and 10:45 as the clock turns. Then the replay stops on the murder (with the killer's claimed alibi as a dashed token), the weapon carried off to its hiding place, and each red herring's claimed room against their real one. Play, step back and step forward; with reduced motion it's a still step-through with no Play button (`src/web/replay.ts`).
+
+## Hints for beginners
+
+The **Where do I start?** button in the notebook's header (later **What next?**) opens a card from "your sergeant". It names one move, explains why in a sentence or two, and makes that move's button glow. **Do it** makes the move, which costs the usual action. When the case is settled it offers to open the accusation with the answer and the best three pins filled in.
+
+- The advice reasons only from what the player has turned up and the rules they were told: physical evidence first, then accounts of the time of death, a confrontation when a non-proud suspect's lie shows, a question that could show the victim alive later, and finally whatever proof is still missing. `src/hint.test.ts` checks it never reads the solution, the schedule, the secrets, unasked testimony, or whether an answer was a lie.
+- Following every hint solves 500 of 500 test seeds (one by a lucky guess at midnight) in a median of 9 actions, with three stars 95% of the time.
+- Hints are free, but the verdict and the share text count them (💡).
 
 ## Command line
 
@@ -88,6 +97,9 @@ npm run validate-dialogue
 Whereabouts and "saw no one" lines come from a single pool shared by true answers and lies, so the wording never gives a liar away.
 
 ## Known tuning questions (need playtesting)
+
+- A player who searches in random order and asks random questions about the time of death, without confronting anyone, runs out of actions with more than one suspect left in about 1 case in 4 (a simulation over 500 seeds). That's a fair challenge for a deduction game, but it's why the hints exist.
+- Hints make three stars easy. They're counted in the share text; whether they should also cost a star is a design call.
 
 - The budget estimate uses hindsight for questions, so real players will need more than "estimated actions".
 - Murders only happen in public rooms, which players may learn to exploit.

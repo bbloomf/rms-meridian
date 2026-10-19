@@ -11,6 +11,7 @@ import { AP_BUDGET, generateCase } from "./solver.ts";
 import type { Action, Contradiction, Report } from "./solver.ts";
 import { dailySeed } from "./rng.ts";
 import { voiceFor } from "./dialogue/render.ts";
+import { contradicts } from "./game.ts";
 
 const args = process.argv.slice(2);
 const flag = (name: string) => args.includes(name);
@@ -119,10 +120,13 @@ function printDialogueExtras(c: Case, spoil: boolean): void {
     if (!spoil) continue;
     const secret = c.secrets.find((x) => x.who === s);
     const killer = c.solution.killer === s;
-    const witness = c.suspects.find((o) => o !== s)!;
     if (secret || killer) {
-      const line = voice.confront(witness, !killer);
-      const confession = secret ? ` ${CAST[s].secrets.find((x) => x.id === secret.secretId)!.confession}` : "";
+      // As the game plays it (game.ts): the killer and the proud hold firm, and only a cracked innocent confesses.
+      const slot = killer ? c.solution.slot : secret!.slot;
+      const witness = c.suspects.find((o) => o !== s && contradicts(c, s, slot, o)) ?? c.suspects.find((o) => o !== s)!;
+      const cracks = !killer && !CAST[s].holdsFirm;
+      const line = voice.confront(witness, cracks);
+      const confession = cracks && secret ? ` ${CAST[s].secrets.find((x) => x.id === secret.secretId)!.confession}` : "";
       console.log(`  Confronted: "${line}${confession}"`);
     }
     console.log(`  Accused: "${voice.accused(killer, c.solution.weapon, c.solution.room)}"`);

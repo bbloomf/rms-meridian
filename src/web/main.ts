@@ -8,6 +8,8 @@ import { AP_BUDGET, generateCase } from "../solver.ts";
 import { dailySeed } from "../rng.ts";
 import { MAX_PINS, THRIFTY, atTime, check, describeSearch, evidence, evidenceKey, play, placements, rank } from "../game.ts";
 import type { Evidence, GameState, Leg, LogEntry, Move } from "../game.ts";
+import { hint } from "../hint.ts";
+import type { Hint } from "../hint.ts";
 import { portrait, roomPic, stage } from "./art.ts";
 import { playAccusation, playIntro, reducedMotion } from "./cinema.ts";
 import { INK_DEFS } from "./ink.ts";
@@ -22,16 +24,18 @@ interface Saved {
   started: boolean;
   moves: Move[];
   marks: Partial<Record<CharId, Mark>>;
+  hints: number[]; // how many moves had been made each time a hint was asked for
 }
 
 // ── Case selection ────────────────────────────────────────────────────────
 // No ?case= means today's daily case (seeded by UTC date, same for everyone).
 
 const requested = new URLSearchParams(location.search).get("case");
-const parsed = requested === null ? NaN : Number.parseInt(requested, 10);
+const parsed = requested !== null && /^\d{1,9}$/.test(requested.trim()) ? Number(requested) : NaN;
 const daily = !Number.isFinite(parsed);
+if (requested !== null && daily) history.replaceState(null, "", location.pathname); // a junk ?case= falls back to the daily case, so say so in the URL
 const today = new Date();
-const seed = daily ? dailySeed(today) : parsed >>> 0;
+const seed = daily ? dailySeed(today) : parsed;
 const c = generateCase(seed).case;
 const caseLabel = daily
   ? `Daily case · ${today.toLocaleDateString("en-GB", { day: "numeric", month: "long", timeZone: "UTC" })}`
@@ -54,6 +58,9 @@ let notice: string | null = null;
 let latestFrom = state.log.length; // log entries from the most recent move are highlighted
 let sheetOpen = false; // phone-width sheet showing the latest reply
 let copied = false;
+let hintOpen = false; // the "What next?" card, until the next move
+let hintEnter = false; // fade the card in on the render that opens it
+let fresh = false; // highlight the latest log entries on this render only
 let replayAt = 0; // step of the verdict's replay of the night
 let replayTimer: ReturnType<typeof setTimeout> | null = null;
 
@@ -64,10 +71,19 @@ function lastScene(): { who: CharId; slot: number } | null {
 }
 
 function load(): Saved {
-  const empty: Saved = { started: false, moves: [], marks: {} };
+  const empty: Saved = { started: false, moves: [], marks: {}, hints: [] };
   try {
     const raw = localStorage.getItem(STORE_KEY);
-    return raw ? { ...empty, ...(JSON.parse(raw) as Partial<Saved>) } : empty;
+    const s = raw ? (JSON.parse(raw) as Partial<Saved> | null) : null;
+    if (!s || typeof s !== "object") return empty;
+    // Check each field, so a damaged save can't leave a blank page.
+    const obj = (x: unknown) => typeof x === "object" && x !== null && !Array.isArray(x);
+    return {
+      started: s.started === true,
+      moves: Array.isArray(s.moves) ? s.moves : [],
+      marks: obj(s.marks) ? s.marks! : {},
+      hints: Array.isArray(s.hints) ? s.hints.filter((n) => typeof n === "number") : [],
+    };
   } catch {
     return empty;
   }
@@ -104,6 +120,8 @@ function act(move: Move): void {
   persist();
   notice = null;
   confronting = null;
+  hintOpen = false;
+  fresh = true;
   sheetOpen = true;
   if (move.kind === "ask" || move.kind === "confront") {
     scene = { who: move.who, slot: move.slot };
@@ -184,6 +202,7 @@ function briefingHTML(): string {
         .join("")}</ul>
       <h2>How it works</h2>
       ${rulesHTML()}
+      <p class="beginner">New to detective work? Once you begin, press <strong>Where do I start?</strong> at the top of your notebook. Your sergeant will suggest a first move and explain why. Ask again whenever you're stuck.</p>
       <div class="briefing-actions">
         ${button(progress ? "Resume the investigation" : "Begin the investigation", "begin", {}, { cls: "primary big" })}
         ${daily ? button("Try a random case instead", "random", {}, { cls: "link" }) : button("Today's daily case", "daily", {}, { cls: "link" })}
@@ -200,6 +219,7 @@ function gameHTML(): string {
   <p class="case-line">${portrait(c.victim)} <span><strong>${esc(v.name)}</strong>, ${esc(v.role)}, found dead on the Boat Deck. Time of death between ${windowLabel()}.</span></p>
   <div class="layout">
     <section class="board">
+      ${hintHTML()}
       ${noticeHTML()}
       ${timelineHTML()}
       ${roomsHTML()}
@@ -218,6 +238,7 @@ function headerHTML(): string {
     <div class="meter" role="img" aria-label="${state.remaining} of ${AP_BUDGET} actions left"><div class="pips">${pips}</div><span><strong>${state.remaining}</strong> left</span></div>
     <div class="bar-actions">
       ${button("How to play", "rules", {}, { cls: "ghost" })}
+      ${state.over ? "" : button(saved.moves.length === 0 ? "Where do I start?" : "What next?", "hint", {}, { cls: `ghost hint-btn${hintOpen ? " on" : ""}`, pressed: hintOpen })}
       ${state.over ? button("See verdict", "result", {}, { cls: "primary" }) : button("Accuse", "accuse", {}, { cls: "primary" })}
     </div>
   </header>`;
@@ -229,6 +250,36 @@ function noticeHTML(): string {
     return `<div class="notice midnight"><p>It's midnight. The Captain is at the wireless, waiting for a name.</p>${button("Make your accusation", "accuse", {}, { cls: "primary" })}</div>`;
   }
   return notice ? `<div class="notice" role="alert"><p>${esc(notice)}</p>${button("&times;", "dismiss", {}, { cls: "ghost icon", label: "Dismiss" })}</div>` : "";
+}
+
+// ── Hints ─────────────────────────────────────────────────────────────────
+// The sergeant's advice (src/hint.ts) reasons from what's been found, never
+// from the answer. The card names a move and why; the move's own button glows.
+
+function currentHint(): Hint | null {
+  return hintOpen ? hint(state) : null;
+}
+
+function hintHTML(): string {
+  const h = currentHint();
+  if (!h) return "";
+  const go =
+    h.kind === "accuse"
+      ? button("Open the accusation", "hint-do", {}, { cls: "primary" })
+      : button(`Do it <span class="cost">1</span>`, "hint-do", {}, { cls: "primary", label: `${h.title}. Costs one action.` });
+  return `<div class="hint-card${hintEnter ? " enter" : ""}" role="region" aria-label="Your sergeant's advice">
+    <p class="eyebrow">Your sergeant suggests</p>
+    <h3>${esc(h.title)}</h3>
+    <p>${esc(h.why)}</p>
+    <div class="hint-actions">${go}${button("Not now", "hint-close", {}, { cls: "ghost" })}</div>
+  </div>`;
+}
+
+/** The data-key of the button that makes the hinted move, so it can glow. */
+function hintTarget(h: Hint): string {
+  if (h.kind === "accuse") return "accuse";
+  const m = h.move;
+  return m.kind === "search" ? `search:${m.room}` : m.kind === "ask" ? `ask:${m.who}:${m.slot}` : `confront-start:${m.who}:${m.slot}`;
 }
 
 function timelineHTML(): string {
@@ -303,7 +354,7 @@ function cellHTML(who: CharId, slot: number, proven: { room: RoomId; by: CharId[
   return `<td class="${tod} answered${provenTrue ? " proven" : ""}">
     ${button(`${esc(ROOMS[answer.claim].name)}${provenTrue ? ' <span class="check" title="Names a witness, so it is true">&#10003;</span>' : ""}`, "scene", { who, slot }, {
       cls: `claim${scene?.who === who && scene.slot === slot ? " viewing" : ""}`,
-      label: `${ROOMS[answer.claim].name}. Show ${CAST[who].short}'s account of ${SLOTS[slot].label}`,
+      label: `${ROOMS[answer.claim].name}${provenTrue ? ", names a witness, so it's true" : ""}. Show ${CAST[who].short}'s account of ${SLOTS[slot].label}`,
     })}
     <div class="saw">${answer.sightings.length ? `saw ${esc(nameList(answer.sightings))}` : "saw no one"}</div>
     ${seenElsewhere}${status}${confrontBtn}
@@ -397,7 +448,7 @@ function interviewHTML(): string {
     ${scene ? sceneHTML(scene.who, scene.slot) : ""}
     <div class="transcript" id="transcript" aria-live="polite">
       <h2>Transcript</h2>
-      ${state.log.length ? state.log.map((e, i) => entryHTML(e, i >= latestFrom)).join("") : '<p class="muted">Nothing on record yet.</p>'}
+      ${state.log.length ? state.log.map((e, i) => entryHTML(e, fresh && i >= latestFrom)).join("") : '<p class="muted">Nothing on record yet.</p>'}
     </div>`;
 }
 
@@ -453,9 +504,11 @@ function sceneHTML(who: CharId, slot: number, compact = false): string {
   </figure>`;
 }
 
+const narrow = matchMedia("(max-width: 1000px)"); // the sheet only shows at these widths (style.css)
+
 function sheetHTML(): string {
   const fresh = state.log.slice(latestFrom);
-  if (!sheetOpen || fresh.length === 0 || modal) return "";
+  if (!sheetOpen || fresh.length === 0 || modal || !narrow.matches) return "";
   const last = saved.moves[saved.moves.length - 1];
   const pic = scene && (last?.kind === "ask" || last?.kind === "confront") && last.who === scene.who && last.slot === scene.slot ? sceneHTML(scene.who, scene.slot, true) : "";
   return `<div class="sheet" aria-live="polite">${button("&times;", "sheet-close", {}, { cls: "ghost icon", label: "Close" })}${pic}${fresh.map((e) => entryHTML(e, false)).join("")}</div>`;
@@ -464,8 +517,8 @@ function sheetHTML(): string {
 // ── Modals ────────────────────────────────────────────────────────────────
 
 function modalHTML(m: Modal): string {
-  const body = m === "rules" ? `<h2>How to play</h2>${rulesHTML()}` : m === "accuse" ? accuseHTML() : resultHTML();
-  return `<div class="overlay" data-action="backdrop"><div class="modal ${m}" role="dialog" aria-modal="true">
+  const body = m === "rules" ? `<h2 id="modal-title">How to play</h2>${rulesHTML()}` : m === "accuse" ? accuseHTML() : resultHTML();
+  return `<div class="overlay" data-action="backdrop"><div class="modal ${m}" role="dialog" aria-modal="true" aria-labelledby="modal-title">
     ${button("&times;", "close", {}, { cls: "ghost icon close", label: "Close" })}
     ${body}
   </div></div>`;
@@ -498,7 +551,7 @@ function accuseHTML(): string {
        ${pinGroup("Confrontations", found.filter((e) => e.kind === "caughtOut" || e.kind === "confession"))}
        <p class="muted pin-count">${draft.pins.length} of ${MAX_PINS} pinned.${draft.pins.length === 0 ? " A right answer with no proof earns fewer stars." : ""}</p>`
     : `<p class="muted">You haven't turned up any evidence to pin. Search rooms, find accounts that name a witness, or catch someone in a lie.</p>`;
-  return `<h2>Name the killer</h2>
+  return `<h2 id="modal-title">Name the killer</h2>
     <p class="muted">You get one accusation, and it closes the case. You have ${state.remaining} action${state.remaining === 1 ? "" : "s"} left.</p>
     ${group("Who", c.suspects, (s) => `${portrait(s)}${esc(CAST[s].name)}${saved.marks[s] === "cleared" ? ' <span class="muted">(cleared)</span>' : ""}`, draft.who, "pick-who")}
     ${group("With what", c.weapons, (w) => `${weaponPic(w)}${esc(cap(WEAPONS[w].name))}`, draft.weapon, "pick-weapon")}
@@ -521,7 +574,7 @@ function resultHTML(): string {
   const k = CAST[killer];
   const reply = [...state.log].reverse().find((e) => e.kind === "line");
   const tick = (ok: boolean) => (ok ? '<span class="ok">&#10003;</span>' : '<span class="bad">&#10007;</span>');
-  const pinned = (ok: boolean) => (ok ? '<span class="ok" aria-label="Proven">&#128204;</span>' : '<span class="muted" aria-label="Not proven">&mdash;</span>');
+  const pinned = (ok: boolean) => (ok ? '<span class="ok"><span aria-hidden="true">&#128204;</span><span class="sr">Proven</span></span>' : '<span class="muted"><span aria-hidden="true">&mdash;</span><span class="sr">Not proven</span></span>');
   const herrings = c.secrets
     .map((s) => {
       const p = CAST[s.who];
@@ -530,8 +583,8 @@ function resultHTML(): string {
     })
     .join("");
   return `<p class="eyebrow">${a.solved ? "Case closed" : "The Captain sends the wrong name"}</p>
-    <h2>${esc(r.title)}</h2>
-    <p class="stars" aria-label="${r.stars} of 3 stars">${"&#9733;".repeat(r.stars)}${'<span class="dim">&#9733;</span>'.repeat(3 - r.stars)}</p>
+    <h2 id="modal-title">${esc(r.title)}</h2>
+    <p class="stars"><span class="sr">${r.stars} of 3 stars</span><span aria-hidden="true">${"&#9733;".repeat(r.stars)}${'<span class="dim">&#9733;</span>'.repeat(3 - r.stars)}</span></p>
     ${reply && reply.kind === "line" ? `<div class="line big">${portrait(reply.speaker, "lg")}<p>&ldquo;${esc(reply.text)}&rdquo;</p></div>` : ""}
     <table class="verdict">
       <tr><td></td><th scope="col">You said</th><th scope="col">Right</th><th scope="col">Proven</th></tr>
@@ -546,7 +599,7 @@ function resultHTML(): string {
             .map((p) => {
               const ok = p.supports !== null && a.proof[p.supports];
               const why = p.supports === "killer" && !ok ? `${p.why} But ${short(a.who)} isn't the killer.` : p.why;
-              return `<li class="${ok ? "ok" : "bad"}"><b aria-label="${ok ? "Holds" : "Doesn't hold"}">${ok ? "&#10003;" : "&#10007;"}</b><span><strong>${esc(evidenceLabel(p.evidence))}</strong>${ok ? ` <span class="muted">proves the ${LEG_NAME[p.supports!]}</span>` : ""}<br>${esc(why)}</span></li>`;
+              return `<li class="${ok ? "ok" : "bad"}"><b><span aria-hidden="true">${ok ? "&#10003;" : "&#10007;"}</span><span class="sr">${ok ? "Holds" : "Doesn't hold"}</span></b><span><strong>${esc(evidenceLabel(p.evidence))}</strong>${ok ? ` <span class="muted">proves the ${LEG_NAME[p.supports!]}</span>` : ""}<br>${esc(why)}</span></li>`;
             })
             .join("")}</ul>`
         : `<p class="muted">You pinned no evidence${a.solved ? ". The right answer, but nothing to make it stick." : "."}</p>`
@@ -555,7 +608,7 @@ function resultHTML(): string {
     <p>${esc(k.name)} killed ${esc(CAST[c.victim].name)} with the ${esc(WEAPONS[weapon].name)} ${esc(inRoom(room))} ${esc(atTime(slot))}. ${cap(k.pronouns.subject)} hid the ${esc(WEAPONS[weapon].name)} ${esc(inRoom(hiddenIn))} and claimed to have been ${esc(inRoom(alibi))}.</p>
     ${replayHTML(c, replayAt, !reducedMotion(), replayTimer !== null)}
     ${herrings ? `<h3>Red herrings</h3><ul class="herrings">${herrings}</ul>` : ""}
-    <p class="muted">Actions used: ${AP_BUDGET - state.remaining} of ${AP_BUDGET}.</p>
+    <p class="muted">Actions used: ${AP_BUDGET - state.remaining} of ${AP_BUDGET}.${saved.hints.length ? ` Hints asked for: ${saved.hints.length}.` : ""}</p>
     <div class="share"><pre>${esc(shareText())}</pre>${button(copied ? "Copied" : "Copy result", "copy", {}, { cls: "ghost" })}</div>
     <div class="modal-actions">
       ${button("Play a random case", "random", {}, { cls: "primary" })}
@@ -569,7 +622,8 @@ function shareText(): string {
   const trail = state.moves.map((m) => ({ search: "🔎", ask: "💬", confront: "⚡", chat: "", accuse: "" })[m.kind]).join("");
   const squares = [a.right.who, a.right.weapon, a.right.room].map((ok) => (ok ? "🟩" : "🟥")).join("");
   const headline = a.solved ? `Solved with ${state.remaining} action${state.remaining === 1 ? "" : "s"} to spare ${"★".repeat(r.stars)}` : "Wrong name sent to New York";
-  return `RMS Meridian · ${caseLabel}\n${headline}\n${squares}${r.proven ? ` ${"📌".repeat(r.proven)}` : ""} ${trail}`;
+  const hints = saved.hints.length ? ` 💡${saved.hints.length}` : "";
+  return `RMS Meridian · ${caseLabel}\n${headline}${hints}\n${squares}${r.proven ? ` ${"📌".repeat(r.proven)}` : ""} ${trail}`;
 }
 
 const LEG_NAME: Record<Leg, string> = { killer: "killer", weapon: "weapon", room: "room" };
@@ -635,6 +689,8 @@ app.addEventListener("click", (event) => {
   const d = el.dataset;
   const who = d.who as CharId;
   const slot = Number(d.slot);
+  // The second click of a double-click would repeat a free chat, or land on whatever replaced the button.
+  if (event.detail > 1 && MOVE_ACTIONS.has(d.action!)) return;
   switch (d.action) {
     case "begin":
       view = "game";
@@ -660,12 +716,36 @@ app.addEventListener("click", (event) => {
       modal = d.action;
       break;
     case "close":
-      modal = null;
+      closeModal();
       break;
     case "backdrop":
-      if (event.target !== el) return;
-      modal = null;
+      if (event.target !== el || !pressedOnBackdrop) return;
+      closeModal();
       break;
+    case "hint":
+      hintOpen = !hintOpen;
+      hintEnter = hintOpen;
+      if (hintOpen && !saved.hints.includes(saved.moves.length)) {
+        saved.hints = [...saved.hints, saved.moves.length];
+        persist();
+      }
+      break;
+    case "hint-close":
+      hintOpen = false;
+      break;
+    case "hint-do": {
+      const h = currentHint();
+      if (!h) break;
+      if (h.kind === "move") {
+        if (h.move.kind !== "search") selected = h.move.who;
+        act(h.move);
+        return;
+      }
+      draft = { who: h.who, weapon: h.weapon, room: h.room, pins: h.pins.map(evidenceKey) };
+      hintOpen = false;
+      modal = "accuse";
+      break;
+    }
     case "dismiss":
       notice = null;
       break;
@@ -747,10 +827,27 @@ app.addEventListener("click", (event) => {
   render();
 });
 
+const MOVE_ACTIONS = new Set(["ask", "search", "chat", "confront-with", "accuse-confirm", "hint-do"]);
+
+// A click that starts inside the modal and ends on the backdrop (say, selecting
+// text) shouldn't close it.
+let pressedOnBackdrop = false;
+app.addEventListener("pointerdown", (event) => {
+  pressedOnBackdrop = (event.target as HTMLElement).classList.contains("overlay");
+});
+
+function closeModal(): void {
+  modal = null;
+  copied = false;
+  stopReplay();
+}
+
 document.addEventListener("keydown", (event) => {
   if (event.key !== "Escape" || document.body.classList.contains("cinema-open")) return;
-  if (modal) modal = null;
+  if (modal) closeModal();
   else if (confronting) confronting = null;
+  else if (hintOpen) hintOpen = false;
+  else if (sheetOpen) sheetOpen = false;
   else return;
   render();
 });
@@ -765,18 +862,56 @@ async function copyResult(): Promise<void> {
   render();
 }
 
+// Scrolled panes keep their place across a re-render.
+const SCROLLERS = [".table-wrap", ".modal", ".transcript"];
+let modalOpener: { key: string; index: number } | null = null;
+
+/** Where focus is, as its button's key and which of the buttons with that key it is. */
+function focusSpot(): { key: string; index: number } | null {
+  const el = document.activeElement as HTMLElement | null;
+  const key = el?.dataset?.key;
+  if (!el || !key) return null;
+  return { key, index: [...app.querySelectorAll(`[data-key="${CSS.escape(key)}"]`)].indexOf(el) };
+}
+
+function refocus(spot: { key: string; index: number } | null): boolean {
+  if (!spot) return false;
+  const all = app.querySelectorAll<HTMLElement>(`[data-key="${CSS.escape(spot.key)}"]`);
+  const el = all[spot.index] ?? all[0];
+  el?.focus({ preventScroll: true });
+  return !!el;
+}
+
 function render(): void {
-  const focusKey = (document.activeElement as HTMLElement | null)?.dataset?.key;
+  const spot = focusSpot();
   const modalWasOpen = !!document.querySelector(".modal");
+  const scrolls = SCROLLERS.map((sel) => {
+    const el = app.querySelector<HTMLElement>(sel);
+    return el ? [el.scrollLeft, el.scrollTop] : null;
+  });
   app.innerHTML = view === "briefing" ? briefingHTML() : gameHTML();
   document.body.classList.toggle("modal-open", view === "game" && modal !== null);
+  SCROLLERS.forEach((sel, i) => {
+    const el = app.querySelector<HTMLElement>(sel);
+    const was = scrolls[i];
+    if (!el || !was || (sel === ".modal" && !modalWasOpen)) return;
+    [el.scrollLeft, el.scrollTop] = was;
+  });
   const transcript = document.getElementById("transcript");
-  if (transcript) transcript.scrollTop = transcript.scrollHeight;
-  const again = focusKey ? app.querySelector<HTMLElement>(`[data-key="${CSS.escape(focusKey)}"]`) : null;
-  if (again) again.focus();
-  else if (modal && !modalWasOpen) app.querySelector<HTMLElement>(".modal button:not(.close)")?.focus();
+  if (transcript && (fresh || !scrolls[SCROLLERS.indexOf(".transcript")])) transcript.scrollTop = transcript.scrollHeight;
+  const h = currentHint();
+  if (h) app.querySelectorAll(`[data-key="${CSS.escape(hintTarget(h))}"]`).forEach((el) => el.classList.add("hinted"));
+  if (modal && !modalWasOpen) {
+    modalOpener = spot;
+    app.querySelector<HTMLElement>(".modal button:not(.close)")?.focus();
+  } else if (!modal && modalWasOpen) {
+    refocus(modalOpener);
+    modalOpener = null;
+  } else refocus(spot);
   scenePlay = false;
   justSearched = null;
+  fresh = false;
+  hintEnter = false;
 }
 
 render();
