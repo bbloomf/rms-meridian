@@ -44,10 +44,10 @@ function funnels(): string {
   ).join("");
 }
 
-/** Smoke from the first three funnels; the fourth, like the Olympic's, is only a ventilator. */
+/** Smoke from all four funnels, each a quarter-puff out of step with the next. */
 function smoke(): string {
-  const puffs = FUNNELS.slice(0, 3).flatMap((x, f) =>
-    Array.from({ length: 6 }, (_, k) => `<ellipse class="puff" style="--i:${k + f * 0.33}" cx="${x + 25}" cy="${230 - FUNNEL_H - 4}" rx="8" ry="5"/>`),
+  const puffs = FUNNELS.flatMap((x, f) =>
+    Array.from({ length: 6 }, (_, k) => `<ellipse class="puff" style="--i:${k + f * 0.25}" cx="${x + 25}" cy="${230 - FUNNEL_H - 4}" rx="8" ry="5"/>`),
   );
   return `<g class="plume" filter="url(#c-smoke)">${puffs.join("")}</g>`;
 }
