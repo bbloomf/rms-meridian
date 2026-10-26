@@ -66,7 +66,8 @@ const SUSTAINED: Voice[] = ["strings", "lowtrem", "hightrem", "swell", "tamtam"]
 const Q = 0.42; // one beat of the farewell
 const T0 = 0.35; // the overlay has faded in
 const TURN = 3.9; // the scream
-const END = 9;
+const END = 11; // the last notes have died away
+const TAIL = 4; // and so has the hall's echo of them
 
 /** [note, beats] from a start time, one after another. */
 const line = (v: Voice, from: number, beat: number, notes: [string, number][], vol?: number): Note[] => {
@@ -283,7 +284,7 @@ function play(ctx: BaseAudioContext, dry: AudioNode, wet: AudioNode, note: Note,
     case "hightrem": {
       // Bowed tremolo: the section's loudness shaken a dozen times a second.
       const high = note.v === "hightrem";
-      const g = envelope(ctx, t, high ? 0.9 : 1.2, (high ? 0.018 : 0.06) * vol, end, high ? 1 : 2);
+      const g = envelope(ctx, t, high ? 0.9 : 1.2, (high ? 0.018 : 0.06) * vol, end, high ? 1 : 3.5);
       const shake = ctx.createGain();
       shake.gain.value = 0.6;
       const lfo = osc(ctx, "sine", high ? 13 : 11);
@@ -450,7 +451,7 @@ export function perform(c: BaseAudioContext, now: number, elapsed = 0): GainNode
 }
 
 /** How long the score runs, reverb tail included. */
-export const THEME_LENGTH = END + 1;
+export const THEME_LENGTH = END + TAIL;
 
 export interface Theme {
   /** Whether the browser is letting it be heard. */
@@ -491,7 +492,7 @@ export function playTheme(onChange: (playing: boolean) => void): Theme | null {
       playing = true;
       onChange(true);
       const ending = c;
-      setTimeout(() => ctx === ending && silence(0.1), (END - elapsed + 0.5) * 1000);
+      setTimeout(() => ctx === ending && silence(0.1), (END + TAIL - elapsed) * 1000);
     };
     if (c.state === "running") go();
     else c.resume().then(go, () => {});

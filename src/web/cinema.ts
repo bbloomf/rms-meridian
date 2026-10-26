@@ -79,12 +79,13 @@ export function playIntro(): Promise<void> {
       theme?.stop(0.6);
       close();
     });
+    // Hold the last frame long enough to read the scream line.
     el.addEventListener("animationend", (e) => {
       if ((e.target as HTMLElement).classList.contains("c-scream"))
         setTimeout(() => {
           theme?.finish();
           close();
-        }, 700);
+        }, 2500);
     });
   });
 }
