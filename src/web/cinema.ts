@@ -1,13 +1,15 @@
 // Full-screen sequences that play over the page: the opening titles and the
 // accusation. They live outside #app so the page can re-render underneath.
 // Timing is all CSS (animation delays in style.css); skipping adds .skip,
-// which jumps every animation to its end state.
+// which jumps every animation to its end state, and .waiting holds them all
+// on the first frame.
 
 import { CAST, ROOMS, WEAPONS } from "../data.ts";
 import type { CharId, RoomId, WeaponId } from "../data.ts";
 import { portrait } from "./art.ts";
 import { nightScene } from "./liner.ts";
-import { playTheme } from "./music.ts";
+import { playTheme, soundBlocked } from "./music.ts";
+import type { Theme } from "./music.ts";
 import { weaponPic } from "./weapons.ts";
 
 export const reducedMotion = (): boolean => matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -61,6 +63,7 @@ export function playIntro(): Promise<void> {
       <p class="c-sub">The last night of the crossing, 1927</p>
     </div>
     <p class="c-scream">Eleven o'clock. A scream on the Boat Deck.</p>
+    <button type="button" class="c-play primary big" hidden>&#9654; Play Intro</button>
     <button type="button" class="c-sound" hidden></button>
     <button type="button" class="c-skip" data-cinema>Skip</button>`;
   return mount("intro", "RMS Meridian", html, (el, close) => {
@@ -69,13 +72,32 @@ export function playIntro(): Promise<void> {
       sound.hidden = false;
       sound.textContent = on ? "\u266A Mute" : "\u266A Play music";
     };
-    const theme = playTheme(show);
-    if (theme) {
-      show(theme.playing);
-      sound.addEventListener("click", () => (theme.playing ? theme.mute() : theme.unmute()));
-    }
+    let theme: Theme | null = null;
+    let skipped = false;
+    const begin = () => {
+      el.classList.remove("waiting");
+      theme = playTheme(show);
+      if (!theme) return;
+      const t = theme;
+      show(t.playing);
+      sound.addEventListener("click", () => (t.playing ? t.mute() : t.unmute()));
+    };
+    // If the browser won't play the theme yet, hold the first frame until the player asks.
+    el.classList.add("waiting");
+    void soundBlocked().then((blocked) => {
+      if (skipped) return;
+      if (!blocked) return begin();
+      const play = el.querySelector<HTMLButtonElement>(".c-play")!;
+      play.hidden = false;
+      play.addEventListener("click", () => {
+        play.remove();
+        begin();
+      });
+      play.focus();
+    });
     // Skipping cuts the music short; ending on its own lets it play out under the briefing.
     el.querySelector("[data-cinema]")!.addEventListener("click", () => {
+      skipped = true;
       theme?.stop(0.6);
       close();
     });

@@ -8,7 +8,8 @@
 // shivering high violins and muted horns.
 //
 // Browsers usually refuse to start audio before the player has clicked
-// anything, so the score is scheduled from an offset: unmuting part-way
+// anything, so the intro asks soundBlocked() first and waits for a click if
+// need be. The score is also scheduled from an offset: unmuting part-way
 // through starts at the matching moment instead of from the top.
 
 const SOUND_KEY = "meridian-sound"; // not "meridian:", which main.ts prunes as saves
@@ -24,6 +25,25 @@ const rememberSound = (on: boolean) => {
     localStorage.setItem(SOUND_KEY, on ? "on" : "off");
   } catch {}
 };
+
+const audioContext = (): typeof AudioContext | undefined =>
+  window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+
+/**
+ * Whether the browser is holding sound back until the player clicks. Only
+ * true if they want sound: with it turned off there's nothing to wait for.
+ */
+export function soundBlocked(): Promise<boolean> {
+  const Ctx = audioContext();
+  if (!Ctx || !soundWanted()) return Promise.resolve(false);
+  const nav = navigator as Navigator & { getAutoplayPolicy?: (type: "audiocontext") => string };
+  if (nav.getAutoplayPolicy) return Promise.resolve(nav.getAutoplayPolicy("audiocontext") === "disallowed");
+  // Most browsers can only say by trying. A blocked resume never settles, or fails.
+  const probe = new Ctx();
+  const tried = probe.resume().then(() => probe.state !== "running", () => true);
+  const late = new Promise<boolean>((done) => setTimeout(() => done(true), 300));
+  return Promise.race([tried, late]).finally(() => void probe.close().catch(() => {}));
+}
 
 const hz = (note: string): number => {
   const [, name, acc, oct] = /^([A-G])([#b]?)(\d)$/.exec(note)!;
@@ -470,7 +490,7 @@ export interface Theme {
  * sound off. `onChange` hears when it starts or stops being audible.
  */
 export function playTheme(onChange: (playing: boolean) => void): Theme | null {
-  const Ctx = window.AudioContext ?? (window as unknown as { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
+  const Ctx = audioContext();
   if (!Ctx) return null;
   const begun = performance.now();
   let ctx: AudioContext | null = null;

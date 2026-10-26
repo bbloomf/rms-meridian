@@ -2055,6 +2055,19 @@ body.cinema-open {
   opacity: 0.8;
 }
 
+/* Held on the first frame until the player presses Play Intro. */
+.intro.waiting * {
+  animation-play-state: paused !important;
+}
+
+.intro .c-play {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: 2;
+  transform: translate(-50%, -50%);
+}
+
 .cinema .c-skip.primary {
   border-color: var(--brass);
   background: var(--brass);
