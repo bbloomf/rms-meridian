@@ -2044,6 +2044,17 @@ body.cinema-open {
   color: var(--paper);
 }
 
+.intro .c-sound {
+  position: absolute;
+  left: 16px;
+  bottom: 16px;
+  z-index: 2;
+  border: 1px solid rgba(246, 239, 220, 0.3);
+  background: transparent;
+  color: var(--paper);
+  opacity: 0.8;
+}
+
 .cinema .c-skip.primary {
   border-color: var(--brass);
   background: var(--brass);

@@ -21,10 +21,11 @@ The game is static: the generator, solver and dialogue all run in the browser, s
 - `src/web/rooms.ts`: the 11 rooms, drawn in one-point perspective. Positions are given against the back wall plus a depth, so furniture lines up with the floor. They appear in the scenes, on the room cards and in the murder-night replay.
 - `src/web/weapons.ts`: the 8 weapons, shown on the weapons list, in the accusation picker and on the accusation card.
 - `src/web/cinema.ts`: the full-screen opening titles and the accusation sequence. Both can be skipped, and are left out entirely when the browser asks for reduced motion.
+- `src/web/music.ts`: the opening theme, a small synthesized orchestra in Web Audio (no sound files).
 
 ### Animations
 
-- **Opening:** on a fresh case, the Meridian sails in under the stars, its portholes light up, and the title and "a scream on the Boat Deck" fade in (about 5 seconds).
+- **Opening:** on a fresh case, the Meridian sails in under the stars, its portholes light up, and the title and "a scream on the Boat Deck" fade in (about 5 seconds). The theme is scored like a film-orchestra main title. A harp glissando under a cymbal swell, then French horns take a farewell in the manner of *The Leaving of Liverpool*, violins soaring an octave above, over string chords, harp and timpani. At the scream the full brass breaks it off on a dissonant chord with a tam-tam, and a celesta picks the tune out in G minor over tremolo low strings, dying away under the briefing. Browsers often block sound before the first click, so the intro has a **Play music** button that starts the theme in step with the animation; **Mute** is remembered (`meridian-sound` in local storage).
 - **Accounts as scenes:** asking a suspect draws the scene the way they tell it: the room, the clock at that time, and the people they say were there. An account nobody confirms is sepia and marked "As told"; one that names a witness gets a "Corroborated" stamp. Click any answer in the timeline to see its scene again.
 - **Confrontation:** a suspect who holds firm makes the scene shudder and get stamped "Doubtful". One who cracks makes it split down the middle and fall away, revealing the room they were really in, stamped "Lied".
 - **Search:** a lantern sweeps across the room tile; the murder room flashes red.

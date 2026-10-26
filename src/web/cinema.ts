@@ -7,6 +7,7 @@ import { CAST, ROOMS, WEAPONS } from "../data.ts";
 import type { CharId, RoomId, WeaponId } from "../data.ts";
 import { portrait } from "./art.ts";
 import { nightScene } from "./liner.ts";
+import { playTheme } from "./music.ts";
 import { weaponPic } from "./weapons.ts";
 
 export const reducedMotion = (): boolean => matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -38,7 +39,8 @@ function mount(cls: string, label: string, html: string, finish: (el: HTMLElemen
       }, 350);
     };
     const onKey = (e: KeyboardEvent) => {
-      if (e.key === "Escape" || e.key === "Enter" || e.key === " ") {
+      const other = e.target instanceof HTMLButtonElement && !e.target.matches("[data-cinema]");
+      if (e.key === "Escape" || (!other && (e.key === "Enter" || e.key === " "))) {
         e.preventDefault();
         el.querySelector<HTMLElement>("[data-cinema]")?.click();
       }
@@ -59,11 +61,30 @@ export function playIntro(): Promise<void> {
       <p class="c-sub">The last night of the crossing, 1927</p>
     </div>
     <p class="c-scream">Eleven o'clock. A scream on the Boat Deck.</p>
+    <button type="button" class="c-sound" hidden></button>
     <button type="button" class="c-skip" data-cinema>Skip</button>`;
   return mount("intro", "RMS Meridian", html, (el, close) => {
-    el.querySelector("[data-cinema]")!.addEventListener("click", close);
+    const sound = el.querySelector<HTMLButtonElement>(".c-sound")!;
+    const show = (on: boolean) => {
+      sound.hidden = false;
+      sound.textContent = on ? "\u266A Mute" : "\u266A Play music";
+    };
+    const theme = playTheme(show);
+    if (theme) {
+      show(theme.playing);
+      sound.addEventListener("click", () => (theme.playing ? theme.mute() : theme.unmute()));
+    }
+    // Skipping cuts the music short; ending on its own lets it play out under the briefing.
+    el.querySelector("[data-cinema]")!.addEventListener("click", () => {
+      theme?.stop(0.6);
+      close();
+    });
     el.addEventListener("animationend", (e) => {
-      if ((e.target as HTMLElement).classList.contains("c-scream")) setTimeout(close, 700);
+      if ((e.target as HTMLElement).classList.contains("c-scream"))
+        setTimeout(() => {
+          theme?.finish();
+          close();
+        }, 700);
     });
   });
 }
