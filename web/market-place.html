@@ -1,0 +1,2111 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<title>The Market Place</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Caveat+Brush&family=Holtwood+One+SC&family=VT323&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Next:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:wght@400;600&display=swap">
+<style>
+/* Layout: a row of striped market stalls; opening one gives a counter (chalkboard decisions + receipt) beside a day book (chart + ledger). */
+:root {
+  --bg: #EEF2EC;
+  --surface: #FBFCFA;
+  --ink: #17221B;
+  --muted: #56635A;
+  --line: #D3DBD2;
+  --board: #24312B;
+  --frame: #8C6B49;
+  --chalk: #F1F4EE;
+  --chalk-dim: #A8B6AC;
+  --canvas: #FFFFFF;
+  --pot: #B5653E;
+  --apple: #C62F3B;
+  --plant: #2E7D3F;
+  --lemon: #E9B824;
+  --lemon-ink: #8A6600;
+  --on-apple: #FFFFFF;
+  --on-plant: #FFFFFF;
+  --on-lemon: #231C02;
+  --bad: #B4232F;
+  --shadow: 0 1px 0 rgba(23, 34, 27, .06), 0 10px 26px -14px rgba(23, 34, 27, .35);
+  --glow: none;
+
+  /* the stand scene */
+  --sky-hot-1: #F0A458; --sky-hot-2: #FBE2B6;
+  --sky-sunny-1: #67B3E6; --sky-sunny-2: #CDE9F8;
+  --sky-cloudy-1: #8F9EAA; --sky-cloudy-2: #D0D7DC;
+  --sky-rainy-1: #4F5D69; --sky-rainy-2: #8A96A0;
+  --sun: #FFCF3A; --cloud: #FFFFFF; --cloud-dark: #66727D; --rain: #E3EDF5;
+  --hill: #79A862; --grass: #93C06B; --walk: #CEC9BE; --walk-line: #B4AEA1;
+  --wood: #B5824E; --wood-dark: #7B5230; --counter: #EBD6B0;
+  --scene-ink: #2A2420; --glass: #F2F8FC;
+  --shirt-3: #3E6FB0; --shirt-4: #8A5BB0;
+  --skin-1: #F2CBA6; --skin-2: #D49E77; --skin-3: #A56F4C; --skin-4: #6B4530;
+
+  --f-display: "Holtwood One SC", "Rockwell Extra Bold", Rockwell, Georgia, serif;
+  --f-chalk: "Caveat Brush", "Marker Felt", "Comic Sans MS", cursive;
+  --f-body: "Atkinson Hyperlegible Next", "Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --f-data: "Atkinson Hyperlegible Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  --fs-body: 16px;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #0F1511; --surface: #171F1A; --ink: #E6ECE4; --muted: #9AA79D; --line: #2A352D;
+    --board: #0B110D; --frame: #5A4632; --chalk: #EEF2EA; --chalk-dim: #8FA095; --canvas: #D5DBD2; --pot: #C47A52;
+    --apple: #EA5A63; --plant: #5BB46A; --lemon: #F0C846; --lemon-ink: #F0C846;
+    --on-apple: #1C0709; --on-plant: #071509; --on-lemon: #231C02; --bad: #F06A73;
+    --shadow: 0 1px 0 rgba(0, 0, 0, .4), 0 12px 30px -16px rgba(0, 0, 0, .85);
+    --sky-hot-1: #A9693A; --sky-hot-2: #D2A874; --sky-sunny-1: #2F6E9E; --sky-sunny-2: #7FAFCF;
+    --sky-cloudy-1: #4D5963; --sky-cloudy-2: #7F8A93; --sky-rainy-1: #26313A; --sky-rainy-2: #48545E;
+    --sun: #F2C230; --cloud: #D5DDE3; --cloud-dark: #3D4851; --rain: #A9BCCB;
+    --hill: #3F6838; --grass: #4F7D40; --walk: #85817A; --walk-line: #6E6A63;
+    --wood: #8F6339; --wood-dark: #573A21; --counter: #C3AD86; --scene-ink: #1A1512; --glass: #D5E0E8;
+    --shirt-3: #5A8BD0; --shirt-4: #A27BC8;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #0F1511; --surface: #171F1A; --ink: #E6ECE4; --muted: #9AA79D; --line: #2A352D;
+  --board: #0B110D; --frame: #5A4632; --chalk: #EEF2EA; --chalk-dim: #8FA095; --canvas: #D5DBD2; --pot: #C47A52;
+  --apple: #EA5A63; --plant: #5BB46A; --lemon: #F0C846; --lemon-ink: #F0C846;
+  --on-apple: #1C0709; --on-plant: #071509; --on-lemon: #231C02; --bad: #F06A73;
+  --shadow: 0 1px 0 rgba(0, 0, 0, .4), 0 12px 30px -16px rgba(0, 0, 0, .85);
+  --sky-hot-1: #A9693A; --sky-hot-2: #D2A874; --sky-sunny-1: #2F6E9E; --sky-sunny-2: #7FAFCF;
+  --sky-cloudy-1: #4D5963; --sky-cloudy-2: #7F8A93; --sky-rainy-1: #26313A; --sky-rainy-2: #48545E;
+  --sun: #F2C230; --cloud: #D5DDE3; --cloud-dark: #3D4851; --rain: #A9BCCB;
+  --hill: #3F6838; --grass: #4F7D40; --walk: #85817A; --walk-line: #6E6A63;
+  --wood: #8F6339; --wood-dark: #573A21; --counter: #C3AD86; --scene-ink: #1A1512; --glass: #D5E0E8;
+  --shirt-3: #5A8BD0; --shirt-4: #A27BC8;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+body {
+  background: var(--bg);
+  color: var(--ink);
+  font: 400 var(--fs-body)/1.5 var(--f-body);
+  text-shadow: var(--glow);
+}
+button { font: inherit; color: inherit; cursor: pointer; }
+:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+h1, h2, h3, p { margin: 0; }
+
+.wrap {
+  max-width: 1180px;
+  margin: 0 auto;
+  padding-inline: clamp(16px, 4vw, 40px);
+  padding-block: 0 48px;
+  display: flex;
+  flex-direction: column;
+  gap: 28px;
+}
+
+/* top bar */
+.topbar {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px;
+  padding-block: 16px 0;
+}
+.top-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.wordmark {
+  background: none; border: 0; padding: 4px 0;
+  font-family: var(--f-display); font-size: .95rem; letter-spacing: .02em;
+}
+.mode {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: var(--surface); border: 1px solid var(--line); border-radius: 999px;
+  padding: 6px 12px; font-size: .85rem; color: var(--muted);
+}
+.mode::before {
+  content: ""; width: 10px; height: 10px; border-radius: 50%;
+  border: 2px solid var(--muted); background: transparent;
+}
+.mode[aria-pressed="true"]::before { background: var(--ink); border-color: var(--ink); }
+.mode[aria-pressed="true"] { color: var(--ink); }
+
+.home { display: flex; flex-direction: column; gap: 28px; }
+
+/* hero */
+.hero { display: flex; flex-direction: column; gap: 12px; padding-block: 12px 4px; }
+.eyebrow {
+  font-size: .78rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--muted);
+}
+.title {
+  font-family: var(--f-display); font-weight: 400;
+  font-size: clamp(1.9rem, 7vw, 4.4rem); line-height: 1.02; text-wrap: balance;
+}
+.lede { max-width: 62ch; font-size: 1.08rem; color: var(--muted); }
+
+/* stall color scopes */
+.st-apples   { --c: var(--apple); --c-ink: var(--apple);     --c-on: var(--on-apple); }
+.st-plants   { --c: var(--plant); --c-ink: var(--plant);     --c-on: var(--on-plant); }
+.st-lemonade { --c: var(--lemon); --c-ink: var(--lemon-ink); --c-on: var(--on-lemon); }
+
+/* awning: alternating canvas stripes with a scalloped valance */
+.awning {
+  position: relative; height: 58px;
+  border-radius: 12px 12px 0 0;
+  background: repeating-linear-gradient(90deg, var(--c) 0 28px, var(--canvas) 28px 56px);
+  box-shadow: inset 0 -10px 14px -12px rgba(0, 0, 0, .35);
+}
+.awning::after {
+  content: ""; position: absolute; left: 0; right: 0; top: 100%; height: 14px; z-index: 1;
+  background:
+    radial-gradient(circle at 14px 0, var(--c) 13.5px, transparent 14px) 0 0 / 56px 14px repeat-x,
+    radial-gradient(circle at 42px 0, var(--canvas) 13.5px, transparent 14px) 0 0 / 56px 14px repeat-x;
+}
+
+/* home stalls */
+.stalls { display: grid; gap: 28px; grid-template-columns: 1fr; }
+@media (min-width: 860px) { .stalls { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+.stall-card {
+  display: flex; flex-direction: column;
+  background: var(--surface); border-radius: 12px; box-shadow: var(--shadow);
+}
+.card-body { display: flex; flex-direction: column; gap: 14px; padding: 30px 20px 20px; flex: 1; }
+.card-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.card-head > div { display: flex; flex-direction: column; gap: 4px; min-width: 0; }
+.sign { font-family: var(--f-display); font-weight: 400; font-size: 1.4rem; line-height: 1.1; text-wrap: balance; }
+.produce { flex: none; width: 64px; height: 64px; }
+.produce svg { width: 100%; height: 100%; display: block; }
+.card-body > p { color: var(--muted); }
+.best { font-family: var(--f-data); font-size: .85rem; color: var(--muted); margin-top: auto; }
+.best strong { color: var(--ink); font-weight: 600; }
+.card-body > .card-code { margin-top: -8px; font-size: .85rem; }
+.code { font-family: var(--f-data); font-weight: 600; letter-spacing: .08em; color: var(--ink); user-select: all; }
+
+/* season codes */
+.codebox {
+  display: grid; gap: 14px 24px; align-items: end;
+  background: var(--surface); border-radius: 12px; box-shadow: var(--shadow); padding: 20px;
+}
+@media (min-width: 760px) { .codebox { grid-template-columns: minmax(0, 1fr) auto; } }
+.codebox-text { display: flex; flex-direction: column; gap: 4px; }
+.codebox-h { font-family: var(--f-display); font-weight: 400; font-size: 1.15rem; }
+.codebox-text p { color: var(--muted); max-width: 62ch; }
+.code-field { display: flex; flex-direction: column; gap: 4px; }
+.code-field label { font-size: .72rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.code-row { display: flex; flex-wrap: wrap; gap: 8px; }
+.code-row input {
+  width: 10ch; padding: 10px 12px; border: 1px solid var(--line); border-radius: 8px;
+  background: var(--bg); color: var(--ink); font: 600 1.15rem var(--f-data); letter-spacing: .14em; text-transform: uppercase;
+}
+.code-row input[aria-invalid="true"] { border-color: var(--bad); }
+.code-msg { grid-column: 1 / -1; font-size: .9rem; color: var(--muted); }
+.code-msg.err { color: var(--bad); }
+.season-code { font-size: .9rem; color: var(--muted); max-width: 62ch; }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  background: var(--c, var(--ink)); color: var(--c-on, var(--bg));
+  border: 0; border-radius: 8px; padding: 12px 18px; font-weight: 700; font-size: 1rem;
+  transition: transform .12s ease, filter .12s ease;
+}
+.btn:hover { filter: brightness(1.06); }
+.btn:active { transform: translateY(1px); }
+.btn:disabled { opacity: .45; cursor: not-allowed; filter: none; transform: none; }
+.btn-ghost { background: transparent; color: var(--chalk); box-shadow: inset 0 0 0 2px var(--chalk-dim); }
+
+/* stall view */
+.stall { display: flex; flex-direction: column; }
+.fascia {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 10px 16px;
+  background: var(--surface); border-radius: 0 0 12px 12px; box-shadow: var(--shadow);
+  padding: 26px 20px 16px;
+}
+.fascia .sign { font-size: clamp(1.4rem, 4vw, 2.3rem); flex: 1 1 auto; text-align: center; }
+.back {
+  background: none; border: 1px solid var(--line); border-radius: 8px; padding: 6px 12px;
+  font-size: .9rem; color: var(--muted);
+}
+.back:hover { color: var(--ink); border-color: var(--muted); }
+.daypill {
+  font-family: var(--f-data); font-size: .9rem; font-weight: 600;
+  padding: 6px 12px; border-radius: 999px; background: var(--c); color: var(--c-on);
+}
+.stall-grid {
+  display: grid; gap: 24px; margin-top: 24px;
+  grid-template-columns: 1fr; grid-template-areas: "scene" "counter" "daybook";
+}
+@media (min-width: 940px) {
+  .stall-grid {
+    grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); grid-template-rows: auto 1fr;
+    grid-template-areas: "counter scene" "counter daybook"; align-items: start;
+  }
+}
+.stall-grid > .counter { grid-area: counter; }
+.stall-grid > .daybook { grid-area: daybook; }
+.stall-grid > .scene, #scene-slot { grid-area: scene; }
+.counter, .daybook { display: flex; flex-direction: column; gap: 18px; min-width: 0; }
+.brief { max-width: 62ch; color: var(--muted); }
+
+.namefield { display: flex; flex-direction: column; gap: 4px; max-width: 360px; }
+.namefield label { font-size: .72rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.namefield input {
+  width: 100%; padding: 9px 12px; border: 1px solid var(--line); border-radius: 8px;
+  background: var(--surface); color: var(--ink); font: 400 1rem var(--f-display);
+}
+.namefield input::placeholder { color: var(--muted); opacity: .7; }
+.facts { display: grid; gap: 10px; margin: 0; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+@media (min-width: 560px) and (max-width: 939px) { .facts { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
+.facts > div {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+  padding: 10px 12px; display: flex; flex-direction: column; gap: 2px; min-width: 0;
+}
+.facts dt { font-size: .72rem; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.facts dd {
+  margin: 0; font-family: var(--f-data); font-weight: 600; font-size: 1.05rem;
+  font-variant-numeric: tabular-nums; display: flex; align-items: center; gap: 6px;
+}
+.ic { flex: none; }
+
+/* chalkboard */
+.board {
+  position: relative;
+  background:
+    radial-gradient(ellipse 70% 60% at 25% 15%, rgba(255, 255, 255, .07), transparent 70%),
+    radial-gradient(ellipse 60% 50% at 85% 90%, rgba(255, 255, 255, .04), transparent 70%),
+    var(--board);
+  color: var(--chalk);
+  border: 8px solid var(--frame);
+  border-radius: 12px;
+  box-shadow: var(--shadow), inset 0 0 0 1px rgba(0, 0, 0, .3);
+  padding: 20px clamp(16px, 3vw, 26px) 22px;
+  display: flex; flex-direction: column; gap: 18px;
+}
+.chalk-h { font-family: var(--f-chalk); font-weight: 400; font-size: 1.9rem; line-height: 1.1; }
+.ctls { display: grid; gap: 18px 22px; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr)); }
+.ctl { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
+.ctl.wide { grid-column: 1 / -1; }
+.ctl label { font-family: var(--f-chalk); font-size: 1.3rem; color: var(--chalk-dim); }
+.ctl-row { display: flex; align-items: center; gap: 10px; }
+.num {
+  display: inline-flex; align-items: baseline; gap: 2px;
+  font-family: var(--f-chalk); font-size: 2.6rem; line-height: 1;
+}
+.num input {
+  width: 3.2ch; padding: 0 0 2px; font: inherit; color: var(--chalk); text-align: center;
+  background: transparent; border: 0; border-bottom: 2px dashed var(--chalk-dim); border-radius: 0;
+  -moz-appearance: textfield; appearance: textfield;
+}
+.num input:focus-visible { outline: 2px solid var(--chalk); outline-offset: 4px; }
+.num input::-webkit-outer-spin-button, .num input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+.unit { font-size: 1.6rem; color: var(--chalk-dim); }
+.step {
+  flex: none; width: 38px; height: 38px; border-radius: 50%;
+  border: 2px solid var(--chalk-dim); background: transparent; color: var(--chalk);
+  font-size: 1.3rem; line-height: 1; display: grid; place-items: center;
+  touch-action: manipulation; user-select: none; -webkit-user-select: none; -webkit-touch-callout: none;
+}
+.step:hover { border-color: var(--chalk); }
+.step:focus-visible, .board .btn:focus-visible { outline-color: var(--chalk); }
+.ctl input[type="range"] { width: 100%; accent-color: var(--c); margin: 4px 0 0; }
+.board-note { font-size: .92rem; color: var(--chalk-dim); max-width: 60ch; }
+.board-note.err { color: var(--chalk); }
+.board-note.err::before { content: "⚠ "; }
+.board-note strong { color: var(--chalk); font-weight: 700; }
+.btn-open { align-self: flex-start; font-size: 1.05rem; padding: 13px 22px; }
+
+/* season report */
+.report-big {
+  font-family: var(--f-chalk); font-size: clamp(3rem, 9vw, 4.4rem); line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+.report-label { font-size: .78rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: var(--chalk-dim); }
+.meter { height: 12px; border-radius: 6px; background: rgba(255, 255, 255, .12); overflow: hidden; }
+.meter span { display: block; height: 100%; border-radius: 6px; background: var(--c); }
+.report p { max-width: 60ch; }
+.report-pct strong { font-family: var(--f-chalk); font-size: 1.5rem; font-weight: 400; }
+.report-lesson { color: var(--chalk-dim); }
+.report-actions { display: flex; flex-wrap: wrap; gap: 10px; }
+
+/* what if: one plan for the whole season */
+.wi-lede { color: var(--chalk-dim); max-width: 60ch; }
+.wi-num { margin: 0; }
+.wi-res { display: flex; flex-direction: column; gap: 6px; }
+.wi-lead { max-width: 60ch; }
+.wi-big { font-family: var(--f-chalk); font-size: clamp(2.4rem, 7vw, 3.2rem); line-height: 1; font-variant-numeric: tabular-nums; }
+.wi-lines { display: flex; flex-direction: column; gap: 6px; color: var(--chalk-dim); }
+.wi-lines p { max-width: 60ch; }
+
+/* receipt */
+.receipt {
+  background: var(--surface); border: 1px dashed var(--muted); border-radius: 4px;
+  padding: 16px 18px; display: flex; flex-direction: column; gap: 10px;
+  font-family: var(--f-data); font-size: .92rem;
+}
+.receipt-h { font-size: .75rem; font-weight: 600; letter-spacing: .14em; text-transform: uppercase; color: var(--muted); }
+.receipt-main { font-family: var(--f-body); font-size: 1rem; }
+.receipt dl { margin: 0; display: flex; flex-direction: column; gap: 4px; }
+.receipt dl > div { display: flex; justify-content: space-between; gap: 12px; font-variant-numeric: tabular-nums; }
+.receipt dt { color: var(--muted); }
+.receipt dd { margin: 0; text-align: right; }
+.receipt .total { border-top: 1px dashed var(--muted); padding-top: 6px; margin-top: 2px; font-weight: 600; }
+.receipt .total dt { color: var(--ink); }
+
+/* stand scene */
+.scene {
+  background: var(--surface); border-radius: 12px; box-shadow: var(--shadow); overflow: hidden;
+  display: flex; flex-direction: column; min-width: 0;
+}
+.scene-bar { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 8px 12px; padding: 12px 16px; }
+.scene-status { display: flex; flex-wrap: wrap; align-items: baseline; gap: 2px 10px; min-width: 0; }
+.scene-status strong { font-family: var(--f-display); font-weight: 400; font-size: 1.05rem; }
+#sc-status { font-family: var(--f-data); font-size: .88rem; color: var(--muted); }
+.scene-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.chip-btn {
+  background: transparent; border: 1px solid var(--line); border-radius: 999px;
+  padding: 5px 12px; font-size: .85rem; color: var(--ink);
+}
+.chip-btn:hover { border-color: var(--muted); }
+.switch {
+  display: inline-flex; align-items: center; gap: 8px; background: none; border: 0; padding: 4px 0;
+  font-size: .88rem; color: var(--muted);
+}
+.switch::before {
+  content: ""; flex: none; width: 36px; height: 20px; border-radius: 999px;
+  background-color: var(--line);
+  background-image: radial-gradient(circle at 10px 50%, var(--surface) 6.5px, transparent 7px);
+}
+.switch[aria-checked="true"] { color: var(--ink); }
+.switch[aria-checked="true"]::before {
+  background-color: var(--c);
+  background-image: radial-gradient(circle at 26px 50%, var(--surface) 6.5px, transparent 7px);
+}
+.scene-stage { line-height: 0; }
+.scene-stage canvas { display: block; width: 100%; }
+.scene-ticker {
+  display: flex; flex-wrap: wrap; gap: 4px 18px; padding: 10px 16px; border-top: 1px solid var(--line);
+  font-family: var(--f-data); font-size: .88rem; color: var(--muted); font-variant-numeric: tabular-nums;
+}
+.scene-ticker b { color: var(--ink); font-weight: 600; }
+.scene.off .scene-bar { padding-block: 10px; }
+
+/* day book */
+.daybook { background: var(--surface); border-radius: 12px; box-shadow: var(--shadow); padding: 20px; }
+.db-head { display: flex; flex-direction: column; gap: 2px; }
+.db-title { font-family: var(--f-display); font-weight: 400; font-size: 1.15rem; }
+.db-sub { color: var(--muted); font-size: .92rem; }
+.chart { position: relative; margin: 0; display: flex; flex-direction: column; gap: 6px; }
+.chart figcaption { font-weight: 700; font-size: .95rem; }
+.chart-svg { width: 100%; min-height: 260px; }
+.chart-svg svg { display: block; width: 100%; height: auto; overflow: visible; }
+.chart .grid { stroke: var(--line); stroke-width: 1; }
+.chart .axis { stroke: var(--muted); stroke-width: 1; }
+.chart .tick { fill: var(--muted); font: 12px var(--f-data); }
+.chart .axis-title { fill: var(--muted); font: 600 12px var(--f-body); }
+.chart .lbl { fill: var(--ink); font: 600 12px var(--f-data); paint-order: stroke; stroke: var(--surface); stroke-width: 4px; stroke-linejoin: round; }
+.chart .curve { fill: none; stroke: var(--muted); stroke-width: 2; stroke-dasharray: 5 5; }
+.chart .dot { fill: var(--c-ink); stroke: var(--surface); stroke-width: 2; }
+.chart .dot.hollow { fill: var(--surface); stroke: var(--c-ink); }
+.chart .bar-pos { fill: var(--c-ink); }
+.chart .bar-neg { fill: var(--bad); }
+.chart .hit { fill: transparent; }
+.chart .empty-msg { fill: var(--muted); font: 14px var(--f-body); }
+.chart .wx-ic { color: var(--muted); }
+.chart .wi-line { stroke: var(--ink); stroke-width: 1.5; stroke-dasharray: 2 4; }
+.chart .wi-ring { fill: var(--surface); stroke: var(--ink); stroke-width: 2.5; }
+.chart .wi-mark { pointer-events: none; }
+.chart-key { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: .85rem; color: var(--muted); }
+.chart-key span { display: inline-flex; align-items: center; gap: 6px; }
+.chart-key i { flex: none; display: block; width: 11px; height: 11px; }
+.k-dot { border-radius: 50%; background: var(--c-ink); }
+.k-bar { border-radius: 2px; background: var(--c-ink); }
+.k-ring { border-radius: 50%; border: 2.5px solid var(--ink); }
+.k-curve { width: 18px !important; height: 0 !important; border-top: 2px dashed var(--muted); }
+.tip {
+  position: absolute; z-index: 5; pointer-events: none;
+  transform: translate(-50%, calc(-100% - 10px));
+  background: var(--ink); color: var(--bg); border-radius: 6px; padding: 6px 9px;
+  font: 600 12px/1.35 var(--f-data); white-space: nowrap; text-shadow: none;
+}
+.ledger-wrap { overflow-x: auto; }
+.ledger { width: 100%; border-collapse: collapse; font-family: var(--f-data); font-size: .88rem; font-variant-numeric: tabular-nums; }
+.ledger th {
+  text-align: right; font: 700 .7rem var(--f-body); letter-spacing: .1em; text-transform: uppercase; color: var(--muted);
+  padding: 6px 10px; border-bottom: 2px solid var(--line); white-space: nowrap;
+}
+.ledger td { text-align: right; padding: 7px 10px; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.ledger th:first-child, .ledger td:first-child { text-align: left; }
+.ledger td.neg { color: var(--bad); }
+.ledger tr.fresh td { animation: fresh 1.6s ease-out; }
+@keyframes fresh { from { background: color-mix(in srgb, var(--c) 28%, transparent); } to { background: transparent; } }
+.ledger .wx { display: inline-flex; align-items: center; gap: 5px; }
+.empty { color: var(--muted); font-size: .92rem; }
+
+.foot { color: var(--muted); font-size: .88rem; max-width: 70ch; border-top: 1px solid var(--line); padding-top: 16px; }
+
+@media (prefers-reduced-motion: reduce) {
+  .btn, .ledger tr.fresh td { transition: none; animation: none; }
+}
+
+/* Green screen: the school-lab Apple II monitor. Declared last so it wins over both themes. */
+:root.classic {
+  --bg: #020803; --surface: #020803; --ink: #45FF73; --muted: #2CBF52; --line: #145C27;
+  --board: #020803; --frame: #2CBF52; --chalk: #45FF73; --chalk-dim: #2CBF52; --canvas: #020803; --pot: #45FF73;
+  --apple: #45FF73; --plant: #45FF73; --lemon: #45FF73; --lemon-ink: #45FF73;
+  --on-apple: #020803; --on-plant: #020803; --on-lemon: #020803; --bad: #45FF73;
+  --shadow: none; --glow: 0 0 6px rgba(69, 255, 115, .45);
+  --f-display: "VT323", ui-monospace, monospace; --f-chalk: "VT323", ui-monospace, monospace;
+  --f-body: "VT323", ui-monospace, monospace; --f-data: "VT323", ui-monospace, monospace;
+  --fs-body: 20px;
+  --sky-hot-1: #020803; --sky-hot-2: #020803; --sky-sunny-1: #020803; --sky-sunny-2: #020803;
+  --sky-cloudy-1: #020803; --sky-cloudy-2: #020803; --sky-rainy-1: #020803; --sky-rainy-2: #020803;
+  --sun: #45FF73; --cloud: #2CBF52; --cloud-dark: #1E8A3C; --rain: #45FF73;
+  --hill: #0D3A19; --grass: #0A2A12; --walk: #041307; --walk-line: #2CBF52;
+  --wood: #1E8A3C; --wood-dark: #145C27; --counter: #2CBF52; --scene-ink: #45FF73; --glass: #0D3A19;
+  --shirt-3: #2CBF52; --shirt-4: #1E8A3C; --skin-1: #45FF73; --skin-2: #45FF73; --skin-3: #45FF73; --skin-4: #45FF73;
+  color-scheme: dark;
+}
+.classic body { text-transform: uppercase; }
+.classic body::after {
+  content: ""; position: fixed; inset: 0; pointer-events: none; z-index: 50;
+  background: repeating-linear-gradient(to bottom, rgba(0, 0, 0, .28) 0 1px, transparent 1px 3px);
+}
+.classic .stall-card, .classic .fascia, .classic .daybook, .classic .facts > div, .classic .scene, .classic .codebox { border: 1px solid var(--line); }
+.classic .awning { box-shadow: none; border: 1px solid var(--c); }
+.classic .num input, .classic .namefield input, .classic .tip { text-transform: uppercase; }
+.classic .chart-key { font-size: 1rem; }
+.classic .chart .tick, .classic .chart .lbl, .classic .chart .axis-title { font-size: 16px; }
+.classic .ledger td.neg { color: var(--ink); }
+</style>
+
+<div class="wrap">
+  <header class="topbar">
+    <button class="wordmark" data-home type="button">The Market Place</button>
+    <div class="top-actions">
+      <button id="sound" class="mode" type="button" aria-pressed="false" title="Apple II-style beeps when you open, sell and close">Sound</button>
+      <button id="classic" class="mode" type="button" aria-pressed="false" title="Show it the way it looked on a school-lab Apple II">Green screen</button>
+    </div>
+  </header>
+  <main id="view"></main>
+  <p class="foot">A fan remake of <em>The Market Place</em>, the classroom business simulation MECC made for the Apple II. Every new season reshuffles the numbers, so the best price and the right amount of advertising change each time you play, unless you play a season code.</p>
+</div>
+
+<script>
+(() => {
+  const REDUCED = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const $ = (s, r = document) => r.querySelector(s);
+  const rand = (a, b, R = Math.random) => a + R() * (b - a);
+  const randInt = (a, b, R) => Math.floor(rand(a, b + 1, R));
+  const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+  const num = n => Math.round(n).toLocaleString('en-US');
+  const money = c => (c < 0 ? '−' : '') + '$' + (Math.abs(c) / 100).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  const shortMoney = c => '$' + (c / 100).toLocaleString('en-US', { maximumFractionDigits: 2 });
+  const plural = (n, a, b) => n === 1 ? a : (b || a + 's');
+  const store = {
+    get(k, d) { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } },
+    set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+  };
+
+  /* Season codes: five characters plus a check character. A code always deals the same season, so
+     players who enter the same code meet the same buyers and the same weather. */
+  const CODE_CHARS = 'ACDEFGHJKMNPQRTUVWXY34679'; // no look-alikes such as 0/O, 1/I/L, 2/Z, 5/S, 8/B
+  const CODE_W = [1, 2, 3, 4, 6]; // weights share no factor with 25, so any one wrong character or swapped pair is caught
+  const codeCheck = body => CODE_CHARS[[...body].reduce((s, ch, i) => s + CODE_CHARS.indexOf(ch) * CODE_W[i], 0) % 25];
+  function newCode() {
+    let b = '';
+    for (let i = 0; i < 5; i++) b += CODE_CHARS[Math.floor(Math.random() * 25)];
+    return b + codeCheck(b);
+  }
+  function cleanCode(s) {
+    const c = String(s || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+    return c.length === 6 && [...c].every(ch => CODE_CHARS.includes(ch)) && codeCheck(c.slice(0, 5)) === c[5] ? c : null;
+  }
+  /* a repeatable random stream for one stall's season: FNV-1a hash of the code, then mulberry32 */
+  function seeded(code, kind) {
+    let h = 2166136261;
+    for (const ch of code + ':' + kind) { h ^= ch.charCodeAt(0); h = Math.imul(h, 16777619); }
+    let a = h >>> 0;
+    return () => {
+      a = (a + 0x6D2B79F5) | 0;
+      let t = Math.imul(a ^ (a >>> 15), 1 | a);
+      t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
+      return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
+    };
+  }
+
+  /* Square-wave beeps, like the Apple II speaker. Off until the player turns Sound on. */
+  const Sound = {
+    on: store.get('mp-sound', false) === true, ctx: null,
+    // browsers only start audio from a click or key press, so every handler for one calls this
+    unlock() {
+      if (!this.on) return;
+      try {
+        if (!this.ctx) { const AC = window.AudioContext || window.webkitAudioContext; if (!AC) return; this.ctx = new AC(); }
+        if (this.ctx.state === 'suspended') this.ctx.resume();
+      } catch (e) {}
+    },
+    /* notes are [frequency, start offset, length] in Hz and seconds */
+    beep(notes, vol = .045) {
+      if (!this.on || !this.ctx) return;
+      try {
+        const ac = this.ctx, t0 = ac.currentTime + .01;
+        for (const [f, at, len] of notes) {
+          const o = ac.createOscillator(), gn = ac.createGain(), s = t0 + at;
+          o.type = 'square'; o.frequency.value = f;
+          gn.gain.setValueAtTime(.0001, s);
+          gn.gain.exponentialRampToValueAtTime(vol, s + .006);
+          gn.gain.exponentialRampToValueAtTime(.0001, s + len);
+          o.connect(gn); gn.connect(ac.destination);
+          o.start(s); o.stop(s + len + .02);
+        }
+      } catch (e) {}
+    },
+    open() { this.beep([[523, 0, .08], [659, .09, .08], [784, .18, .14]]); },
+    sale() { this.beep([[1568, 0, .04], [2093, .05, .08]], .028); },
+    good() { this.beep([[1319, 0, .06], [1760, .07, .06], [2637, .14, .2]]); },
+    bad() { this.beep([[247, 0, .14], [185, .16, .3]]); },
+    season(pct) {
+      this.beep(pct >= 60 ? [[523, 0, .1], [659, .11, .1], [784, .22, .1], [1047, .33, .36]] : [[392, 0, .12], [523, .14, .12], [659, .28, .3]]);
+    },
+    dayEnd(g, r) {
+      if (g.over) return this.season(pctOf(M[g.kind].total(g), g.bench.total));
+      if ((g.kind === 'apples' ? r.income : r.profit) > 0) this.good(); else this.bad();
+    }
+  };
+
+  const DAYS = 10;
+  const WX = [
+    { k: 'hot', name: 'Hot', m: 1.55, t: [90, 97] },
+    { k: 'sunny', name: 'Sunny', m: 1.0, t: [78, 86] },
+    { k: 'cloudy', name: 'Cloudy', m: 0.6, t: [64, 72] },
+    { k: 'rainy', name: 'Rainy', m: 0.22, t: [55, 62] }
+  ];
+  const ICON = {
+    hot: '<circle cx="12" cy="12" r="5" fill="currentColor"/><path d="M12 1.5v3M12 19.5v3M1.5 12h3M19.5 12h3M4.6 4.6l2.1 2.1M17.3 17.3l2.1 2.1M4.6 19.4l2.1-2.1M17.3 6.7l2.1-2.1"/>',
+    sunny: '<circle cx="12" cy="12" r="4.5"/><path d="M12 2.5v2M12 19.5v2M2.5 12h2M19.5 12h2M5.3 5.3l1.4 1.4M17.3 17.3l1.4 1.4M5.3 18.7l1.4-1.4M17.3 6.7l1.4-1.4"/>',
+    cloudy: '<path d="M7 18.5h10.5a4 4 0 0 0 .4-7.98A6 6 0 0 0 6.4 11.6 3.5 3.5 0 0 0 7 18.5z"/>',
+    rainy: '<path d="M7 14.5h10.5a4 4 0 0 0 .4-7.98A6 6 0 0 0 6.4 7.6 3.5 3.5 0 0 0 7 14.5z"/><path d="M8.5 17.5l-1 3M12.5 17.5l-1 3M16.5 17.5l-1 3"/>'
+  };
+  const ic = (k, size = 18) =>
+    `<svg class="ic" viewBox="0 0 24 24" width="${size}" height="${size}" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${ICON[k]}</svg>`;
+
+  const ART = {
+    apples: `<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 21c-6-5-20-4-20 12 0 13 9 24 15 24 3 0 3-1.5 5-1.5s2 1.5 5 1.5c6 0 15-11 15-24 0-16-14-17-20-12z" fill="var(--apple)"/><path d="M32 21c0-6 2-10 5-13" stroke="var(--ink)" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M34 15c4-6 11-6 14-4-3 5-9 7-14 4z" fill="var(--plant)"/><path d="M21 30c1-4 4-6 7-6" stroke="var(--canvas)" stroke-width="3" fill="none" stroke-linecap="round" opacity=".55"/></svg>`,
+    plants: `<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 37V11" stroke="var(--plant)" stroke-width="3" stroke-linecap="round"/><path d="M32 24c-8 0-13-4-14-10 7 0 12 3 14 10zM32 18c6 0 11-3 12-9-6 0-11 3-12 9zM32 31c7 0 11-3 12-8-6 0-10 3-12 8z" fill="var(--plant)"/><circle cx="24" cy="30" r="5" fill="var(--apple)"/><circle cx="41" cy="32" r="4" fill="var(--apple)"/><rect x="15" y="37" width="34" height="6" rx="2" fill="var(--pot)"/><path d="M18 43h28l-4 15H22z" fill="var(--pot)"/></svg>`,
+    lemonade: `<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M39 5l-6 41" stroke="var(--apple)" stroke-width="3" stroke-linecap="round"/><path d="M18.4 27h27.2l-2.9 28H21.3z" fill="var(--lemon)"/><path d="M15 15h34l-4.5 43h-25z" fill="none" stroke="var(--ink)" stroke-width="3" stroke-linejoin="round"/><circle cx="47" cy="17" r="9" fill="var(--lemon)" stroke="var(--canvas)" stroke-width="2"/><path d="M47 10v14M40 17h14" stroke="var(--canvas)" stroke-width="1.5"/></svg>`
+  };
+
+  const STALLS = {
+    apples: {
+      key: 'apples', n: 1, name: 'Apples', idea: 'Price', art: ART.apples,
+      blurb: 'You set one price a day. Find the price that brings in the most money.',
+      brief: 'Your crew picks 250 apples every morning, and you set one price for the day. Lower prices bring more buyers. Higher prices earn more on each apple. Find the price that brings in the most money.',
+      boardTitle: "Today's price", next: 'plants'
+    },
+    plants: {
+      key: 'plants', n: 2, name: 'Tomato Plants', idea: 'Advertising', art: ART.plants,
+      blurb: 'You have 1,000 plants at 50¢ each. Decide how much to spend on ads.',
+      brief: 'You grew 1,000 tomato plants and sell them for 50¢ each. The price is fixed. What you control is advertising: ads bring in more buyers, but they cost money, and any plants left after day 10 wilt.',
+      boardTitle: "Today's ads", next: 'lemonade'
+    },
+    lemonade: {
+      key: 'lemonade', n: 3, name: 'Lemonade', idea: 'Price, ads & production', art: ART.lemonade,
+      blurb: 'Read the forecast, make the right batch, set a price, and put up signs.',
+      brief: 'You start with $5.00. Each morning, check the forecast, then decide how many glasses to make, what to charge, and how many signs to put up. Lemonade you don\'t sell is poured out at closing.',
+      boardTitle: "Today's plan", next: null
+    }
+  };
+
+  /* ---------- the three markets ---------- */
+  /* every season is dealt from its code; seasonAt() replays one steady plan for the What if board */
+  const noise = (lo, hi, R) => Array.from({ length: DAYS }, () => rand(lo, hi, R));
+  const M = {
+    apples: {
+      create(code = newCode()) {
+        const R = seeded(code, 'apples');
+        return { kind: 'apples', code, day: 1, over: false, log: [], cap: 250,
+          A: randInt(180, 235, R), Z: randInt(46, 74, R), noise: noise(.93, 1.07, R), input: { price: 10 } };
+      },
+      demand(g, p, d) { return p >= g.Z ? 0 : Math.round(g.A * (1 - p / g.Z) * (d == null ? 1 : g.noise[d])); },
+      bestPrice(g) {
+        let bp = 1, bi = -1;
+        for (let p = 1; p < 100; p++) { const i = p * Math.min(g.cap, this.demand(g, p)); if (i > bi) { bi = i; bp = p; } }
+        return bp;
+      },
+      play(g) {
+        const d = g.day - 1, p = g.input.price, want = this.demand(g, p, d), sold = Math.min(g.cap, want);
+        g.log.push({ day: g.day, price: p, sold, want, income: sold * p, soldOut: want >= g.cap });
+      },
+      total(g) { return g.log.reduce((s, r) => s + r.income, 0); },
+      seasonAt(g, p) {
+        let total = 0;
+        for (let d = 0; d < DAYS; d++) total += p * Math.min(g.cap, this.demand(g, p, d));
+        return { total };
+      },
+      bench(g) {
+        const bp = this.bestPrice(g);
+        return { total: this.seasonAt(g, bp).total, price: bp };
+      }
+    },
+    plants: {
+      create(code = newCode()) {
+        const R = seeded(code, 'plants');
+        return { kind: 'plants', code, day: 1, over: false, log: [], left: 1000,
+          B: randInt(30, 42, R), K: rand(22, 30, R), noise: noise(.9, 1.1, R), input: { ads: 0 } };
+      },
+      demand(g, a, d) { return Math.round((g.B + g.K * Math.sqrt(a)) * (d == null ? 1 : g.noise[d])); },
+      play(g) {
+        const d = g.day - 1, a = g.input.ads, want = this.demand(g, a, d), sold = Math.min(g.left, want);
+        g.left -= sold;
+        g.log.push({ day: g.day, ads: a, sold, want, left: g.left, income: sold * 50, profit: sold * 50 - a * 100 });
+      },
+      total(g) { return g.log.reduce((s, r) => s + r.profit, 0); },
+      seasonAt(g, a) {
+        let left = 1000, total = 0, out = 0;
+        for (let d = 0; d < DAYS && left > 0; d++) {
+          const s = Math.min(left, this.demand(g, a, d));
+          left -= s; total += s * 50 - a * 100;
+          if (!left) out = d + 1;
+        }
+        return { total, left, out };
+      },
+      bench(g) {
+        let best = { total: -Infinity, ads: 0 };
+        for (let a = 0; a <= 80; a++) {
+          const t = this.seasonAt(g, a).total;
+          if (t > best.total) best = { total: t, ads: a };
+        }
+        return best;
+      }
+    },
+    lemonade: {
+      COST: [3, 3, 3, 4, 4, 4, 4, 5, 5, 5],
+      create(code = newCode()) {
+        const R = seeded(code, 'lemonade'), f = [], a = [], temp = [], ftemp = [];
+        for (let d = 0; d < DAYS; d++) {
+          const r = R();
+          const fw = r < .22 ? 0 : r < .64 ? 1 : r < .9 ? 2 : 3;
+          const aw = R() < .78 ? fw : clamp(fw + (R() < .5 ? -1 : 1), 0, 3);
+          f.push(fw); a.push(aw); ftemp.push(randInt(...WX[fw].t, R)); temp.push(randInt(...WX[aw].t, R));
+        }
+        return { kind: 'lemonade', code, day: 1, over: false, log: [], cash: 500, T: rand(14, 18, R),
+          f, a, temp, ftemp, noise: noise(.9, 1.1, R), input: { make: 60, price: 15, signs: 2 } };
+      },
+      demand(g, p, s, d) {
+        return Math.round(150 * Math.exp(-p / g.T) * WX[g.a[d]].m * (1 + 0.7 * (1 - Math.exp(-s / 4))) * g.noise[d]);
+      },
+      cost(g) { return this.COST[clamp(g.day - 1, 0, DAYS - 1)]; },
+      spend(g) { return g.input.make * this.cost(g) + g.input.signs * 15; },
+      play(g) {
+        const d = g.day - 1, { make, price, signs } = g.input, c = this.COST[d];
+        const spend = make * c + signs * 15, want = this.demand(g, price, signs, d);
+        const sold = Math.min(make, want), income = sold * price, profit = income - spend;
+        g.cash += profit;
+        g.log.push({ day: g.day, wx: g.a[d], fwx: g.f[d], temp: g.temp[d], make, price, signs, cost: c, sold, want, income, spend, profit, cash: g.cash });
+      },
+      total(g) { return g.cash - 500; },
+      /* the batches you actually made, replayed with one price and one number of signs every day */
+      seasonAt(g, p, s) {
+        let total = 0;
+        const days = g.log.map(r => {
+          const v = Math.min(r.make, this.demand(g, p, s, r.day - 1)) * p - r.make * r.cost - s * 15;
+          total += v;
+          return v;
+        });
+        return { total, days };
+      },
+      bestPlan(g) {
+        let best = { total: -Infinity, price: 1, signs: 0 };
+        for (let p = 1; p <= 99; p++) for (let s = 0; s <= 12; s++) {
+          const t = this.seasonAt(g, p, s).total;
+          if (t > best.total) best = { total: t, price: p, signs: s };
+        }
+        return best;
+      },
+      bench(g) {
+        let t = 0;
+        for (let d = 0; d < DAYS; d++) {
+          const c = this.COST[d]; let best = 0;
+          for (let p = 1; p <= 60; p++) for (let s = 0; s <= 12; s++) {
+            const v = (p - c) * this.demand(g, p, s, d) - 15 * s;
+            if (v > best) best = v;
+          }
+          t += best;
+        }
+        return { total: t };
+      }
+    }
+  };
+
+  /* ---------- state ---------- */
+  let S = { view: 'home', cur: null, games: {}, best: store.get('mp-best', {}) || {}, standName: String(store.get('mp-stand-name', '') || '') };
+  const cur = () => S.games[S.cur];
+
+  function fitBudget(g) {
+    if (g.kind !== 'lemonade' || g.over) return;
+    const c = M.lemonade.cost(g);
+    g.input.signs = Math.min(g.input.signs, Math.floor(g.cash / 15));
+    g.input.make = clamp(g.input.make, 0, Math.max(0, Math.floor((g.cash - g.input.signs * 15) / c)));
+  }
+
+  function checkOver(g) {
+    if (g.day > DAYS) g.over = true;
+    if (g.kind === 'plants' && g.left === 0) g.over = true;
+    if (g.kind === 'lemonade' && !g.over && g.cash < M.lemonade.cost(g)) { g.over = true; g.broke = true; }
+    if (g.over && !g.bench) {
+      g.bench = M[g.kind].bench(g);
+      const total = M[g.kind].total(g), pct = pctOf(total, g.bench.total);
+      const prev = S.best[g.kind];
+      if (!prev || total > prev.total) { S.best[g.kind] = { total, pct }; store.set('mp-best', S.best); }
+    }
+  }
+  const pctOf = (t, b) => b > 0 ? Math.max(0, Math.round(t / b * 100)) : 0;
+  const rating = p => p >= 95 ? 'Market master' : p >= 80 ? 'Sharp seller' : p >= 60 ? 'Steady trader' : p >= 35 ? 'Learning the ropes' : 'Keep experimenting';
+
+  /* Seasons in progress are saved as their code plus the choices made each day, then dealt and replayed on load,
+     so a damaged save can only lose a season, never break the page. */
+  function saveGames() {
+    const games = {};
+    for (const [k, g] of Object.entries(S.games)) {
+      if (!g || !g.code) continue;
+      const keys = Object.keys(g.input);
+      games[k] = { code: g.code, moves: g.log.map(r => Object.fromEntries(keys.map(x => [x, r[x]]))), input: g.input };
+    }
+    store.set('mp-games', { v: 1, games });
+  }
+  function restoreGame(kind, s) {
+    const code = s && cleanCode(s.code);
+    if (!code || !Array.isArray(s.moves)) return null;
+    const g = M[kind].create(code);
+    const set = mv => {
+      for (const c of controlsFor(g)) {
+        const v = Math.round(Number(mv && mv[c.k]));
+        if (Number.isFinite(v)) g.input[c.k] = clamp(v, c.min, c.max);
+      }
+    };
+    for (const mv of s.moves) {
+      if (g.over) break;
+      set(mv);
+      if (kind === 'lemonade' && M.lemonade.spend(g) > g.cash) break;
+      M[kind].play(g); g.day++; checkOver(g); fitBudget(g);
+    }
+    if (!g.over) { set(s.input); fitBudget(g); }
+    return g;
+  }
+  function loadGames() {
+    const d = store.get('mp-games', null), out = {};
+    if (!d || d.v !== 1 || !d.games || typeof d.games !== 'object') return out;
+    for (const k of Object.keys(STALLS)) {
+      const g = restoreGame(k, d.games[k]);
+      if (g) out[k] = g;
+    }
+    return out;
+  }
+
+  /* ---------- controls ---------- */
+  function controlsFor(g) {
+    if (g.kind === 'apples') return [{ k: 'price', label: 'Price per apple', post: '¢', min: 1, max: 99 }];
+    if (g.kind === 'plants') return [{ k: 'ads', label: 'Spend on ads', pre: '$', min: 0, max: 80 }];
+    const c = M.lemonade.cost(g);
+    return [
+      { k: 'make', label: 'Glasses to make', min: 0, max: Math.max(1, Math.min(400, Math.floor(g.cash / c))), wide: true },
+      { k: 'price', label: 'Price per glass', post: '¢', min: 1, max: 99 },
+      { k: 'signs', label: 'Signs, 15¢ each', min: 0, max: 12 }
+    ];
+  }
+  function ctlHTML(c, v) {
+    return `<div class="ctl${c.wide ? ' wide' : ''}">
+      <label for="in-${c.k}">${c.label}</label>
+      <div class="ctl-row">
+        <button type="button" class="step" data-step="-1" data-k="${c.k}" aria-label="Lower: ${c.label}" title="Hold to keep going. Shift-click for 10.">−</button>
+        <span class="num">${c.pre ? `<span class="unit">${c.pre}</span>` : ''}<input id="in-${c.k}" data-k="${c.k}" type="number" inputmode="numeric" min="${c.min}" max="${c.max}" step="1" value="${v}" ${c.wide ? 'style="width:3.6ch"' : ''}>${c.post ? `<span class="unit">${c.post}</span>` : ''}</span>
+        <button type="button" class="step" data-step="1" data-k="${c.k}" aria-label="Raise: ${c.label}" title="Hold to keep going. Shift-click for 10.">+</button>
+      </div>
+      <input type="range" id="rg-${c.k}" data-k="${c.k}" min="${c.min}" max="${c.max}" step="1" value="${v}" aria-label="${c.label}">
+    </div>`;
+  }
+  function noteFor(g) {
+    if (g.kind === 'apples') {
+      return { html: 'Try moving the price a few cents at a time and watch what happens to income in the day book.' };
+    }
+    if (g.kind === 'plants') {
+      const daysLeft = DAYS - g.day + 1, pace = Math.ceil(g.left / daysLeft);
+      return { html: `To sell every plant by day 10, you need about <strong>${pace} sales a day</strong>. Ad money comes out of today's sales.` };
+    }
+    const c = M.lemonade.cost(g), { make, signs } = g.input, spend = M.lemonade.spend(g);
+    const line = `Today's cost: ${make} × ${c}¢ + ${signs} ${plural(signs, 'sign')} × 15¢ = <strong>${money(spend)}</strong>. You have ${money(g.cash)}.`;
+    if (spend > g.cash) return { err: true, html: `That costs ${money(spend)} and you have ${money(g.cash)}. Make fewer glasses or put up fewer signs.` };
+    return { html: line };
+  }
+
+  /* ---------- views ---------- */
+  function render() {
+    if (S.view === 'stall' && cur()) renderStall(false); else { S.view = 'home'; renderHome(); }
+  }
+
+  function renderHome() {
+    $('#view').innerHTML = `
+      <div class="home">
+        <section class="hero">
+          <p class="eyebrow">Three stalls · ten market days each</p>
+          <h1 class="title">The Market Place</h1>
+          <p class="lede">Run an apple stand, a tomato plant stand, and a lemonade stand. Each stall adds one new idea about selling: first price, then advertising, then deciding how much to make.</p>
+        </section>
+        <section class="stalls" aria-label="Market stalls">
+          ${stallCards()}
+        </section>
+        <form class="codebox" id="codeform" novalidate>
+          <div class="codebox-text">
+            <h2 class="codebox-h">Season codes</h2>
+            <p>Every season has a code. Everyone who enters the same code gets the same buyers and the same weather, so a class or a group of friends can compare results fairly.</p>
+          </div>
+          <div class="code-field">
+            <label for="code-in">Enter a code</label>
+            <div class="code-row">
+              <input id="code-in" type="text" maxlength="8" autocomplete="off" autocapitalize="characters" spellcheck="false" placeholder="${newCode()}" aria-describedby="code-msg">
+              <button class="btn" type="submit">Play this code</button>
+            </div>
+          </div>
+          <p class="code-msg" id="code-msg" aria-live="polite">Playing a code starts all three stalls over with that season.</p>
+        </form>
+      </div>`;
+  }
+  const stallCards = () => Object.values(STALLS).map(stallCard).join('');
+  function stallCard(s) {
+    const g = S.games[s.key], b = S.best[s.key] && Number.isFinite(S.best[s.key].total) ? S.best[s.key] : null;
+    const label = !g || !g.log.length ? 'Open stall' : g.over ? 'See season results' : `Continue on day ${g.day}`;
+    const best = b ? `Best season: <strong>${money(b.total)}</strong> · ${b.pct}% · ${rating(b.pct)}` : 'Not played yet';
+    return `<article class="stall-card st-${s.key}">
+      <div class="awning" aria-hidden="true"></div>
+      <div class="card-body">
+        <div class="card-head">
+          <div><p class="eyebrow">Stall ${s.n} · ${s.idea}</p><h2 class="sign">${s.key === 'lemonade' && standName() ? esc(standName()) : s.name}</h2></div>
+          <div class="produce">${s.art}</div>
+        </div>
+        <p>${s.blurb}</p>
+        <p class="best">${best}</p>
+        ${g && g.code ? `<p class="card-code">Season code <span class="code">${g.code}</span></p>` : ''}
+        <button class="btn" type="button" data-open="${s.key}">${label}</button>
+      </div>
+    </article>`;
+  }
+
+  function factsHTML(g) {
+    const m = M[g.kind];
+    let items;
+    if (g.kind === 'apples') {
+      const bestDay = g.log.reduce((b, r) => !b || r.income > b.income ? r : b, null);
+      items = [
+        ['Picked each morning', '250 apples'],
+        ['Income so far', money(m.total(g))],
+        ['Best day so far', bestDay ? `${money(bestDay.income)} at ${bestDay.price}¢` : '—'],
+        ['Days left', DAYS - g.log.length]
+      ];
+    } else if (g.kind === 'plants') {
+      items = [
+        ['Plants left', num(g.left)],
+        ['Price', '50¢ each'],
+        ['Days left', g.over ? 0 : DAYS - g.log.length],
+        ['Profit so far', money(m.total(g))]
+      ];
+    } else {
+      const d = g.day - 1;
+      items = [
+        ['Cash', money(g.cash)],
+        ['Cost per glass', g.over ? '—' : `${m.cost(g)}¢`],
+        ['Forecast', g.over ? '—' : `${ic(WX[g.f[d]].k)} ${WX[g.f[d]].name}, ${g.ftemp[d]}°F`],
+        ['Profit so far', money(m.total(g))]
+      ];
+    }
+    return `<dl class="facts">${items.map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')}</dl>`;
+  }
+
+  function boardHTML(g) {
+    const s = STALLS[g.kind], n = noteFor(g);
+    return `<form class="board" id="dayform" novalidate>
+      <h2 class="chalk-h">${s.boardTitle}</h2>
+      <div class="ctls">${controlsFor(g).map(c => ctlHTML(c, g.input[c.k])).join('')}</div>
+      <p class="board-note${n.err ? ' err' : ''}" id="note" aria-live="polite">${n.html}</p>
+      <button class="btn btn-open" type="submit" id="openbtn" ${n.err ? 'disabled' : ''}>Open for day ${g.day}</button>
+    </form>`;
+  }
+
+  function reportHTML(g) {
+    const m = M[g.kind], s = STALLS[g.kind], total = m.total(g), b = g.bench, pct = pctOf(total, b.total);
+    let label, bench, lesson, vs;
+    if (g.kind === 'apples') {
+      label = 'Total income'; vs = 'of the best possible';
+      bench = `Charging ${b.price}¢ every day would have brought in ${money(b.total)}.`;
+      lesson = `The best price this season was ${b.price}¢. Cheap apples sell fast but earn little each. Pricey apples earn more each but few people buy. The most money sits in the middle, at the top of the hill on the chart.`;
+    } else if (g.kind === 'plants') {
+      label = 'Total profit'; vs = 'of a steady ad plan';
+      const wilted = g.left;
+      bench = `A steady ${shortMoney(b.ads * 100)} a day on ads would have earned ${money(b.total)}.`;
+      lesson = (wilted > 0 ? `${num(wilted)} ${plural(wilted, 'plant')} wilted unsold. ` : `You sold every plant${g.log.length < DAYS ? ` by day ${g.log.length}` : ''}. `) +
+        'Each extra dollar of advertising brought in fewer new buyers than the dollar before it. Once you are on pace to sell out, more ads only cost money.';
+    } else {
+      label = 'Profit for the season'; vs = 'of a perfect weather forecaster';
+      bench = `A seller who knew the weather ahead of time could have made ${money(b.total)}.`;
+      lesson = (g.broke ? `You ran out of money on day ${g.day}. ` : '') +
+        'Make a bigger batch on hot days and a small one when rain is forecast, keep the price well above what a glass costs you, and buy signs only while they bring in more than 15¢ each.';
+    }
+    const nextBtn = s.next
+      ? `<button class="btn btn-ghost" type="button" data-open="${s.next}">Next stall: ${STALLS[s.next].name}</button>`
+      : `<button class="btn btn-ghost" type="button" data-home>Back to the market</button>`;
+    return `<section class="board report" aria-live="polite">
+      <h2 class="chalk-h">Season's end</h2>
+      <div style="display:flex;flex-direction:column;gap:6px">
+        <p class="report-label">${label}</p>
+        <p class="report-big" data-count="${total}">${money(total)}</p>
+      </div>
+      <div class="meter" role="img" aria-label="${pct}% ${vs}"><span style="width:${Math.min(100, pct)}%"></span></div>
+      <p class="report-pct"><strong>${pct}%</strong> ${vs} · ${rating(pct)}</p>
+      <p>${bench}</p>
+      <p class="report-lesson">${lesson}</p>
+      <div class="report-actions">
+        <button class="btn" type="button" data-again>Play a new season</button>
+        <button class="btn btn-ghost" type="button" data-retry>Try this season again</button>
+        ${nextBtn}
+      </div>
+    </section>`;
+  }
+
+  /* ---------- what if: after the season, try one plan for every day of the same season ---------- */
+  function wiControls(g) {
+    if (g.kind === 'apples') return [{ k: 'price', label: 'Same price every day', min: 1, max: Math.min(99, appleXMax(g)), fmt: v => v + '¢' }];
+    if (g.kind === 'plants') return [{ k: 'ads', label: 'Same ads every day', min: 0, max: Math.min(80, plantXMax(g)), fmt: v => '$' + v }];
+    return [
+      { k: 'price', label: 'Price every day', min: 1, max: 99, fmt: v => v + '¢' },
+      { k: 'signs', label: 'Signs every day', min: 0, max: 12, fmt: v => String(v) }
+    ];
+  }
+  /* the sliders start at your own average choice */
+  function wiState(g) {
+    if (!g.wi) {
+      g.wi = {};
+      for (const c of wiControls(g)) g.wi[c.k] = clamp(Math.round(g.log.reduce((s, r) => s + r[c.k], 0) / Math.max(1, g.log.length)), c.min, c.max);
+    }
+    return g.wi;
+  }
+  function wiResult(g) {
+    const w = wiState(g), m = M[g.kind], yours = m.total(g);
+    const vsYou = v => v === yours ? "That's exactly what you made." : `That's ${money(Math.abs(v - yours))} ${v > yours ? 'more' : 'less'} than you ${g.kind === 'apples' ? 'took in' : 'made'}.`;
+    if (g.kind === 'apples') {
+      const r = m.seasonAt(g, w.price), b = g.bench;
+      return { total: r.total, pct: pctOf(r.total, b.total), vs: 'of the best price',
+        lead: `Charging ${w.price}¢ every day would have taken in`,
+        lines: [vsYou(r.total), w.price === b.price ? 'This is the best price for this season.' : `The best price, ${b.price}¢, takes in ${money(b.total)}.`] };
+    }
+    if (g.kind === 'plants') {
+      const r = m.seasonAt(g, w.ads), b = g.bench;
+      const fate = r.left ? `${num(r.left)} ${plural(r.left, 'plant')} would have wilted.` : `You'd have sold out on day ${r.out}.`;
+      return { total: r.total, pct: pctOf(r.total, b.total), vs: 'of the best steady ad plan',
+        lead: `Spending ${shortMoney(w.ads * 100)} on ads every day would have made`,
+        lines: [`${fate} ${vsYou(r.total)}`, w.ads === b.ads ? 'This is the best steady ad budget for this season.' : `The best steady budget, ${shortMoney(b.ads * 100)} a day, makes ${money(b.total)}.`] };
+    }
+    const r = m.seasonAt(g, w.price, w.signs), b = g.wiBest || (g.wiBest = m.bestPlan(g));
+    return { total: r.total, days: r.days, pct: pctOf(r.total, b.total), vs: 'of the best plan for your batches',
+      lead: `With your batches, charging ${w.price}¢ and putting up ${w.signs} ${plural(w.signs, 'sign')} every day would have made`,
+      lines: [vsYou(r.total), w.price === b.price && w.signs === b.signs ? 'This is the best single plan for the batches you made.' :
+        `The best single plan for your batches, ${b.price}¢ with ${b.signs} ${plural(b.signs, 'sign')}, makes ${money(b.total)}.`] };
+  }
+  function whatIfHTML(g) {
+    const w = wiState(g);
+    return `<section class="board whatif" aria-labelledby="wi-h">
+      <h2 class="chalk-h" id="wi-h">What if…</h2>
+      <p class="wi-lede">${g.kind === 'lemonade' ? 'Keep the batches you made, then pick one price and one number of signs for every day.' : 'Pick one plan and play it every day of this same season.'} The ring on the chart moves with it.</p>
+      <div class="ctls">${wiControls(g).map(c => `<div class="ctl">
+        <label for="wi-${c.k}">${c.label}</label>
+        <p class="num wi-num" id="wi-${c.k}-v" aria-hidden="true">${c.fmt(w[c.k])}</p>
+        <input type="range" id="wi-${c.k}" data-wi="${c.k}" min="${c.min}" max="${c.max}" step="1" value="${w[c.k]}" aria-valuetext="${c.fmt(w[c.k])}">
+      </div>`).join('')}</div>
+      <div class="wi-res" aria-live="polite" aria-atomic="true"><p class="wi-lead" id="wi-lead"></p><p class="wi-big" id="wi-big"></p></div>
+      <div class="meter" id="wi-meter" role="img"><span></span></div>
+      <div class="wi-lines" id="wi-lines"></div>
+    </section>`;
+  }
+  /* fills the board from the current sliders; redraws the chart's ring too unless the caller is about to */
+  function updateWhatIf(g, chart = true) {
+    const r = wiResult(g);
+    for (const c of wiControls(g)) {
+      const v = c.fmt(g.wi[c.k]);
+      $(`#wi-${c.k}-v`).textContent = v;
+      $(`#wi-${c.k}`).setAttribute('aria-valuetext', v);
+    }
+    $('#wi-lead').textContent = r.lead;
+    $('#wi-big').textContent = money(r.total);
+    const meter = $('#wi-meter');
+    meter.setAttribute('aria-label', `${r.pct}% ${r.vs}`);
+    meter.firstElementChild.style.width = Math.min(100, r.pct) + '%';
+    $('#wi-lines').innerHTML = r.lines.map(l => `<p>${l}</p>`).join('');
+    if (chart) chartSoon();
+  }
+
+  function receiptHTML(g, r) {
+    let main, rows;
+    if (g.kind === 'apples') {
+      const prev = g.log[g.log.length - 2];
+      main = r.soldOut ? `You sold every apple your crew picked at ${r.price}¢.` : `You sold ${num(r.sold)} apples at ${r.price}¢ each.`;
+      if (prev) {
+        const diff = r.income - prev.income;
+        main += diff === 0 ? ` Same income as day ${prev.day}.` : ` That's ${money(Math.abs(diff))} ${diff > 0 ? 'more' : 'less'} than day ${prev.day} at ${prev.price}¢.`;
+      }
+      rows = [['Apples sold', num(r.sold)], ['Price', `${r.price}¢`], ['Income', money(r.income), r.income]];
+    } else if (g.kind === 'plants') {
+      main = r.left === 0 ? `You sold your last plant! ${num(r.sold)} went home with gardeners today.` :
+        `You spent ${shortMoney(r.ads * 100)} on ads and sold ${num(r.sold)} ${plural(r.sold, 'plant')}. ${num(r.left)} left.`;
+      rows = [['Plants sold', num(r.sold)], ['Sales', money(r.income)], ['Ads', money(-r.ads * 100)], ['Profit', money(r.profit), r.profit]];
+    } else {
+      const w = WX[r.wx], fw = WX[r.fwx];
+      main = `It was ${w.name.toLowerCase()}, ${r.temp}°F${r.wx !== r.fwx ? ` (the forecast said ${fw.name.toLowerCase()})` : ''}. ${num(r.want)} ${plural(r.want, 'person', 'people')} wanted lemonade at ${r.price}¢. `;
+      if (r.want > r.make) main += `You ran out, and ${num(r.want - r.make)} went home thirsty.`;
+      else if (r.make > r.sold) main += `${num(r.make - r.sold)} ${plural(r.make - r.sold, 'glass', 'glasses')} got poured out at closing.`;
+      else main += 'You made exactly enough.';
+      rows = [['Glasses sold', `${num(r.sold)} of ${num(r.make)}`], ['Sales', money(r.income)], ['Lemonade & signs', money(-r.spend)], ['Profit', money(r.profit), r.profit]];
+    }
+    const last = rows.length - 1;
+    return `<section class="receipt" aria-live="polite">
+      <p class="receipt-h">Day ${r.day} receipt</p>
+      <p class="receipt-main">${main}</p>
+      <dl>${rows.map((x, i) => `<div${i === last ? ' class="total"' : ''}><dt>${x[0]}</dt><dd${x[2] != null ? ` data-count="${x[2]}"` : ''}>${x[1]}</dd></div>`).join('')}</dl>
+    </section>`;
+  }
+
+  function ledgerHTML(g) {
+    if (!g.log.length) return '<p class="empty">Each day you open, a line is added here.</p>';
+    let head, row;
+    if (g.kind === 'apples') {
+      head = ['Day', 'Price', 'Sold', 'Income'];
+      row = r => [r.day, `${r.price}¢`, num(r.sold), money(r.income)];
+    } else if (g.kind === 'plants') {
+      head = ['Day', 'Ads', 'Sold', 'Left', 'Profit'];
+      row = r => [r.day, shortMoney(r.ads * 100), num(r.sold), num(r.left), money(r.profit)];
+    } else {
+      head = ['Day', 'Weather', 'Made', 'Price', 'Signs', 'Sold', 'Profit', 'Cash'];
+      row = r => [r.day, `<span class="wx">${ic(WX[r.wx].k, 15)}${WX[r.wx].name}</span>`, num(r.make), `${r.price}¢`, r.signs, num(r.sold), money(r.profit), money(r.cash)];
+    }
+    const profitCol = head.indexOf('Profit');
+    const body = g.log.map((r, i) => {
+      const cells = row(r);
+      return `<tr${i === g.log.length - 1 && S.fresh ? ' class="fresh"' : ''}>${cells.map((c, j) => `<td${j === profitCol && r.profit < 0 ? ' class="neg"' : ''}>${c}</td>`).join('')}</tr>`;
+    }).join('');
+    return `<div class="ledger-wrap"><table class="ledger"><thead><tr>${head.map(h => `<th scope="col">${h}</th>`).join('')}</tr></thead><tbody>${body}</tbody></table></div>`;
+  }
+
+  function chartMeta(g) {
+    if (g.kind === 'apples') return ['Income for each price you tried', 'Each dot is one day. Look for the shape.'];
+    if (g.kind === 'plants') return ['Plants sold for each ad budget', 'Each dot is one day. A hollow dot means you ran out of plants.'];
+    return ['Profit by day', 'Bars below the line are days you lost money.'];
+  }
+  function chartKeyHTML(g) {
+    const yours = g.kind === 'lemonade' ? '<span><i class="k-bar"></i>Your profit</span>' : '<span><i class="k-dot"></i>Your days</span>';
+    const usual = g.kind === 'lemonade' ? '' : `<span><i class="k-curve"></i>${g.kind === 'apples' ? 'Usual income' : 'Usual sales'}</span>`;
+    return `<p class="chart-key">${yours}${usual}<span><i class="k-ring"></i>What if</span></p>`;
+  }
+
+  function renderStall(animate) {
+    const g = cur(), s = STALLS[g.kind], last = g.log[g.log.length - 1], [cap, sub] = chartMeta(g);
+    const ae = document.activeElement, nameSel = ae && ae.id === 'stand-name' ? [ae.selectionStart, ae.selectionEnd] : null;
+    $('#view').innerHTML = `
+      <section class="stall st-${g.kind}">
+        <div class="awning" aria-hidden="true"></div>
+        <header class="fascia">
+          <button class="back" type="button" data-home>← All stalls</button>
+          <h1 class="sign">${g.kind === 'lemonade' && standName() ? esc(standName()) : s.name}</h1>
+          <p class="daypill">${g.over ? 'Season over' : `Day ${g.day} of ${DAYS}`}</p>
+        </header>
+        <div class="stall-grid">
+          <div id="scene-slot"></div>
+          <div class="counter">
+            <p class="brief">${s.brief}</p>
+            ${g.code ? `<p class="season-code">Season code <span class="code">${g.code}</span>. Share it, and anyone can play this same season by entering it on the home page.</p>` : ''}
+            ${g.kind === 'lemonade' ? `<div class="namefield"><label for="stand-name">Name your stand</label><input id="stand-name" type="text" maxlength="22" autocomplete="off" spellcheck="false" placeholder="Lemonade" value="${esc(S.standName || '')}"></div>` : ''}
+            ${factsHTML(g)}
+            ${g.over ? reportHTML(g) + whatIfHTML(g) : boardHTML(g)}
+            ${last ? receiptHTML(g, last) : ''}
+          </div>
+          <div class="daybook">
+            <div class="db-head"><h2 class="db-title">Day book</h2><p class="db-sub">${sub}</p></div>
+            <figure class="chart" id="chart">
+              <figcaption>${cap}</figcaption>
+              ${g.over ? chartKeyHTML(g) : ''}
+              <div class="chart-svg"></div>
+              <div class="tip" hidden></div>
+            </figure>
+            ${ledgerHTML(g)}
+          </div>
+        </div>
+      </section>`;
+    S.fresh = false;
+    const slot = $('#scene-slot');
+    if (slot) Scene.mount(slot, g);
+    if (g.over) updateWhatIf(g, false);
+    renderChart();
+    observeChart();
+    if (animate) countUp();
+    if (nameSel) {
+      const el = $('#stand-name');
+      el.focus({ preventScroll: true });
+      el.setSelectionRange(nameSel[0], nameSel[1]);
+    } else if (animate) {
+      const btn = $('#openbtn');
+      if (btn) btn.focus({ preventScroll: true });
+    }
+  }
+
+  function countUp() {
+    if (REDUCED) return;
+    document.querySelectorAll('[data-count]').forEach(el => {
+      const to = +el.dataset.count, t0 = performance.now(), dur = 750;
+      const tick = t => {
+        const k = Math.min(1, (t - t0) / dur), e = 1 - Math.pow(1 - k, 3);
+        el.textContent = money(Math.round(to * e));
+        if (k < 1) requestAnimationFrame(tick);
+      };
+      requestAnimationFrame(tick);
+    });
+  }
+
+  /* ---------- charts ---------- */
+  function niceStep(range, target) {
+    const raw = range / target, p = Math.pow(10, Math.floor(Math.log10(raw))), m = raw / p;
+    return (m <= 1 ? 1 : m <= 2 ? 2 : m <= 2.5 ? 2.5 : m <= 5 ? 5 : 10) * p;
+  }
+  const esc = s => String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;');
+
+  function scatter(W, o) {
+    const H = 260, ml = 54, mr = 20, mt = 18, mb = 42;
+    const xs = niceStep(o.xMax, W < 440 ? 4 : 6), xM = Math.ceil(o.xMax / xs) * xs;
+    const ys = niceStep(o.yMax, 4), yM = Math.ceil(o.yMax / ys) * ys;
+    const X = v => ml + v / xM * (W - ml - mr), Y = v => H - mb - v / yM * (H - mt - mb);
+    let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(o.aria)}">`;
+    for (let v = 0; v <= yM + 1e-9; v += ys) {
+      s += `<line x1="${ml}" x2="${W - mr}" y1="${Y(v)}" y2="${Y(v)}" class="${v === 0 ? 'axis' : 'grid'}"/>`;
+      s += `<text x="${ml - 8}" y="${Y(v) + 4}" class="tick" text-anchor="end">${o.yFmt(v)}</text>`;
+    }
+    for (let v = 0; v <= xM + 1e-9; v += xs) s += `<text x="${X(v)}" y="${H - mb + 18}" class="tick" text-anchor="middle">${o.xFmt(v)}</text>`;
+    s += `<text x="${W - mr}" y="${H - 4}" class="axis-title" text-anchor="end">${o.xTitle} →</text>`;
+    if (o.curve) {
+      const pts = o.curve.filter(p => p[0] <= xM);
+      s += `<path class="curve" d="${pts.map((p, i) => (i ? 'L' : 'M') + X(p[0]).toFixed(1) + ' ' + Y(p[1]).toFixed(1)).join('')}"/>`;
+      // the what-if label takes over when it would sit on top of the peak's
+      if (o.peak && !(o.mark && Math.abs(X(o.mark.x) - X(o.peak[0])) < 120)) {
+        const px = X(o.peak[0]), py = Y(o.peak[1]), right = px > W * .6;
+        s += `<text x="${px + (right ? -10 : 10)}" y="${py - 10}" class="lbl" text-anchor="${right ? 'end' : 'start'}">${esc(o.peakLabel)}</text>`;
+      }
+    }
+    if (!o.pts.length) s += `<text x="${(ml + W - mr) / 2}" y="${(mt + H - mb) / 2}" class="empty-msg" text-anchor="middle">Open the stall to plot your first day.</text>`;
+    o.pts.forEach((p, i) => {
+      const latest = i === o.pts.length - 1, cx = X(p.x), cy = Y(p.y);
+      s += `<g data-tip="${esc(p.tip)}"><title>${esc(p.tip)}</title><circle class="hit" cx="${cx}" cy="${cy}" r="14"/>` +
+        `<circle class="dot${p.hollow ? ' hollow' : ''}" cx="${cx}" cy="${cy}" r="${latest ? 7.5 : 6}"/></g>`;
+      if (latest) {
+        const right = cx > W * .75;
+        s += `<text x="${cx + (right ? -12 : 12)}" y="${cy + 4}" class="lbl" text-anchor="${right ? 'end' : 'start'}">Day ${p.day}</text>`;
+      }
+    });
+    // drawn last so the ring being dragged stays on top of the day dots
+    if (o.mark) {
+      const mx = X(o.mark.x), my = Y(o.mark.y), right = mx > W * .6;
+      s += `<g class="wi-mark"><line class="wi-line" x1="${mx}" x2="${mx}" y1="${Y(0)}" y2="${my}"/><circle class="wi-ring" cx="${mx}" cy="${my}" r="7"/>` +
+        `<text x="${mx + (right ? -12 : 12)}" y="${my - 12}" class="lbl" text-anchor="${right ? 'end' : 'start'}">${esc(o.mark.label)}</text></g>`;
+    }
+    return s + '</svg>';
+  }
+
+  function barPath(x, w, y0, y1) {
+    const h = Math.abs(y1 - y0);
+    if (h < 1) return `M${x} ${y0}h${w}v1h${-w}z`;
+    const r = Math.min(4, h, w / 2), up = y1 < y0, k = up ? 1 : -1;
+    return `M${x} ${y0}V${y1 + k * r}Q${x} ${y1} ${x + r} ${y1}H${x + w - r}Q${x + w} ${y1} ${x + w} ${y1 + k * r}V${y0}Z`;
+  }
+
+  /* wi: what-if profit for each day, drawn as rings over the bars */
+  function bars(W, g, wi) {
+    const H = 260, ml = 54, mr = 12, mt = 24, mb = 50;
+    const vals = g.log.map(r => r.profit).concat(wi || []);
+    let lo = Math.min(0, ...vals), hi = Math.max(0, ...vals);
+    if (hi - lo < 200) hi = lo + 200;
+    const st = niceStep(hi - lo, 4);
+    lo = Math.floor(lo / st) * st; hi = Math.ceil(hi / st) * st;
+    const Y = v => mt + (hi - v) / (hi - lo) * (H - mt - mb);
+    const band = (W - ml - mr) / DAYS, bw = Math.min(34, band * .62);
+    let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Profit for each day of the season">`;
+    for (let v = lo; v <= hi + 1e-9; v += st) {
+      s += `<line x1="${ml}" x2="${W - mr}" y1="${Y(v)}" y2="${Y(v)}" class="${Math.abs(v) < 1e-9 ? 'axis' : 'grid'}"/>`;
+      s += `<text x="${ml - 8}" y="${Y(v) + 4}" class="tick" text-anchor="end">${v < 0 ? '−' : ''}${shortMoney(Math.abs(v))}</text>`;
+    }
+    for (let i = 0; i < DAYS; i++) {
+      const cx = ml + band * (i + .5), r = g.log[i];
+      s += `<text x="${cx}" y="${H - mb + 17}" class="tick" text-anchor="middle">${i + 1}</text>`;
+      if (!r) continue;
+      const tip = `Day ${r.day} · ${WX[r.wx].name} ${r.temp}°F · sold ${r.sold} of ${r.make} at ${r.price}¢ · ${money(r.profit)}` + (wi ? ` · what if: ${money(wi[i])}` : '');
+      s += `<g data-tip="${esc(tip)}"><title>${esc(tip)}</title><rect class="hit" x="${ml + band * i}" y="${mt}" width="${band}" height="${H - mt - mb}"/>` +
+        `<path class="${r.profit < 0 ? 'bar-neg' : 'bar-pos'}" d="${barPath(cx - bw / 2, bw, Y(0), Y(r.profit))}"/>` +
+        (wi ? `<circle class="wi-ring" cx="${cx}" cy="${Y(wi[i])}" r="5.5"/>` : '') + '</g>';
+      s += `<svg class="wx-ic" x="${cx - 8}" y="${H - mb + 24}" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${ICON[WX[r.wx].k]}</svg>`;
+      if (i === g.log.length - 1 && !wi) {
+        const y = r.profit >= 0 ? Y(r.profit) - 7 : Y(0) - 7;
+        s += `<text x="${cx}" y="${y}" class="lbl" text-anchor="middle">${money(r.profit)}</text>`;
+      }
+    }
+    s += `<text x="${ml}" y="${H - 4}" class="axis-title">Day →</text>`;
+    if (!g.log.length) s += `<text x="${(ml + W - mr) / 2}" y="${(mt + H - mb) / 2}" class="empty-msg" text-anchor="middle">Open the stall to see your first day.</text>`;
+    return s + '</svg>';
+  }
+
+  function chartFor(g, W) {
+    if (g.kind === 'apples') {
+      const m = M.apples, pts = g.log.map(r => ({ x: r.price, y: r.income, day: r.day, tip: `Day ${r.day}: ${r.price}¢ → ${r.sold} sold, ${money(r.income)}` }));
+      const xMax = appleXMax(g), usual = p => p * Math.min(g.cap, m.demand(g, p));
+      let yMax = Math.max(1000, ...g.log.map(r => r.income * 1.15)), curve = null, peak = null, peakLabel = '', mark = null;
+      if (g.over) {
+        curve = []; for (let p = 0; p <= Math.min(g.Z, xMax); p += .5) curve.push([p, p * Math.min(g.cap, g.A * (1 - p / g.Z))]);
+        const bp = g.bench.price; peak = [bp, usual(bp)];
+        peakLabel = `Best price: ${bp}¢`;
+        yMax = Math.max(yMax, peak[1] * 1.15);
+        const p = wiState(g).price; mark = { x: p, y: usual(p), label: `What if: ${p}¢` };
+      }
+      return scatter(W, { pts, xMax, yMax, xFmt: v => v + '¢', yFmt: v => shortMoney(v), xTitle: 'Price per apple', curve, peak, peakLabel, mark, aria: 'Income per day plotted against the price charged' });
+    }
+    if (g.kind === 'plants') {
+      const pts = g.log.map(r => ({ x: r.ads, y: r.sold, day: r.day, hollow: r.sold < r.want, tip: `Day ${r.day}: ${shortMoney(r.ads * 100)} ads → ${r.sold} sold` }));
+      const xMax = plantXMax(g), usual = a => g.B + g.K * Math.sqrt(a);
+      let yMax = Math.max(150, ...g.log.map(r => r.sold * 1.15)), curve = null, peak = null, peakLabel = '', mark = null;
+      if (g.over) {
+        curve = []; for (let a = 0; a <= xMax; a += .5) curve.push([a, usual(a)]);
+        yMax = Math.max(yMax, usual(xMax) * 1.1);
+        const ax = xMax * .8; peak = [ax, usual(ax)]; peakLabel = 'Usual sales';
+        const a = wiState(g).ads; mark = { x: a, y: usual(a), label: `What if: $${a}` };
+      }
+      return scatter(W, { pts, xMax, yMax, xFmt: v => '$' + v, yFmt: v => num(v), xTitle: 'Ad spending', curve, peak, peakLabel, mark, aria: 'Plants sold per day plotted against ad spending' });
+    }
+    return bars(W, g, g.over ? wiResult(g).days : null);
+  }
+  /* x ranges for the two scatter charts; after the season they also cover the best plan, and the What if sliders stay inside them */
+  const appleXMax = g => Math.max(60, ...g.log.map(r => r.price + 5), g.over ? g.Z + 4 : 0);
+  const plantXMax = g => Math.max(40, ...g.log.map(r => r.ads + 5), g.over && g.bench ? g.bench.ads + 10 : 0);
+
+  let lastW = 0, ro = null;
+  function renderChart() {
+    const box = $('#chart .chart-svg'), g = cur();
+    if (!box || !g) return;
+    const W = Math.max(280, Math.round(box.clientWidth));
+    lastW = W;
+    box.innerHTML = chartFor(g, W);
+  }
+  /* one redraw per frame while a What if slider is dragged */
+  let chartRaf = 0;
+  const chartSoon = () => { if (!chartRaf) chartRaf = requestAnimationFrame(() => { chartRaf = 0; renderChart(); }); };
+  function observeChart() {
+    const box = $('#chart .chart-svg');
+    if (!box || !window.ResizeObserver) return;
+    if (!ro) ro = new ResizeObserver(() => requestAnimationFrame(() => {
+      const b = $('#chart .chart-svg');
+      if (b && Math.abs(Math.round(b.clientWidth) - lastW) > 2) renderChart();
+    }));
+    ro.disconnect();
+    ro.observe(box);
+  }
+
+  /* ---------- the stand scene ---------- */
+  const SIGN_X = [.12, .88, .25, .75, .05, .95, .36, .64];
+  const rr = (ctx, x, y, w, h, r) => { ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, w, h, r); else ctx.rect(x, y, w, h); };
+  const standName = () => String(S.standName || '').trim();
+  const adSignCount = ads => Math.min(8, Math.ceil(ads / 10));
+  function lockBoard(label) {
+    const f = $('#dayform');
+    if (!f) return;
+    f.querySelectorAll('input, button').forEach(el => { el.disabled = true; });
+    const b = $('#openbtn');
+    if (b) b.textContent = label;
+  }
+
+  /* what each stall looks like: at rest (idle) and for one played-out day (day) */
+  const SCENES = {
+    apples: {
+      awning: 'red', missed: 'Missed out',
+      sign: () => 'APPLES',
+      idle(g) {
+        if (g.over) {
+          const r = g.log[g.log.length - 1];
+          return { wx: 1, level: (g.cap - r.sold) / g.cap, price: r.price, signs: 0, closed: true, status: 'Season over',
+            ticker: `<span>Closed for the season</span><span>Total income <b>${money(M.apples.total(g))}</b></span>`,
+            aria: 'The apple stand, closed for the season' };
+        }
+        const p = g.input.price;
+        return { wx: 1, level: 1, price: p, signs: 0, closed: false,
+          status: `Morning of day ${g.day} · Your crew picked ${g.cap} apples`,
+          ticker: `<span>Ready <b>${g.cap}</b> apples</span><span>Price <b>${p}¢</b></span>`,
+          aria: `The apple stand on the morning of day ${g.day}, with ${g.cap} apples at ${p}¢ each` };
+      },
+      day(g, r) {
+        return { wx: 1, stock: g.cap, cap: g.cap, price: r.price, signs: 0, drain: false, leftover: 'Unsold', showOf: true,
+          want: r.want != null ? r.want : (r.soldOut ? g.cap : r.sold) };
+      }
+    },
+    plants: {
+      awning: 'plant', missed: 'Missed out',
+      sign: () => 'TOMATO PLANTS',
+      idle(g) {
+        if (g.over) {
+          return { wx: 1, level: g.left / 1000, price: 50, signs: 0, closed: true,
+            status: g.left ? `Season over · ${num(g.left)} ${plural(g.left, 'plant')} wilted` : 'Season over · Every plant sold',
+            ticker: `<span>Closed for the season</span><span>Total profit <b>${money(M.plants.total(g))}</b></span>`,
+            aria: 'The tomato plant stand, closed for the season' };
+        }
+        const a = g.input.ads;
+        return { wx: 1, level: g.left / 1000, price: 50, signs: adSignCount(a), ads: a, closed: false,
+          status: `Morning of day ${g.day} · ${num(g.left)} plants on hand`,
+          ticker: `<span>On hand <b>${num(g.left)}</b></span><span>Price <b>50¢</b></span><span>Ads <b>${shortMoney(a * 100)}</b></span>`,
+          aria: `The tomato plant stand on the morning of day ${g.day}, with ${num(g.left)} plants and ${shortMoney(a * 100)} of ads` };
+      },
+      day(g, r) {
+        return { wx: 1, stock: r.left + r.sold, cap: 1000, price: 50, signs: adSignCount(r.ads), ads: r.ads, drain: false,
+          leftover: 'Plants left', showOf: false, want: r.want };
+      }
+    },
+    lemonade: {
+      awning: 'lemon', missed: 'Went home thirsty',
+      sign: () => standName() ? standName().toUpperCase() : 'LEMONADE',
+      idle(g) {
+        const who = standName() || 'The lemonade stand';
+        if (g.over) {
+          const r = g.log[g.log.length - 1];
+          return { wx: r.wx, level: 0, price: r.price, signs: r.signs, closed: true,
+            status: `Season over · Day ${r.day} was ${WX[r.wx].name.toLowerCase()}, ${r.temp}°F`,
+            ticker: `<span>Closed for the season</span><span>Final cash <b>${money(g.cash)}</b></span>`,
+            aria: `${who}, closed for the season` };
+        }
+        const d = g.day - 1, { make, price, signs } = g.input;
+        return { wx: g.f[d], level: make ? 1 : 0, price, signs, closed: false,
+          status: `Morning of day ${g.day} · Forecast: ${WX[g.f[d]].name}, ${g.ftemp[d]}°F`,
+          ticker: `<span>Ready <b>${num(make)}</b> ${plural(make, 'glass', 'glasses')}</span><span>Price <b>${price}¢</b></span><span>Signs <b>${signs}</b></span><span>Cost <b>${money(M.lemonade.spend(g))}</b></span>`,
+          aria: `${who} on the morning of day ${g.day}, forecast ${WX[g.f[d]].name.toLowerCase()}, with ${make} glasses ready at ${price}¢` };
+      },
+      day(g, r) {
+        return { wx: r.wx, stock: r.make, cap: r.make, price: r.price, signs: r.signs, drain: true, leftover: 'Poured out', showOf: true, want: r.want,
+          wxText: `${WX[r.wx].name}, ${r.temp}°F` + (r.wx !== r.fwx ? ` (forecast said ${WX[r.fwx].name.toLowerCase()})` : '') };
+      }
+    }
+  };
+
+  const Scene = {
+    root: null, cv: null, ctx: null, on: store.get('mp-scene', true) !== false, W: 0, H: 0, dpr: 0, c: null,
+    g: null, anim: null, raf: 0, timer: 0, pending: 0, drops: [], lastNow: 0, tk: '', aria: '',
+
+    build() {
+      const root = document.createElement('section');
+      root.className = 'scene';
+      root.innerHTML = `
+        <div class="scene-bar">
+          <p class="scene-status"><strong>The stand</strong> <span id="sc-status"></span></p>
+          <div class="scene-actions">
+            <button type="button" class="chip-btn" id="sc-skip" hidden>Skip to closing time</button>
+            <button type="button" class="chip-btn" id="sc-replay" hidden></button>
+            <button type="button" class="switch" id="sc-toggle" role="switch" aria-checked="true">Show the stand</button>
+          </div>
+        </div>
+        <div class="scene-stage" id="sc-stage"><canvas id="sc-canvas" role="img"></canvas></div>
+        <p class="scene-ticker" id="sc-ticker"></p>`;
+      this.root = root;
+      this.cv = root.querySelector('canvas');
+      this.ctx = this.cv.getContext('2d');
+      root.querySelector('#sc-toggle').addEventListener('click', () => this.setOn(!this.on));
+      root.querySelector('#sc-skip').addEventListener('click', () => this.skip());
+      root.querySelector('#sc-replay').addEventListener('click', () => this.replay());
+      // resize work waits a frame, so redrawing never re-triggers the observer inside the same layout pass
+      if (window.ResizeObserver) new ResizeObserver(() => requestAnimationFrame(() => { if (this.resize()) this.idle(); })).observe(root.querySelector('#sc-stage'));
+    },
+    mount(slot, g) {
+      if (!this.root) this.build();
+      if (this.g !== g) this.stop();
+      this.g = g;
+      this.root.setAttribute('aria-label', `${STALLS[g.kind].name} stand`);
+      slot.replaceWith(this.root);
+      this.applyOn();
+    },
+    applyOn() {
+      this.root.querySelector('#sc-toggle').setAttribute('aria-checked', this.on);
+      this.root.querySelector('#sc-stage').hidden = !this.on;
+      this.root.querySelector('#sc-ticker').hidden = !this.on;
+      this.root.classList.toggle('off', !this.on);
+      this.syncButtons();
+      this.resize();
+      this.idle();
+    },
+    setOn(v) {
+      this.on = v;
+      store.set('mp-scene', v);
+      if (!v && this.anim) return this.skip();
+      this.applyOn();
+    },
+    syncButtons() {
+      const last = this.g && this.g.log[this.g.log.length - 1];
+      const skip = this.root.querySelector('#sc-skip'), rep = this.root.querySelector('#sc-replay');
+      skip.hidden = !(this.on && this.anim && !REDUCED);
+      rep.hidden = !(this.on && !this.anim && last);
+      if (last) rep.textContent = `Watch day ${last.day} again`;
+    },
+    /* sizes the canvas to its column; returns true only when the size actually changed */
+    resize() {
+      const stage = this.root && this.root.querySelector('#sc-stage');
+      if (!stage || !this.on || !stage.isConnected) return false;
+      const W = Math.round(stage.clientWidth), dpr = Math.min(2, window.devicePixelRatio || 1);
+      if (!W || (W === this.W && dpr === this.dpr)) return false;
+      const H = Math.round(clamp(W * .42, 210, 300));
+      this.W = W; this.H = H; this.dpr = dpr;
+      this.cv.width = Math.round(W * dpr); this.cv.height = Math.round(H * dpr);
+      this.cv.style.height = H + 'px';
+      this.ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+      this.drops = Array.from({ length: Math.round(W * H / 2200) }, () => ({ x: Math.random() * (W + 60), y: Math.random() * H, v: rand(420, 560), len: rand(10, 18) }));
+      return true;
+    },
+    colors() {
+      if (this.c) return this.c;
+      const cs = getComputedStyle(document.documentElement), v = n => cs.getPropertyValue(n).trim();
+      return this.c = {
+        sky: ['hot', 'sunny', 'cloudy', 'rainy'].map(k => [v(`--sky-${k}-1`), v(`--sky-${k}-2`)]),
+        sun: v('--sun'), cloud: v('--cloud'), cloudDark: v('--cloud-dark'), rain: v('--rain'),
+        hill: v('--hill'), grass: v('--grass'), walk: v('--walk'), walkLine: v('--walk-line'),
+        wood: v('--wood'), woodDark: v('--wood-dark'), counter: v('--counter'), lemon: v('--lemon'), plant: v('--plant'), pot: v('--pot'),
+        canvas: v('--canvas'), ink: v('--scene-ink'), glass: v('--glass'), board: v('--board'), chalk: v('--chalk'), red: v('--apple'),
+        shirts: [v('--apple'), v('--plant'), v('--shirt-3'), v('--shirt-4')],
+        skins: [v('--skin-1'), v('--skin-2'), v('--skin-3'), v('--skin-4')],
+        fDisplay: v('--f-display'), fChalk: v('--f-chalk'), fData: v('--f-data')
+      };
+    },
+    recolor() { this.c = null; if (!this.anim) this.idle(); },
+
+    idle() {
+      if (!this.root || !this.g || this.anim) return;
+      const st = Object.assign({ kind: this.g.kind, walkers: [], t: 0 }, SCENES[this.g.kind].idle(this.g));
+      this.setText(st.status, st.ticker);
+      this.label(st.aria);
+      this.syncButtons();
+      if (this.on && this.W) this.draw(st, 0, 0);
+    },
+    /* coalesces redraws from slider drags and typing into one per frame */
+    idleSoon() {
+      if (this.pending) return;
+      this.pending = requestAnimationFrame(() => { this.pending = 0; this.idle(); });
+    },
+    label(text) {
+      if (text !== this.aria) { this.cv.setAttribute('aria-label', text); this.aria = text; }
+    },
+    setText(status, ticker) {
+      const s = this.root.querySelector('#sc-status');
+      if (s.textContent !== status) s.textContent = status;
+      if (this.tk !== ticker) { this.root.querySelector('#sc-ticker').innerHTML = ticker; this.tk = ticker; }
+    },
+
+    /* one market day, played out */
+    play(r, onDone) {
+      this.stop();
+      const spec = SCENES[this.g.kind].day(this.g, r);
+      const V = Math.min(spec.want, 40), base = V ? Math.floor(spec.want / V) : 0, extra = V ? spec.want % V : 0;
+      const walk = .95 * clamp(this.W / 650, .8, 1.5), walkers = [];
+      for (let i = 0; i < V; i++) {
+        const ts = Math.max(0, .15 + (i + rand(-.35, .35)) / V * 4.3);
+        walkers.push({ ts, ta: ts + walk, tl: ts + walk + .4, tg: ts + walk * 2 + .4,
+          from: Math.random() < .5 ? -1 : 1, side: rand(-1, 1), batch: base + (i < extra ? 1 : 0),
+          size: rand(.82, 1.06), shirt: randInt(0, 3), skin: randInt(0, 3), umb: randInt(0, 3),
+          hair: Math.random() < .75, seed: Math.random(), done: false, bought: 0, sad: false });
+      }
+      walkers.sort((a, b) => a.ta - b.ta);
+      const endOpen = Math.max(4.8, ...walkers.map(w => w.tg));
+      this.anim = { r, spec, onDone, walkers, coins: [], cust: 0, sold: 0, left: spec.stock, cash: 0, thirsty: 0, endOpen, endT: endOpen + 1.5, start: 0, t: 0 };
+      this.syncButtons();
+      if (!this.on || !this.W) return this.skip();
+      const box = this.root.getBoundingClientRect();
+      if (box.top < 0 || box.bottom > innerHeight) this.root.scrollIntoView({ block: 'nearest', behavior: REDUCED ? 'auto' : 'smooth' });
+      if (REDUCED) {
+        this.settle();
+        this.draw(this.animState(this.anim.endT), this.anim.endT, 0);
+        this.text();
+        this.timer = setTimeout(() => this.finish(), 2600);
+        return;
+      }
+      this.lastNow = 0;
+      this.raf = requestAnimationFrame(n => this.loop(n));
+    },
+    loop(now) {
+      const A = this.anim;
+      if (!A) return;
+      if (!this.cv.isConnected) return this.stop();
+      if (!A.start) A.start = now;
+      const dt = this.lastNow ? Math.min(.05, (now - this.lastNow) / 1000) : 0;
+      this.lastNow = now;
+      A.t = (now - A.start) / 1000;
+      this.process(A.t);
+      this.draw(this.animState(A.t), A.t, dt);
+      this.text();
+      if (A.t >= A.endT) return this.finish();
+      this.raf = requestAnimationFrame(n => this.loop(n));
+    },
+    /* quiet: settling a skipped day all at once, so no pile of sale beeps */
+    process(t, quiet) {
+      const A = this.anim, price = A.spec.price;
+      for (const w of A.walkers) {
+        if (w.done || w.ta > t) continue;
+        w.done = true;
+        const got = Math.min(w.batch, A.left);
+        A.left -= got; A.sold += got; A.cust += w.batch; A.cash += got * price; A.thirsty += w.batch - got; w.bought = got;
+        if (!got) { w.sad = true; continue; }
+        // sales close together share one floating total, so busy days don't stack a pile of tags over the counter
+        const last = A.coins[A.coins.length - 1];
+        if (last && w.ta - last.t0 < .35) last.amount += got * price;
+        else {
+          A.coins.push({ t0: w.ta, side: w.side, amount: got * price });
+          if (!quiet) Sound.sale();
+        }
+      }
+    },
+    settle() { this.process(Infinity, true); this.anim.t = this.anim.endT; },
+    skip() {
+      if (!this.anim) return;
+      const btn = this.root.querySelector('#sc-skip'), hadFocus = document.activeElement === btn;
+      this.settle();
+      this.finish();
+      // the skip button hides itself; keep keyboard focus in the scene unless the day's re-render placed it
+      const ae = document.activeElement, rep = this.root.querySelector('#sc-replay');
+      if (hadFocus && (!ae || ae === btn || ae === document.body) && !rep.hidden) rep.focus();
+    },
+    finish() {
+      const A = this.anim;
+      if (!A) return;
+      cancelAnimationFrame(this.raf); clearTimeout(this.timer);
+      this.anim = null;
+      this.syncButtons();
+      if (A.onDone) A.onDone();
+    },
+    stop() { cancelAnimationFrame(this.raf); cancelAnimationFrame(this.pending); clearTimeout(this.timer); this.anim = null; this.pending = 0; },
+    replay() {
+      const r = this.g && this.g.log[this.g.log.length - 1];
+      if (!r || this.anim) return;
+      lockBoard(`Replaying day ${r.day}…`);
+      this.play(r, () => renderStall(false));
+    },
+    animState(t) {
+      const A = this.anim, sp = A.spec, close = sp.drain ? clamp((t - A.endOpen) / 1.1, 0, 1) : 0;
+      return { kind: this.g.kind, wx: sp.wx, level: sp.cap ? A.left / sp.cap * (1 - close) : 0, price: sp.price, signs: sp.signs, ads: sp.ads,
+        closed: t >= A.endOpen, soldOut: sp.stock === 0 || A.left === 0, walkers: A.walkers, coins: A.coins, t };
+    },
+    text() {
+      const A = this.anim, r = A.r, sp = A.spec, kind = this.g.kind, t = Math.min(A.t, A.endT), closing = t >= A.endOpen;
+      const mins = 540 + Math.min(1, t / A.endOpen) * 480, q = Math.floor(mins / 15) * 15, h = Math.floor(q / 60), m = q % 60;
+      const clock = `${((h + 11) % 12) + 1}:${String(m).padStart(2, '0')} ${h < 12 ? 'AM' : 'PM'}`;
+      const status = `Day ${r.day} · ${closing ? 'Closing time' : clock}` + (sp.wxText ? ` · ${sp.wxText}` : '');
+      let tk = `<span>Customers <b>${num(A.cust)}</b></span><span>Sold <b>${num(A.sold)}</b>${sp.showOf ? ` of ${num(sp.stock)}` : ''}</span><span>Taken in <b>${money(A.cash)}</b></span>`;
+      if (sp.ads != null) tk += `<span>Ads <b>${shortMoney(sp.ads * 100)}</b></span>`;
+      if (A.thirsty) tk += `<span>${SCENES[kind].missed} <b>${num(A.thirsty)}</b></span>`;
+      if (closing && A.left > 0) tk += `<span>${sp.leftover} <b>${num(A.left)}</b></span>`;
+      this.setText(status, tk);
+      this.label(`Day ${r.day} at the ${STALLS[kind].name.toLowerCase()} stand: ${A.sold} sold so far`);
+    },
+
+    /* drawing */
+    draw(st, t, dt) {
+      const ctx = this.ctx, c = this.colors(), W = this.W, H = this.H, u = H / 260;
+      const G = { W, H, u, sx: W / 2, sw: clamp(W * .34, 150 * u, 230 * u), horizon: H * .55, walkTop: H * .8, feet: H * .95,
+        awTop: H * .07, awBot: H * .18, cTop: H * .42, cBot: H * .8 };
+      ctx.clearRect(0, 0, W, H);
+      const [s1, s2] = c.sky[st.wx], gr = ctx.createLinearGradient(0, 0, 0, G.horizon);
+      gr.addColorStop(0, s1); gr.addColorStop(1, s2);
+      ctx.fillStyle = gr; ctx.fillRect(0, 0, W, G.horizon + 1);
+      if (st.wx <= 1) this.sun(ctx, G, c, t, st.wx === 0);
+      this.clouds(ctx, G, c, t, st.wx);
+      this.ground(ctx, G, c, st.wx, t);
+      this.scenery(ctx, G, c, st.kind);
+      const pill = this.adSigns(ctx, G, c, st);
+      this.stand(ctx, G, c, st);
+      if (st.walkers.length) this.people(ctx, G, c, st);
+      if (st.coins) this.coins(ctx, G, c, st);
+      if (st.wx === 3) this.rain(ctx, G, c, dt);
+      if (pill) this.pill(ctx, G, c, pill);
+    },
+    sun(ctx, G, c, t, hot) {
+      const u = G.u, r = (hot ? 22 : 17) * u;
+      ctx.save(); ctx.translate(G.W * .87, G.H * .17); ctx.rotate(t * .3);
+      ctx.strokeStyle = c.sun; ctx.lineWidth = 3 * u; ctx.lineCap = 'round';
+      for (let i = 0; i < 12; i++) {
+        const a = i / 12 * Math.PI * 2, r1 = r + 6 * u, r2 = r + (hot ? 17 : 12) * u;
+        ctx.beginPath(); ctx.moveTo(Math.cos(a) * r1, Math.sin(a) * r1); ctx.lineTo(Math.cos(a) * r2, Math.sin(a) * r2); ctx.stroke();
+      }
+      ctx.fillStyle = c.sun; ctx.beginPath(); ctx.arc(0, 0, r, 0, Math.PI * 2); ctx.fill();
+      ctx.restore();
+    },
+    clouds(ctx, G, c, t, wx) {
+      const sets = [[], [[.18, .16, .8]], [[.1, .14, 1], [.44, .08, .8], [.68, .22, 1.1]], [[.03, .12, 1.25], [.3, .06, 1.05], [.56, .14, 1.3], [.82, .07, 1.15]]];
+      const span = G.W + 160 * G.u, col = wx === 3 ? c.cloudDark : c.cloud;
+      ctx.globalAlpha = wx === 3 ? 1 : .92;
+      sets[wx].forEach(([fx, fy, sc], i) => {
+        const x = ((fx * G.W + t * (8 + i * 3) * G.u) % span) - 80 * G.u, y = fy * G.H + 12 * G.u, s = sc * G.u;
+        ctx.fillStyle = col;
+        [[0, 0, 13], [16, -9, 17], [34, -2, 14], [48, 4, 10]].forEach(([dx, dy, rad]) => {
+          ctx.beginPath(); ctx.arc(x + dx * s, y + dy * s, rad * s, 0, Math.PI * 2); ctx.fill();
+        });
+        rr(ctx, x - 6 * s, y, 62 * s, 14 * s, 7 * s); ctx.fill();
+      });
+      ctx.globalAlpha = 1;
+    },
+    ground(ctx, G, c, wx, t) {
+      const { W, H, u } = G;
+      ctx.fillStyle = c.hill;
+      ctx.beginPath(); ctx.ellipse(W * .2, G.horizon + 30 * u, W * .38, 55 * u, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(W * .82, G.horizon + 34 * u, W * .42, 62 * u, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = c.grass; ctx.fillRect(0, G.horizon, W, G.walkTop - G.horizon);
+      ctx.fillStyle = c.walk; ctx.fillRect(0, G.walkTop, W, H - G.walkTop);
+      ctx.strokeStyle = c.walkLine; ctx.lineWidth = 1.5 * u;
+      ctx.beginPath(); ctx.moveTo(0, G.walkTop + 1); ctx.lineTo(W, G.walkTop + 1); ctx.stroke();
+      for (let x = 30 * u; x < W + 20 * u; x += 72 * u) { ctx.beginPath(); ctx.moveTo(x, G.walkTop); ctx.lineTo(x - 12 * u, H); ctx.stroke(); }
+      if (wx === 3) {
+        ctx.globalAlpha = .28; ctx.fillStyle = c.cloudDark; ctx.fillRect(0, G.walkTop, W, H - G.walkTop);
+        ctx.globalAlpha = .55; ctx.fillStyle = c.rain;
+        [[.18, .9, 26], [.72, .87, 20]].forEach(([fx, fy, rx]) => { ctx.beginPath(); ctx.ellipse(fx * W, fy * H, rx * u, 4 * u, 0, 0, Math.PI * 2); ctx.fill(); });
+        ctx.globalAlpha = 1;
+      }
+      if (wx === 0) {
+        ctx.strokeStyle = c.canvas; ctx.lineWidth = 1.5 * u; ctx.globalAlpha = .35;
+        for (let k = 0; k < 3; k++) {
+          const y = G.walkTop - 8 * u - k * 7 * u;
+          ctx.beginPath();
+          for (let x = 0; x <= W; x += 6) { const yy = y + Math.sin(x / (14 * u) + t * 3 + k) * 2 * u; if (x) ctx.lineTo(x, yy); else ctx.moveTo(x, yy); }
+          ctx.stroke();
+        }
+        ctx.globalAlpha = 1;
+      }
+    },
+    scenery(ctx, G, c, kind) {
+      const u = G.u, TAU = Math.PI * 2;
+      if (kind === 'apples') {
+        // the orchard on the hill
+        [.06, .2, .33, .67, .8, .94].forEach((fx, i) => {
+          const x = fx * G.W, base = G.horizon + (6 + (i % 2) * 5) * u, r = (13 + (i % 3) * 2) * u, cy = base - 18 * u - r * .6;
+          ctx.fillStyle = c.woodDark; ctx.fillRect(x - 2 * u, base - 18 * u, 4 * u, 18 * u);
+          ctx.fillStyle = c.plant; ctx.beginPath(); ctx.arc(x, cy, r, 0, TAU); ctx.fill();
+          ctx.fillStyle = c.red;
+          [[-.45, -.2], [.3, -.5], [.4, .15], [-.1, .3], [-.2, -.7]].forEach(([dx, dy]) => { ctx.beginPath(); ctx.arc(x + dx * r, cy + dy * r, 2.2 * u, 0, TAU); ctx.fill(); });
+        });
+      } else if (kind === 'plants') {
+        // garden rows behind the stand
+        for (let row = 0; row < 2; row++) {
+          const y = G.horizon + (10 + row * 13) * u;
+          for (let x = (row ? 22 : 10) * u, i = 0; x < G.W + 10 * u; x += 26 * u, i++) {
+            ctx.fillStyle = c.plant; ctx.beginPath(); ctx.ellipse(x, y, 8 * u, 5 * u, 0, 0, TAU); ctx.fill();
+            if ((i + row) % 2 === 0) { ctx.fillStyle = c.red; ctx.beginPath(); ctx.arc(x + 3 * u, y - u, 2 * u, 0, TAU); ctx.fill(); }
+          }
+        }
+      }
+    },
+    adSigns(ctx, G, c, st) {
+      const u = G.u, n = st.signs || 0, lemon = st.kind === 'lemonade';
+      const fill = lemon ? c.lemon : c.canvas, arrow = lemon ? c.ink : c.plant;
+      let drawn = 0;
+      for (let i = 0; i < SIGN_X.length && drawn < n; i++) {
+        const x = SIGN_X[i] * G.W;
+        if (Math.abs(x - G.sx) < G.sw / 2 + 26 * u) continue;
+        drawn++;
+        const base = G.walkTop - 3 * u - (i % 2) * 7 * u, dir = x < G.sx ? 1 : -1, ay = base - 36 * u;
+        ctx.fillStyle = c.woodDark; ctx.fillRect(x - 1.5 * u, base - 30 * u, 3 * u, 30 * u);
+        rr(ctx, x - 17 * u, base - 46 * u, 34 * u, 20 * u, 3 * u); ctx.fillStyle = fill; ctx.fill();
+        ctx.strokeStyle = c.ink; ctx.lineWidth = 1.5 * u; ctx.stroke();
+        ctx.beginPath(); ctx.strokeStyle = arrow; ctx.lineWidth = 2.2 * u; ctx.lineCap = 'round';
+        ctx.moveTo(x - 9 * u * dir, ay); ctx.lineTo(x + 9 * u * dir, ay);
+        ctx.moveTo(x + 4 * u * dir, ay - 5 * u); ctx.lineTo(x + 9 * u * dir, ay); ctx.lineTo(x + 4 * u * dir, ay + 5 * u);
+        ctx.stroke();
+      }
+      if (st.kind === 'plants' && st.ads != null) return st.ads ? `Ads today: ${shortMoney(st.ads * 100)}` : 'No ads today';
+      if (n > drawn) return `+${n - drawn} more ${plural(n - drawn, 'sign')}`;
+      return null;
+    },
+    pill(ctx, G, c, label) {
+      const u = G.u;
+      ctx.font = `700 ${Math.round(11 * u)}px ${c.fData}`; ctx.textAlign = 'left'; ctx.textBaseline = 'alphabetic';
+      const w = ctx.measureText(label).width + 14 * u;
+      rr(ctx, 8 * u, 8 * u, w, 19 * u, 9.5 * u); ctx.fillStyle = c.canvas; ctx.fill();
+      ctx.strokeStyle = c.ink; ctx.lineWidth = 1.2 * u; ctx.stroke();
+      ctx.fillStyle = c.ink; ctx.fillText(label, 15 * u, 21.5 * u);
+    },
+    stand(ctx, G, c, st) {
+      const { u, sx, sw } = G, L = sx - sw / 2, R = sx + sw / 2, K = SCENES[st.kind];
+      ctx.globalAlpha = .18; ctx.fillStyle = c.ink;
+      ctx.beginPath(); ctx.ellipse(sx, G.cBot + 2 * u, sw * .6, 6 * u, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = c.woodDark;
+      ctx.fillRect(L + 6 * u, G.awBot, 6 * u, G.cTop - G.awBot); ctx.fillRect(R - 12 * u, G.awBot, 6 * u, G.cTop - G.awBot);
+      const aL = L - 14 * u, aW = sw + 28 * u, n = 8, sW = aW / n, stripe = c[K.awning];
+      for (let i = 0; i < n; i++) {
+        ctx.fillStyle = i % 2 ? c.canvas : stripe;
+        ctx.fillRect(aL + i * sW, G.awTop, sW + .5, G.awBot - G.awTop);
+        ctx.beginPath(); ctx.arc(aL + i * sW + sW / 2, G.awBot, sW / 2, 0, Math.PI); ctx.fill();
+      }
+      ctx.fillStyle = c.woodDark; rr(ctx, aL - 4 * u, G.awTop - 5 * u, aW + 8 * u, 6 * u, 3 * u); ctx.fill();
+      ctx.fillStyle = c.wood; ctx.fillRect(L, G.cTop, sw, G.cBot - G.cTop);
+      ctx.strokeStyle = c.woodDark; ctx.lineWidth = 1.5 * u;
+      for (let y = G.cTop + 15 * u; y < G.cBot - 2 * u; y += 15 * u) { ctx.beginPath(); ctx.moveTo(L, y); ctx.lineTo(R, y); ctx.stroke(); }
+      ctx.fillStyle = c.counter; rr(ctx, L - 10 * u, G.cTop - 9 * u, sw + 20 * u, 10 * u, 2 * u); ctx.fill();
+      // the sign: stand name on top, today's price below
+      const bw = sw * .74, bh = (G.cBot - G.cTop) * .52, bx = sx - bw / 2, by = G.cTop + (G.cBot - G.cTop) * .12, maxW = bw * .88;
+      rr(ctx, bx, by, bw, bh, 4 * u); ctx.fillStyle = c.board; ctx.fill();
+      ctx.strokeStyle = c.woodDark; ctx.lineWidth = 3 * u; ctx.stroke();
+      ctx.fillStyle = c.chalk; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+      const name = K.sign();
+      let fs = 10 * u;
+      ctx.font = `${fs}px ${c.fDisplay}`;
+      const nw = ctx.measureText(name).width;
+      if (nw > maxW) { fs = Math.max(6.5 * u, fs * maxW / nw); ctx.font = `${fs}px ${c.fDisplay}`; }
+      ctx.fillText(name, sx, by + bh * .36, maxW);
+      ctx.font = `${Math.round(26 * u)}px ${c.fChalk}`; ctx.fillText(st.closed ? 'Closed' : `${st.price}¢`, sx, by + bh * .88, maxW);
+      if (st.soldOut && !st.closed) {
+        ctx.save(); ctx.translate(sx, by + bh * .55); ctx.rotate(-.1);
+        ctx.fillStyle = c.red; ctx.fillRect(-bw * .56, -10 * u, bw * 1.12, 20 * u);
+        ctx.fillStyle = c.canvas; ctx.font = `700 ${Math.round(12 * u)}px ${c.fData}`; ctx.fillText('SOLD OUT', 0, 4.5 * u);
+        ctx.restore();
+      }
+      this.goods(ctx, G, c, st);
+    },
+    goods(ctx, G, c, st) {
+      const { u, sx, sw } = G, L = sx - sw / 2, R = sx + sw / 2, top = G.cTop - 9 * u;
+      if (st.kind === 'lemonade') {
+        const cups = Math.ceil(6 * st.level - 1e-6);
+        for (let i = 0; i < cups; i++) this.cup(ctx, L + 14 * u + (i % 3) * 13 * u, top - Math.floor(i / 3) * 15 * u, u, c);
+        this.pitcher(ctx, R - sw * .2, top, u, st.level, c);
+      } else if (st.kind === 'apples') {
+        const n = Math.ceil(18 * st.level - 1e-6), cw = sw * .32, ch = 14 * u, rows = [4, 3, 2];
+        [L + sw * .22, R - sw * .22].forEach((cx, k) => {
+          const have = clamp(n - k * 9, 0, 9);
+          let idx = 0;
+          for (let row = 0; row < 3 && idx < have; row++) {
+            for (let i = 0; i < rows[row] && idx < have; i++, idx++) this.apple(ctx, cx + (i - (rows[row] - 1) / 2) * 10 * u, top - ch - 3 * u - row * 8 * u, 5 * u, c);
+          }
+          ctx.fillStyle = c.wood; ctx.fillRect(cx - cw / 2, top - ch, cw, ch);
+          ctx.strokeStyle = c.woodDark; ctx.lineWidth = 1.5 * u; ctx.strokeRect(cx - cw / 2, top - ch, cw, ch);
+          ctx.beginPath(); ctx.moveTo(cx - cw / 2, top - ch / 2); ctx.lineTo(cx + cw / 2, top - ch / 2); ctx.stroke();
+        });
+      } else {
+        const n = Math.ceil(7 * st.level - 1e-6), step = (sw - 24 * u) / 6;
+        for (let i = 0; i < n; i++) this.pot(ctx, L + 12 * u + i * step, top, u, c);
+      }
+    },
+    cup(ctx, x, base, s, c) {
+      ctx.beginPath();
+      ctx.moveTo(x - 5 * s, base - 13 * s); ctx.lineTo(x + 5 * s, base - 13 * s); ctx.lineTo(x + 4 * s, base); ctx.lineTo(x - 4 * s, base); ctx.closePath();
+      ctx.fillStyle = c.lemon; ctx.fill(); ctx.strokeStyle = c.ink; ctx.lineWidth = 1.3 * s; ctx.stroke();
+    },
+    apple(ctx, x, y, r, c) {
+      ctx.fillStyle = c.red; ctx.beginPath(); ctx.arc(x, y, r, 0, Math.PI * 2); ctx.fill();
+      ctx.strokeStyle = c.ink; ctx.lineWidth = Math.max(1, r * .25); ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(x, y - r * .8); ctx.lineTo(x + r * .3, y - r * 1.5); ctx.stroke();
+    },
+    pot(ctx, x, base, s, c) {
+      ctx.strokeStyle = c.plant; ctx.lineWidth = 1.6 * s; ctx.lineCap = 'round';
+      ctx.beginPath(); ctx.moveTo(x, base - 10 * s); ctx.lineTo(x, base - 26 * s); ctx.stroke();
+      ctx.fillStyle = c.plant;
+      [[-4, -17, -.5], [4, -21, .5], [-3, -25, -.3]].forEach(([dx, dy, a]) => { ctx.beginPath(); ctx.ellipse(x + dx * s, base + dy * s, 4.5 * s, 2.2 * s, a, 0, Math.PI * 2); ctx.fill(); });
+      ctx.fillStyle = c.red; ctx.beginPath(); ctx.arc(x + 3 * s, base - 14 * s, 2.6 * s, 0, Math.PI * 2); ctx.fill();
+      ctx.fillStyle = c.pot; ctx.beginPath();
+      ctx.moveTo(x - 7 * s, base - 11 * s); ctx.lineTo(x + 7 * s, base - 11 * s); ctx.lineTo(x + 5 * s, base); ctx.lineTo(x - 5 * s, base); ctx.closePath(); ctx.fill();
+    },
+    held(ctx, kind, x, base, s, c) {
+      if (kind === 'lemonade') return this.cup(ctx, x, base, s * .9, c);
+      if (kind === 'apples') {
+        rr(ctx, x - 5 * s, base - 11 * s, 10 * s, 11 * s, 1.5 * s); ctx.fillStyle = c.counter; ctx.fill();
+        ctx.strokeStyle = c.ink; ctx.lineWidth = s; ctx.stroke();
+        this.apple(ctx, x - 2 * s, base - 12 * s, 2.8 * s, c); this.apple(ctx, x + 2.5 * s, base - 12.5 * s, 2.8 * s, c);
+        return;
+      }
+      this.pot(ctx, x, base, s * .75, c);
+    },
+    pitcher(ctx, x, base, u, level, c) {
+      const w = 24 * u, h = 34 * u, top = base - h;
+      const body = () => { ctx.beginPath(); ctx.moveTo(x - w / 2, top); ctx.lineTo(x + w / 2, top); ctx.lineTo(x + w / 2 + 3 * u, base); ctx.lineTo(x - w / 2 - 3 * u, base); ctx.closePath(); };
+      ctx.save(); body(); ctx.clip();
+      ctx.globalAlpha = .7; ctx.fillStyle = c.glass; ctx.fillRect(x - w, top, w * 2, h); ctx.globalAlpha = 1;
+      if (level > 0) { const lh = (h - 4 * u) * level; ctx.fillStyle = c.lemon; ctx.fillRect(x - w, base - lh, w * 2, lh); }
+      ctx.restore();
+      body(); ctx.strokeStyle = c.ink; ctx.lineWidth = 2 * u; ctx.stroke();
+      ctx.beginPath(); ctx.arc(x + w / 2 + 2 * u, top + h * .42, 8 * u, -Math.PI / 2, Math.PI / 2); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(x - w / 2, top); ctx.lineTo(x - w / 2 - 6 * u, top - 4 * u); ctx.stroke();
+    },
+    people(ctx, G, c, st) {
+      const t = st.t, rainy = st.wx === 3, off = 30 * G.u;
+      for (const w of st.walkers) {
+        if (t < w.ts || t > w.tg) continue;
+        const xStart = w.from < 0 ? -off : G.W + off, xEnd = w.from < 0 ? G.W + off : -off, xStop = G.sx + w.side * G.sw * .34;
+        let x, walking = true;
+        if (t < w.ta) x = xStart + (xStop - xStart) * (t - w.ts) / (w.ta - w.ts);
+        else if (t < w.tl) { x = xStop; walking = false; }
+        else x = xStop + (xEnd - xStop) * (t - w.tl) / (w.tg - w.tl);
+        const after = t >= w.ta;
+        this.person(ctx, G, c, st.kind, w, x, walking, t, after && w.bought > 0, after && w.sad, rainy, -w.from);
+      }
+    },
+    person(ctx, G, c, kind, w, x, walking, t, holding, sad, rainy, f) {
+      const s = G.u * w.size, fy = G.feet, ph = walking ? Math.sin(t * 10 + w.seed * 6.28) : 0, shirt = c.shirts[w.shirt];
+      ctx.lineCap = 'round';
+      ctx.strokeStyle = c.ink; ctx.lineWidth = 4.5 * s;
+      ctx.beginPath();
+      ctx.moveTo(x - 2 * s, fy - 24 * s); ctx.lineTo(x - 2 * s - ph * 6 * s, fy);
+      ctx.moveTo(x + 2 * s, fy - 24 * s); ctx.lineTo(x + 2 * s + ph * 6 * s, fy);
+      ctx.stroke();
+      ctx.strokeStyle = shirt; ctx.lineWidth = 4 * s;
+      ctx.beginPath(); ctx.moveTo(x - f * 4 * s, fy - 46 * s);
+      if (rainy) ctx.lineTo(x - f * 3 * s, fy - 60 * s); else ctx.lineTo(x - f * 4 * s - ph * 5 * s, fy - 30 * s);
+      ctx.stroke();
+      rr(ctx, x - 9 * s, fy - 52 * s, 18 * s, 30 * s, 6 * s); ctx.fillStyle = shirt; ctx.fill();
+      ctx.fillStyle = c.skins[w.skin]; ctx.beginPath(); ctx.arc(x, fy - 61 * s, 8.5 * s, 0, Math.PI * 2); ctx.fill();
+      if (w.hair) { ctx.fillStyle = c.ink; ctx.beginPath(); ctx.arc(x, fy - 62 * s, 8.8 * s, Math.PI, Math.PI * 2); ctx.fill(); }
+      ctx.strokeStyle = shirt; ctx.lineWidth = 4 * s;
+      ctx.beginPath(); ctx.moveTo(x + f * 4 * s, fy - 46 * s);
+      if (holding) { ctx.lineTo(x + f * 13 * s, fy - 39 * s); ctx.stroke(); this.held(ctx, kind, x + f * 16 * s, fy - 34 * s, s, c); }
+      else { ctx.lineTo(x + f * 4 * s + ph * 5 * s, fy - 30 * s); ctx.stroke(); }
+      if (rainy) {
+        const ux = x - f * 3 * s, uy = fy - 86 * s;
+        ctx.strokeStyle = c.ink; ctx.lineWidth = 1.8 * s;
+        ctx.beginPath(); ctx.moveTo(ux, fy - 58 * s); ctx.lineTo(ux, uy); ctx.stroke();
+        ctx.fillStyle = c.shirts[w.umb]; ctx.beginPath(); ctx.arc(ux, uy, 21 * s, Math.PI, Math.PI * 2); ctx.closePath(); ctx.fill();
+      }
+      if (sad) {
+        const by = fy - (rainy ? 124 : 92) * s;
+        rr(ctx, x - 13 * s, by, 26 * s, 15 * s, 7 * s); ctx.fillStyle = c.canvas; ctx.fill();
+        ctx.strokeStyle = c.ink; ctx.lineWidth = 1.2 * s; ctx.stroke();
+        ctx.fillStyle = c.ink; ctx.font = `700 ${Math.round(11 * s)}px ${c.fData}`; ctx.textAlign = 'center';
+        ctx.fillText('aw', x, by + 11 * s);
+      }
+    },
+    coins(ctx, G, c, st) {
+      const u = G.u;
+      ctx.font = `700 ${Math.round(11 * u)}px ${c.fData}`; ctx.textAlign = 'center';
+      for (const k of st.coins) {
+        const a = (st.t - k.t0) / .8;
+        if (a < 0 || a > 1) continue;
+        const text = '+' + money(k.amount), x = G.sx + k.side * G.sw * .34, y = G.cTop - 22 * u - a * 26 * u, tw = ctx.measureText(text).width + 10 * u;
+        ctx.globalAlpha = 1 - a * a;
+        rr(ctx, x - tw / 2, y - 12 * u, tw, 17 * u, 8 * u); ctx.fillStyle = c.ink; ctx.fill();
+        ctx.fillStyle = c.canvas; ctx.fillText(text, x, y + u);
+        ctx.globalAlpha = 1;
+      }
+    },
+    rain(ctx, G, c, dt) {
+      const u = G.u;
+      ctx.strokeStyle = c.rain; ctx.lineWidth = 1.3 * u; ctx.lineCap = 'round'; ctx.globalAlpha = .7;
+      ctx.beginPath();
+      for (const d of this.drops) {
+        if (dt) {
+          d.y += d.v * u * dt; d.x -= d.v * u * dt * .15;
+          if (d.y > G.H) { d.y = -d.len * u; d.x = Math.random() * (G.W + 60); }
+        }
+        ctx.moveTo(d.x, d.y); ctx.lineTo(d.x + d.len * u * .15, d.y - d.len * u);
+      }
+      ctx.stroke(); ctx.globalAlpha = 1;
+    }
+  };
+
+  /* ---------- events ---------- */
+  function openStall(key) {
+    Scene.stop();
+    if (!S.games[key]) { S.games[key] = M[key].create(); saveGames(); }
+    S.view = 'stall'; S.cur = key;
+    renderStall(false);
+    window.scrollTo({ top: 0, behavior: REDUCED ? 'auto' : 'smooth' });
+  }
+  function goHome() {
+    Scene.stop();
+    S.view = 'home'; S.cur = null; if (ro) ro.disconnect();
+    renderHome();
+    window.scrollTo({ top: 0 });
+  }
+
+  /* a fresh season at the open stall: a new random one, or the same code dealt again */
+  function newSeason(code) {
+    Scene.stop();
+    S.games[S.cur] = M[S.cur].create(code);
+    saveGames();
+    renderStall(false);
+    const b = $('#openbtn');
+    if (b) b.focus({ preventScroll: true });
+  }
+  function useCode(e) {
+    e.preventDefault();
+    const inp = $('#code-in'), msg = $('#code-msg'), code = cleanCode(inp.value);
+    msg.classList.toggle('err', !code);
+    if (!code) {
+      inp.setAttribute('aria-invalid', 'true');
+      msg.textContent = inp.value.trim() ? "That code doesn't look right. Codes are six letters and numbers, so check each one." : 'Type a season code first.';
+      return inp.focus();
+    }
+    inp.removeAttribute('aria-invalid');
+    for (const k of Object.keys(STALLS)) S.games[k] = M[k].create(code);
+    saveGames();
+    inp.value = '';
+    $('.stalls').innerHTML = stallCards();
+    msg.textContent = `Season ${code} is ready at all three stalls. Open any stall to start.`;
+  }
+
+  document.addEventListener('click', e => {
+    Sound.unlock();
+    const t = e.target.closest('button');
+    if (!t) return;
+    if (t.hasAttribute('data-home')) return goHome();
+    if (t.dataset.open) return openStall(t.dataset.open);
+    if (t.hasAttribute('data-again')) return newSeason();
+    if (t.hasAttribute('data-retry')) return newSeason(cur().code);
+    if (t.dataset.step) {
+      // a mouse or pen press (or a held touch) has already stepped; a tap, a key or a screen reader steps here
+      const p = press;
+      press = null;
+      if (!(p && p.t === t && p.stepped)) stepBy(t, e.shiftKey);
+      return;
+    }
+    if (t.id === 'sound') {
+      Sound.on = !Sound.on;
+      store.set('mp-sound', Sound.on);
+      t.setAttribute('aria-pressed', Sound.on);
+      if (Sound.on) { Sound.unlock(); Sound.open(); }
+    }
+    if (t.id === 'classic') {
+      const on = !document.documentElement.classList.contains('classic');
+      document.documentElement.classList.toggle('classic', on);
+      t.setAttribute('aria-pressed', on);
+      store.set('mp-classic', on);
+    }
+  });
+
+  /* −/+ buttons: a press steps once, holding keeps stepping (faster the longer you hold), Shift steps by 10.
+     A touch steps only on the tap or once the hold starts, so a finger scrolling past a button changes nothing. */
+  let press = null;
+  function stepBy(t, shift) {
+    const g = cur(), k = t.dataset.k;
+    if (!g || g.over || Scene.anim || !(k in g.input)) return false;
+    const before = g.input[k];
+    setInput(g, k, before + t.dataset.step * (shift ? 10 : 1), t);
+    return g.input[k] !== before;
+  }
+  const endHold = () => { if (press) clearTimeout(press.timer); };
+  document.addEventListener('pointerdown', e => {
+    endHold();
+    press = null;
+    const t = e.target.closest && e.target.closest('.step');
+    if (!t || t.disabled || e.button !== 0) return;
+    const p = press = { t, stepped: false, timer: 0 }, shift = e.shiftKey;
+    if (e.pointerType !== 'touch') { stepBy(t, shift); p.stepped = true; }
+    let n = 0;
+    const tick = () => {
+      p.stepped = true;
+      if (stepBy(t, shift)) p.timer = setTimeout(tick, Math.max(35, 110 - 6 * n++));
+    };
+    p.timer = setTimeout(tick, 420);
+    t.addEventListener('pointerleave', endHold, { once: true });
+  });
+  ['pointerup', 'pointercancel'].forEach(ev => document.addEventListener(ev, endHold));
+  window.addEventListener('blur', endHold);
+  document.addEventListener('contextmenu', e => { if (e.target.closest && e.target.closest('.step')) e.preventDefault(); });
+  document.addEventListener('keydown', e => {
+    Sound.unlock();
+    if (e.key === 'Enter' || e.key === ' ') { endHold(); press = null; }
+    // in a number box, Shift+arrow and Page Up/Down move by 10
+    const t = e.target, g = cur();
+    if (!g || t.type !== 'number' || !t.dataset.k) return;
+    const big = { PageUp: 10, PageDown: -10 }[e.key] || (e.shiftKey ? { ArrowUp: 10, ArrowDown: -10 }[e.key] : 0);
+    if (!big) return;
+    e.preventDefault();
+    setInput(g, t.dataset.k, g.input[t.dataset.k] + big, null);
+  });
+
+  function setInput(g, k, v, src) {
+    const inp = $(`#in-${k}`);
+    if (!inp) return;
+    v = clamp(Math.round(v), +inp.min, +inp.max);
+    g.input[k] = v;
+    document.querySelectorAll(`input[data-k="${k}"]`).forEach(el => { if (el !== src) el.value = v; });
+    refreshNote(g);
+    Scene.idleSoon();
+  }
+  function refreshNote(g) {
+    const note = $('#note'), btn = $('#openbtn');
+    if (!note) return;
+    const n = noteFor(g);
+    note.innerHTML = n.html; note.classList.toggle('err', !!n.err);
+    btn.disabled = !!n.err;
+  }
+
+  document.addEventListener('input', e => {
+    if (e.target.id === 'stand-name') {
+      S.standName = e.target.value;
+      store.set('mp-stand-name', S.standName);
+      const h = $('.fascia .sign');
+      if (h) h.textContent = standName() || STALLS.lemonade.name;
+      return Scene.idleSoon();
+    }
+    const t = e.target, k = t.dataset && t.dataset.k, g = cur();
+    if (t.dataset && t.dataset.wi) {
+      if (g && g.over) { wiState(g)[t.dataset.wi] = +t.value; updateWhatIf(g); }
+      return;
+    }
+    if (!k || !g || t.tagName !== 'INPUT') return;
+    const v = parseInt(t.value, 10);
+    if (isNaN(v)) return;
+    setInput(g, k, v, t);
+  });
+  document.addEventListener('change', e => {
+    const t = e.target, k = t.dataset && t.dataset.k, g = cur();
+    if (!k || !g || t.type !== 'number') return;
+    t.value = g.input[k];
+  });
+  document.addEventListener('submit', e => {
+    if (e.target.id === 'codeform') return useCode(e);
+    if (e.target.id !== 'dayform') return;
+    e.preventDefault();
+    Sound.unlock();
+    const g = cur();
+    if (!g || g.over || Scene.anim) return;
+    if (g.kind === 'lemonade' && M.lemonade.spend(g) > g.cash) return refreshNote(g);
+    M[g.kind].play(g);
+    const r = g.log[g.log.length - 1];
+    g.day++;
+    checkOver(g);
+    fitBudget(g);
+    saveGames();
+    S.fresh = true;
+    const done = () => { renderStall(true); Sound.dayEnd(g, r); };
+    if (Scene.on) {
+      lockBoard('Selling…');
+      Sound.open();
+      Scene.play(r, done);
+    } else done();
+  });
+  // keeps the board's unplayed choices too
+  addEventListener('pagehide', saveGames);
+  document.addEventListener('visibilitychange', () => { if (document.visibilityState === 'hidden') saveGames(); });
+
+  const chartTip = e => {
+    const fig = e.target.closest && e.target.closest('#chart');
+    if (!fig) return;
+    const tip = fig.querySelector('.tip'), t = e.target.closest('[data-tip]');
+    if (!t) { tip.hidden = true; return; }
+    tip.textContent = t.dataset.tip; tip.hidden = false;
+    const fr = fig.getBoundingClientRect(), tr = t.getBoundingClientRect(), half = tip.offsetWidth / 2;
+    const x = clamp(tr.left + tr.width / 2 - fr.left, half, fr.width - half);
+    const dot = t.querySelector('.dot, path');
+    const top = (dot ? dot.getBoundingClientRect().top : tr.top) - fr.top;
+    tip.style.left = x + 'px'; tip.style.top = Math.max(top, 30) + 'px';
+  };
+  document.addEventListener('pointerover', chartTip);
+  document.addEventListener('pointerout', e => {
+    const fig = e.target.closest && e.target.closest('#chart');
+    if (!fig) return;
+    if (!e.relatedTarget || !fig.contains(e.relatedTarget) || !e.relatedTarget.closest('[data-tip]')) {
+      const tip = fig.querySelector('.tip'); if (tip) tip.hidden = true;
+    }
+  });
+
+  /* ---------- boot ---------- */
+  function start(data) {
+    if (data && data.S && data.S.games) S = Object.assign(S, data.S); else S.games = loadGames();
+    const classic = store.get('mp-classic', false);
+    document.documentElement.classList.toggle('classic', !!classic);
+    $('#classic').setAttribute('aria-pressed', !!classic);
+    $('#sound').setAttribute('aria-pressed', Sound.on);
+    render();
+  }
+  matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => Scene.recolor());
+  new MutationObserver(() => Scene.recolor()).observe(document.documentElement, { attributes: true, attributeFilter: ['class', 'data-theme'] });
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => Scene.idle());
+  window.claude?.hot?.snapshot?.(() => ({ S: JSON.parse(JSON.stringify(S)) }));
+  window.claude?.hot?.ready ? window.claude.hot.ready(start) : start(window.claude?.hot?.data ?? {});
+})();
+</script>
+
+</body></html>
