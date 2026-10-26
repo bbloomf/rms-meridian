@@ -6,6 +6,7 @@
 import { CAST, ROOMS, WEAPONS } from "../data.ts";
 import type { CharId, RoomId, WeaponId } from "../data.ts";
 import { portrait } from "./art.ts";
+import { nightScene } from "./liner.ts";
 import { weaponPic } from "./weapons.ts";
 
 export const reducedMotion = (): boolean => matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -50,43 +51,8 @@ function mount(cls: string, label: string, html: string, finish: (el: HTMLElemen
 
 // ── Opening ───────────────────────────────────────────────────────────────
 
-/** Deterministic star field, so the sky doesn't reshuffle between visits. */
-function stars(): string {
-  let s = 7;
-  const r = () => ((s = (s * 16807) % 2147483647) / 2147483647);
-  return Array.from({ length: 70 }, () => {
-    const x = (r() * 800).toFixed(0);
-    const y = (r() * 230).toFixed(0);
-    return `<circle class="star" style="--d:${(r() * 3).toFixed(2)}s" cx="${x}" cy="${y}" r="${(0.6 + r() * 1.1).toFixed(1)}" opacity="${(0.4 + r() * 0.6).toFixed(2)}"/>`;
-  }).join("");
-}
-
-function ship(): string {
-  const portholes = Array.from({ length: 34 }, (_, i) => `<rect class="lamp" style="--i:${i % 17}" x="${150 + i * 15}" y="306" width="5" height="4" rx="1"/>`).join("");
-  const windows = Array.from({ length: 24 }, (_, i) => `<rect class="lamp" style="--i:${(i * 5) % 17}" x="${214 + i * 16}" y="262" width="8" height="6"/>`).join("");
-  const upper = Array.from({ length: 15 }, (_, i) => `<rect class="lamp" style="--i:${(i * 3) % 17}" x="${272 + i * 18}" y="232" width="8" height="6"/>`).join("");
-  const funnels = [330, 410, 490, 570]
-    .map(
-      (x, i) =>
-        `<path d="M${x} 222h34l10-70h-34z" class="funnel"/><path d="M${x + 6} 168h34" class="band"/><g class="smoke" style="--i:${i}"><circle cx="${x + 26}" cy="140" r="9"/><circle cx="${x + 40}" cy="128" r="12"/><circle cx="${x + 58}" cy="118" r="15"/></g>`,
-    )
-    .join("");
-  return `<g class="ship">
-    <path class="mast" d="M190 290V150M650 290V160M190 150L650 160"/>
-    ${funnels}
-    <path class="hull" d="M200 290h420v-40H200zM250 250h340v-28H250zM222 222h96v-22h-96z"/>
-    <path class="hull" d="M96 290h630l-14 44q-6 12-24 12H160q-28-4-48-26z"/>
-    <path class="trim" d="M110 318h606"/>
-    ${portholes}${windows}${upper}
-  </g>`;
-}
-
 export function playIntro(): Promise<void> {
-  const html = `<svg class="night" viewBox="0 0 800 450" preserveAspectRatio="xMidYMax slice" aria-hidden="true">
-      <g class="sky">${stars()}<circle class="moon" cx="640" cy="80" r="26"/></g>
-      ${ship()}
-      <g class="sea"><rect class="water" x="0" y="336" width="800" height="120"/>${[350, 372, 396, 424].map((y, i) => `<path class="wave" style="--i:${i}" d="M-200 ${y}${"q25 -6 50 0t50 0".repeat(24)}"/>`).join("")}</g>
-    </svg>
+  const html = `${nightScene()}
     <div class="c-titles">
       <p class="c-eyebrow">Southampton &middot; New York</p>
       <h1>RMS Meridian</h1>

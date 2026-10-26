@@ -2063,37 +2063,67 @@ body.cinema-open {
   animation-delay: var(--d);
 }
 
+.intro .star.still {
+  animation: none;
+}
+
 .intro .moon {
   fill: #f3e6c0;
   filter: drop-shadow(0 0 18px rgba(243, 230, 192, 0.6));
 }
 
+/* The ship and its wake sail in together; the ship alone rides the swell. */
 .intro .ship {
   animation: sail 5.5s cubic-bezier(0.15, 0.6, 0.3, 1) both;
 }
 
-.intro .hull {
-  fill: #040912;
+.intro .bob {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  animation: bob 6s ease-in-out infinite;
+}
+
+/* Black hull and buff funnels with black tops; the white decks catch the moonlight. */
+.intro .hull,
+.intro .funnel-top,
+.intro .nest {
+  fill: #050a14;
+}
+
+.intro .super {
+  fill: #25314b;
+}
+
+.intro .boat {
+  fill: #4a5674;
+}
+
+.intro .davit {
+  fill: none;
+  stroke: #050a14;
+  stroke-width: 1;
 }
 
 .intro .funnel {
-  fill: #0a1222;
-}
-
-.intro .band {
-  stroke: var(--red);
-  stroke-width: 5;
+  fill: #6a5333;
 }
 
 .intro .mast {
   fill: none;
-  stroke: #0a1222;
-  stroke-width: 2;
+  stroke: #050a14;
+  stroke-width: 2.2;
+}
+
+.intro .rigging {
+  fill: none;
+  stroke: rgba(5, 10, 20, 0.85);
+  stroke-width: 0.8;
 }
 
 .intro .trim {
+  fill: none;
   stroke: var(--brass);
-  stroke-width: 1.5;
+  stroke-width: 1.2;
 }
 
 .intro .lamp {
@@ -2102,11 +2132,24 @@ body.cinema-open {
   animation-delay: calc(1.4s + var(--i) * 0.11s);
 }
 
-.intro .smoke {
-  fill: rgba(200, 210, 230, 0.16);
+/* Masthead lights, and the red one on the port bridge wing: she's westbound, port side to us. */
+.intro .navlight {
+  fill: #fff3d6;
+  filter: drop-shadow(0 0 2px #fff3d6);
+  animation: fade 0.6s ease-out 3.4s both;
+}
+
+.intro .navlight.port {
+  fill: #ff6b55;
+  filter: drop-shadow(0 0 2px #ff6b55);
+}
+
+.intro .puff {
+  fill: #a9b2c4;
   transform-box: fill-box;
-  animation: smoke 3s ease-out infinite;
-  animation-delay: calc(var(--i) * 0.45s);
+  transform-origin: center;
+  animation: smoke 4.8s linear infinite;
+  animation-delay: calc(var(--i) * -0.8s);
 }
 
 .intro .water {
@@ -2120,6 +2163,33 @@ body.cinema-open {
   stroke-width: 1.5;
   animation: tide 4s linear infinite;
   animation-delay: calc(var(--i) * -0.7s);
+}
+
+.intro .glint {
+  stroke: #f3e6c0;
+  stroke-width: 1.6;
+  opacity: 0.4;
+  animation: glint 2.4s ease-in-out infinite alternate;
+  animation-delay: calc(var(--i) * -0.37s);
+}
+
+.intro .wake path,
+.intro .foam {
+  fill: none;
+  stroke: rgba(226, 232, 240, 0.55);
+  stroke-width: 1.3;
+}
+
+.intro .wake path {
+  stroke-dasharray: 16 5 5 7;
+}
+
+.intro .wake {
+  animation: settle 5.5s ease-out both;
+}
+
+.intro .foam {
+  animation: glint 2.6s ease-in-out infinite alternate;
 }
 
 .c-titles {
@@ -2149,6 +2219,17 @@ body.cinema-open {
 
 .c-sub {
   font-style: italic;
+}
+
+/* Short screens (a phone on its side): smaller titles, higher up, to keep them above the mastheads. */
+@media (max-height: 520px) {
+  .c-titles {
+    top: 4%;
+  }
+
+  .c-titles h1 {
+    font-size: clamp(1.8rem, 11vh, 3.2rem);
+  }
 }
 
 .c-scream {
@@ -2327,13 +2408,26 @@ body.cinema-open {
 }
 
 @keyframes sail {
-  from { transform: translateX(820px); }
+  from { transform: translateX(1100px); }
+}
+
+@keyframes bob {
+  50% { transform: translateY(1.5px) rotate(-0.3deg); }
 }
 
 @keyframes smoke {
-  from { opacity: 0; transform: translate(0, 10px) scale(0.6); }
-  30% { opacity: 1; }
-  to { opacity: 0; transform: translate(40px, -30px) scale(1.4); }
+  from { opacity: 0; transform: translate(0, 0) scale(0.6); }
+  15% { opacity: 0.45; }
+  to { opacity: 0; transform: translate(80px, -34px) scale(2.8); }
+}
+
+@keyframes glint {
+  to { opacity: 0.08; }
+}
+
+@keyframes settle {
+  from { opacity: 0.9; }
+  to { opacity: 0.12; }
 }
 
 @keyframes tide {
