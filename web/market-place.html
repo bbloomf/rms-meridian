@@ -26,6 +26,8 @@
   --on-apple: #FFFFFF;
   --on-plant: #FFFFFF;
   --on-lemon: #231C02;
+  --bike: #2F64B0;
+  --on-bike: #FFFFFF;
   --bad: #B4232F;
   --shadow: 0 1px 0 rgba(23, 34, 27, .06), 0 10px 26px -14px rgba(23, 34, 27, .35);
   --glow: none;
@@ -54,6 +56,7 @@
     --board: #0B110D; --frame: #5A4632; --chalk: #EEF2EA; --chalk-dim: #8FA095; --canvas: #D5DBD2; --pot: #C47A52;
     --apple: #EA5A63; --plant: #5BB46A; --lemon: #F0C846; --lemon-ink: #F0C846;
     --on-apple: #1C0709; --on-plant: #071509; --on-lemon: #231C02; --bad: #F06A73;
+    --bike: #7FA6EA; --on-bike: #06101F;
     --shadow: 0 1px 0 rgba(0, 0, 0, .4), 0 12px 30px -16px rgba(0, 0, 0, .85);
     --sky-hot-1: #A9693A; --sky-hot-2: #D2A874; --sky-sunny-1: #2F6E9E; --sky-sunny-2: #7FAFCF;
     --sky-cloudy-1: #4D5963; --sky-cloudy-2: #7F8A93; --sky-rainy-1: #26313A; --sky-rainy-2: #48545E;
@@ -69,6 +72,7 @@
   --board: #0B110D; --frame: #5A4632; --chalk: #EEF2EA; --chalk-dim: #8FA095; --canvas: #D5DBD2; --pot: #C47A52;
   --apple: #EA5A63; --plant: #5BB46A; --lemon: #F0C846; --lemon-ink: #F0C846;
   --on-apple: #1C0709; --on-plant: #071509; --on-lemon: #231C02; --bad: #F06A73;
+  --bike: #7FA6EA; --on-bike: #06101F;
   --shadow: 0 1px 0 rgba(0, 0, 0, .4), 0 12px 30px -16px rgba(0, 0, 0, .85);
   --sky-hot-1: #A9693A; --sky-hot-2: #D2A874; --sky-sunny-1: #2F6E9E; --sky-sunny-2: #7FAFCF;
   --sky-cloudy-1: #4D5963; --sky-cloudy-2: #7F8A93; --sky-rainy-1: #26313A; --sky-rainy-2: #48545E;
@@ -139,6 +143,7 @@ h1, h2, h3, p { margin: 0; }
 .st-apples   { --c: var(--apple); --c-ink: var(--apple);     --c-on: var(--on-apple); }
 .st-plants   { --c: var(--plant); --c-ink: var(--plant);     --c-on: var(--on-plant); }
 .st-lemonade { --c: var(--lemon); --c-ink: var(--lemon-ink); --c-on: var(--on-lemon); }
+.st-bicycles { --c: var(--bike);  --c-ink: var(--bike);      --c-on: var(--on-bike); }
 
 /* awning: alternating canvas stripes with a scalloped valance */
 .awning {
@@ -156,7 +161,8 @@ h1, h2, h3, p { margin: 0; }
 
 /* home stalls */
 .stalls { display: grid; gap: 28px; grid-template-columns: 1fr; }
-@media (min-width: 860px) { .stalls { grid-template-columns: repeat(3, minmax(0, 1fr)); } }
+@media (min-width: 640px) { .stalls { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (min-width: 1100px) { .stalls { grid-template-columns: repeat(4, minmax(0, 1fr)); } }
 .stall-card {
   display: flex; flex-direction: column;
   background: var(--surface); border-radius: 12px; box-shadow: var(--shadow);
@@ -304,6 +310,8 @@ h1, h2, h3, p { margin: 0; }
 .board-note.err::before { content: "⚠ "; }
 .board-note strong { color: var(--chalk); font-weight: 700; }
 .btn-open { align-self: flex-start; font-size: 1.05rem; padding: 13px 22px; }
+.news { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: 8px; }
+.news li { max-width: 60ch; padding-left: 12px; border-left: 3px solid var(--c); }
 
 /* season report */
 .report-big {
@@ -405,10 +413,16 @@ h1, h2, h3, p { margin: 0; }
 .chart .wi-line { stroke: var(--ink); stroke-width: 1.5; stroke-dasharray: 2 4; }
 .chart .wi-ring { fill: var(--surface); stroke: var(--ink); stroke-width: 2.5; }
 .chart .wi-mark { pointer-events: none; }
+.chart .ln { fill: none; stroke: var(--c-ink); stroke-width: 2.5; stroke-linejoin: round; }
+.chart .ln.rv { stroke: var(--muted); stroke-width: 2; }
+.chart .dot.rv { fill: var(--muted); }
+.chart .goal { stroke: var(--ink); stroke-width: 1.5; stroke-dasharray: 1 5; stroke-linecap: round; }
+.chart .wi-path { fill: none; stroke: var(--ink); stroke-width: 1.5; stroke-dasharray: 2 4; }
 .chart-key { display: flex; flex-wrap: wrap; gap: 4px 16px; font-size: .85rem; color: var(--muted); }
 .chart-key span { display: inline-flex; align-items: center; gap: 6px; }
 .chart-key i { flex: none; display: block; width: 11px; height: 11px; }
 .k-dot { border-radius: 50%; background: var(--c-ink); }
+.k-dot.k-rv { background: var(--muted); }
 .k-bar { border-radius: 2px; background: var(--c-ink); }
 .k-ring { border-radius: 50%; border: 2.5px solid var(--ink); }
 .k-curve { width: 18px !important; height: 0 !important; border-top: 2px dashed var(--muted); }
@@ -445,6 +459,7 @@ h1, h2, h3, p { margin: 0; }
   --board: #020803; --frame: #2CBF52; --chalk: #45FF73; --chalk-dim: #2CBF52; --canvas: #020803; --pot: #45FF73;
   --apple: #45FF73; --plant: #45FF73; --lemon: #45FF73; --lemon-ink: #45FF73;
   --on-apple: #020803; --on-plant: #020803; --on-lemon: #020803; --bad: #45FF73;
+  --bike: #45FF73; --on-bike: #020803;
   --shadow: none; --glow: 0 0 6px rgba(69, 255, 115, .45);
   --f-display: "VT323", ui-monospace, monospace; --f-chalk: "VT323", ui-monospace, monospace;
   --f-body: "VT323", ui-monospace, monospace; --f-data: "VT323", ui-monospace, monospace;
@@ -479,7 +494,7 @@ h1, h2, h3, p { margin: 0; }
     </div>
   </header>
   <main id="view"></main>
-  <p class="foot">A fan remake of <em>The Market Place</em>, the classroom business simulation MECC made for the Apple II. Every new season reshuffles the numbers, so the best price and the right amount of advertising change each time you play, unless you play a season code. <a href="https://archive.org/details/wozaday_The_Market_Place" target="_blank" rel="noopener">Play the original on archive.org</a> in its Apple II emulator, or try the <a href="https://archive.org/details/cssa8d_Market_Place_The_v2_2_1984_Atari_US" target="_blank" rel="noopener">Atari version</a>, which also lets you sell bicycles.</p>
+  <p class="foot">A fan remake of <em>The Market Place</em>, the classroom business simulation MECC made for the Apple II. Every new season reshuffles the numbers, so the best price and the right amount of advertising change each time you play, unless you play a season code. <a href="https://archive.org/details/wozaday_The_Market_Place" target="_blank" rel="noopener">Play the original on archive.org</a> in its Apple II emulator, or try the <a href="https://archive.org/details/cssa8d_Market_Place_The_v2_2_1984_Atari_US" target="_blank" rel="noopener">Atari version</a>, where the bicycle company comes from.</p>
 </div>
 
 <script>
@@ -584,7 +599,8 @@ h1, h2, h3, p { margin: 0; }
   const ART = {
     apples: `<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 21c-6-5-20-4-20 12 0 13 9 24 15 24 3 0 3-1.5 5-1.5s2 1.5 5 1.5c6 0 15-11 15-24 0-16-14-17-20-12z" fill="var(--apple)"/><path d="M32 21c0-6 2-10 5-13" stroke="var(--ink)" stroke-width="3" fill="none" stroke-linecap="round"/><path d="M34 15c4-6 11-6 14-4-3 5-9 7-14 4z" fill="var(--plant)"/><path d="M21 30c1-4 4-6 7-6" stroke="var(--canvas)" stroke-width="3" fill="none" stroke-linecap="round" opacity=".55"/></svg>`,
     plants: `<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M32 37V11" stroke="var(--plant)" stroke-width="3" stroke-linecap="round"/><path d="M32 24c-8 0-13-4-14-10 7 0 12 3 14 10zM32 18c6 0 11-3 12-9-6 0-11 3-12 9zM32 31c7 0 11-3 12-8-6 0-10 3-12 8z" fill="var(--plant)"/><circle cx="24" cy="30" r="5" fill="var(--apple)"/><circle cx="41" cy="32" r="4" fill="var(--apple)"/><rect x="15" y="37" width="34" height="6" rx="2" fill="var(--pot)"/><path d="M18 43h28l-4 15H22z" fill="var(--pot)"/></svg>`,
-    lemonade: `<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M39 5l-6 41" stroke="var(--apple)" stroke-width="3" stroke-linecap="round"/><path d="M18.4 27h27.2l-2.9 28H21.3z" fill="var(--lemon)"/><path d="M15 15h34l-4.5 43h-25z" fill="none" stroke="var(--ink)" stroke-width="3" stroke-linejoin="round"/><circle cx="47" cy="17" r="9" fill="var(--lemon)" stroke="var(--canvas)" stroke-width="2"/><path d="M47 10v14M40 17h14" stroke="var(--canvas)" stroke-width="1.5"/></svg>`
+    lemonade: `<svg viewBox="0 0 64 64" aria-hidden="true"><path d="M39 5l-6 41" stroke="var(--apple)" stroke-width="3" stroke-linecap="round"/><path d="M18.4 27h27.2l-2.9 28H21.3z" fill="var(--lemon)"/><path d="M15 15h34l-4.5 43h-25z" fill="none" stroke="var(--ink)" stroke-width="3" stroke-linejoin="round"/><circle cx="47" cy="17" r="9" fill="var(--lemon)" stroke="var(--canvas)" stroke-width="2"/><path d="M47 10v14M40 17h14" stroke="var(--canvas)" stroke-width="1.5"/></svg>`,
+    bicycles: `<svg viewBox="0 0 64 64" aria-hidden="true"><g fill="none" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="16" cy="42" r="11" stroke="var(--ink)"/><circle cx="48" cy="42" r="11" stroke="var(--ink)"/><path d="M16 42l12-18h16l-16 18h-12M44 24l4 18M28 24l-3-7" stroke="var(--bike)"/><path d="M20 17h10M40 18h8" stroke="var(--ink)"/></g><circle cx="28" cy="42" r="3" fill="var(--bike)"/></svg>`
   };
 
   const STALLS = {
@@ -604,11 +620,21 @@ h1, h2, h3, p { margin: 0; }
       key: 'lemonade', n: 3, name: 'Lemonade', idea: 'Price, ads & production', art: ART.lemonade,
       blurb: 'Read the forecast, make the right batch, set a price, and put up signs.',
       brief: 'You start with $5.00. Each morning, check the forecast, then decide how many glasses to make, what to charge, and how many signs to put up. Lemonade you don\'t sell is poured out at closing.',
-      boardTitle: "Today's plan", next: null
+      boardTitle: "Today's plan", next: 'bicycles'
+    },
+    bicycles: {
+      key: 'bicycles', n: 4, name: 'Bicycles', idea: 'Competition', art: ART.bicycles, unit: 'quarter', rounds: 16,
+      blurb: 'Run a bike company against a rival. The first to $24,000 in assets wins.',
+      brief: g => `You run a bicycle company, and so does ${g.rival}. Each quarter you both decide how many bikes to make, how much to spend on ads, and what to charge. Ads win you a share of the buyers, and a price well under your rival's wins some of theirs. You start with $5,000 and 100 bikes. The first company to reach $24,000 in assets wins.`,
+      boardTitle: "This quarter's plan", go: 'Run quarter', next: null
     }
   };
+  const unitOf = g => STALLS[g.kind].unit || 'day';
+  const roundsOf = g => STALLS[g.kind].rounds || DAYS;
+  const capFirst = s => s[0].toUpperCase() + s.slice(1);
+  const RIVALS = ['Hilltop Cycles', 'Bluebird Bikes', 'Two Wheel Works', 'Sprocket Brothers', 'Northwind Cycle Co.'];
 
-  /* ---------- the three markets ---------- */
+  /* ---------- the four markets ---------- */
   /* every season is dealt from its code; seasonAt() replays one steady plan for the What if board */
   const noise = (lo, hi, R) => Array.from({ length: DAYS }, () => rand(lo, hi, R));
   const M = {
@@ -726,6 +752,127 @@ h1, h2, h3, p { margin: 0; }
         }
         return { total: t };
       }
+    },
+    /* MECC's Atari "Sell Bicycles": two companies race to a goal in assets, one quarter at a time.
+       Prices, ads and the cost of a bike are whole dollars; cash and assets are cents like everywhere else. */
+    bicycles: {
+      QUARTERS: 16, GOAL: 2400000, CASH: 500000, STOCK: 100, FIXED: 25000,
+      create(code = newCode()) {
+        const R = seeded(code, 'bicycles'), ev = [];
+        for (let q = 0; q < this.QUARTERS; q++) ev.push({ freeze: R(), theft: R(), thief: R() < .5 ? 0 : 1, fire: R(), burnt: R() < .5 ? 0 : 1, haul: R(), wage: R(), rise: R() });
+        const co = () => ({ cash: this.CASH, inv: this.STOCK, price: 0, sold: 70 });
+        const g = { kind: 'bicycles', code, day: 1, over: false, log: [], ev, U: 120, co: [co(), co()],
+          rival: RIVALS[randInt(0, RIVALS.length - 1, R)], aim: rand(1.17, 1.3, R), push: randInt(30, 60, R) * 10,
+          freezeAt: 0, cap: [400, 400], strike: 0, haul: 0, last: [-9, -9, -9], news: [],
+          input: { make: 30, ads: 300, price: 150 } };
+        this.dawn(g);
+        return g;
+      },
+      START: 500000 + 100 * 120 * 100,
+      assets(g, j) { return g.co[j].cash + g.U * 100 * g.co[j].inv; },
+      frozen: g => g.freezeAt > 0 && g.day < g.freezeAt + 2,
+      /* the news at the start of a quarter: dealt from the code, so it never depends on anyone's choices */
+      dawn(g) {
+        const q = g.day, e = g.ev[q - 1], news = g.news = [], name = j => j ? g.rival : 'You';
+        if (!e) return;
+        if (g.freezeAt && q === g.freezeAt + 2) news.push({ k: 'freeze-end', text: 'The wage-price freeze is over. Prices may go up again.' });
+        if (g.haul && q === g.haul + 1) news.push({ k: 'haul-end', text: 'The transport strike is settled, and bikes are reaching the stores again.' });
+        if (g.strike && q === g.strike + 1) news.push({ k: 'strike-end', text: `The factory strike is settled. Higher wages mean each bike now costs $${g.U} to make.` });
+        if (q >= 6) {
+          if (e.freeze < .1 && !g.freezeAt) {
+            g.freezeAt = q; g.cap = g.co.map(c => c.price);
+            news.push({ k: 'freeze', text: `The President has frozen wages and prices. For this quarter and the next, nobody may charge more than they did last quarter.` });
+          }
+          const c = g.co[e.thief];
+          if (e.theft < .1 && q - g.last[0] > 2 && c.cash >= 0) {
+            const lost = c.cash <= 20000 ? Math.round(c.cash / 4) : 20000;
+            c.cash -= lost; g.last[0] = q;
+            news.push({ k: 'theft', who: e.thief, text: `A worker stole ${money(lost)} from ${e.thief ? g.rival : 'your company'}.` });
+          }
+          if (e.fire < .1 && q - g.last[1] > 2) {
+            const b = g.co[e.burnt], n = b.inv, paid = Math.round(g.U * 100 * n * .75);
+            b.cash += paid; b.inv = 0; g.last[1] = q;
+            news.push({ k: 'fire', who: e.burnt, text: `A fire burned ${e.burnt ? g.rival + "'s" : 'your'} warehouse` + (n ? ` and all ${num(n)} ${plural(n, 'bike')} in it. Insurance paid ${money(paid)}, three quarters of what they cost to make.` : ', but it was empty.') });
+          }
+          if (e.haul < .1 && !this.frozen(g) && q - g.last[2] > 2) {
+            g.haul = q; g.last[2] = q;
+            news.push({ k: 'haul', text: 'Truck drivers are on strike. No bikes can reach the stores this quarter, so nobody will sell any.' });
+          }
+        }
+        // every new year brings a new labor contract, and sometimes a strike first
+        if (q > 1 && (q - 1) % 4 === 0 && !this.frozen(g)) {
+          if (e.wage < .25) {
+            g.strike = q; g.U = Math.floor(g.U * (1.1 + .1 * e.rise));
+            news.push({ k: 'strike', text: 'Factory workers are on strike, so no bikes can be made this quarter.' });
+          } else {
+            g.U = Math.floor(g.U * (1.05 + .1 * e.rise));
+            news.push({ k: 'wage', text: `A new labor contract raises the cost of making a bike to $${g.U}.` });
+          }
+        }
+      },
+      /* the computer company: a steady markup over cost, and it answers a deep price cut by cutting too */
+      rivalMove(g) {
+        const me = g.co[1], last = g.log[g.log.length - 1], floor = 99 * g.U / 120;
+        let price = Math.round(g.U * g.aim);
+        if (last && last.price - floor < (me.price - floor) * .8) price = Math.min(price, Math.max(g.U + 8, Math.round(floor + (last.price - floor) * 1.15)));
+        if (this.frozen(g)) price = Math.min(price, g.cap[1]);
+        const make = g.strike === g.day ? 0 : Math.max(0, Math.round(me.sold * 1.2 + 10 - me.inv));
+        return { make, ads: me.cash < 100000 ? Math.round(g.push / 3) : g.push, price: clamp(price, 100, 400) };
+      },
+      /* one quarter for both companies; mv holds each one's make, ads and price */
+      quarter(g, mv) {
+        const q = g.day, U = g.U, adsAll = mv[0].ads + mv[1].ads;
+        const pull = adsAll > 0 ? (50 - 50 * Math.exp(-.001 * adsAll)) * 1.5 : 0;
+        g.co.forEach((c, j) => { c.cash -= this.FIXED + (mv[j].make * U + mv[j].ads) * 100; c.inv += mv[j].make; c.price = mv[j].price; });
+        // buyers judge a price by how far it sits above $99, a floor that rises with wages like every other price
+        const k = U / 120, over = p => (p - 99 * k) / (50 * k);
+        const want = mv.map(m => g.haul === q || over(m.price) <= 0 ? 0 : .5 * (50 + 2 * (adsAll > 0 ? m.ads / adsAll : 0) * pull) / over(m.price) ** 2);
+        // a price more than 20% lower, counted from that floor, wins up to 40% of the other company's buyers
+        const lo = mv[0].price >= mv[1].price ? 1 : 0, hi = 1 - lo, cut = (mv[hi].price - mv[lo].price) / (mv[hi].price - 99 * k);
+        if (cut > .2) { const moved = want[hi] * (Math.min(cut, .4) - .2) / .2 * .4; want[hi] -= moved; want[lo] += moved; }
+        return g.co.map((c, j) => {
+          const m = mv[j], sold = Math.floor(Math.min(want[j], c.inv)), sales = sold * m.price * 100, cogs = sold * U * 100;
+          c.cash += sales; c.inv -= sold; c.sold = sold;
+          const storage = Math.round(.05 * c.inv * U * 100); c.cash -= storage;
+          const interest = c.cash < 0 ? Math.round(-c.cash * .05) : 0; c.cash -= interest;
+          const profit = sales - cogs - m.ads * 100 - this.FIXED - storage - interest;
+          return { make: m.make, ads: m.ads, price: m.price, markup: m.price - U, want: Math.floor(want[j]), stock: c.inv + sold, sold, sales, cogs, storage, interest, profit, cash: c.cash, inv: c.inv, assets: this.assets(g, j) };
+        });
+      },
+      turn(g, mine) {
+        const [you, them] = this.quarter(g, [mine, this.rivalMove(g)]);
+        g.log.push({ day: g.day, U: g.U, news: g.news, haul: g.haul === g.day, ...you, rival: them });
+      },
+      play(g) {
+        this.turn(g, { make: g.strike === g.day ? 0 : g.input.make, ads: g.input.ads, price: g.input.price });
+        const a = [0, 1].map(j => this.assets(g, j)), q = g.day;
+        if (a[0] <= 0) g.done = { won: false, why: 'broke' };
+        else if (a[1] <= 0) g.done = { won: true, why: 'rival-broke' };
+        else if (Math.max(...a) >= this.GOAL) g.done = { won: a[0] >= a[1], why: 'goal' };
+        else if (q >= this.QUARTERS) g.done = { won: a[0] >= a[1], why: 'time' };
+      },
+      total(g) { return this.assets(g, 0) - this.START; },
+      bench() { return { total: this.GOAL - this.START }; },
+      /* the bikes you actually made, replayed with one markup over cost and one ad budget every quarter */
+      seasonAt(g, markup, ads) {
+        const h = this.create(g.code), goal = [0, 0];
+        for (const r of g.log) {
+          let price = clamp(h.U + markup, 100, 400);
+          if (this.frozen(h)) price = Math.min(price, h.cap[0]);
+          this.turn(h, { make: h.strike === h.day ? 0 : r.make, ads, price });
+          [0, 1].forEach(j => { if (!goal[j] && this.assets(h, j) >= this.GOAL) goal[j] = h.day; });
+          h.day++; this.dawn(h);
+        }
+        return { total: this.assets(h, 0) - this.START, assets: h.log.map(r => r.assets), rival: this.assets(h, 1), goal };
+      },
+      bestPlan(g) {
+        let best = { total: -Infinity, markup: 0, ads: 0 };
+        for (let m = 0; m <= 80; m += 2) for (let a = 0; a <= 1500; a += 50) {
+          const t = this.seasonAt(g, m, a).total;
+          if (t > best.total) best = { total: t, markup: m, ads: a };
+        }
+        return best;
+      }
     }
   };
 
@@ -734,21 +881,27 @@ h1, h2, h3, p { margin: 0; }
   const cur = () => S.games[S.cur];
 
   function fitBudget(g) {
-    if (g.kind !== 'lemonade' || g.over) return;
+    if (g.over) return;
+    if (g.kind === 'bicycles') { for (const c of controlsFor(g)) g.input[c.k] = clamp(g.input[c.k], c.min, c.max); return; }
+    if (g.kind !== 'lemonade') return;
     const c = M.lemonade.cost(g);
     g.input.signs = Math.min(g.input.signs, Math.floor(g.cash / 15));
     g.input.make = clamp(g.input.make, 0, Math.max(0, Math.floor((g.cash - g.input.signs * 15) / c)));
   }
 
   function checkOver(g) {
-    if (g.day > DAYS) g.over = true;
+    if (g.day > roundsOf(g)) g.over = true;
+    // the bike race ends when someone wins; otherwise the next quarter's news arrives
+    if (g.kind === 'bicycles') { if (g.done) g.over = true; else M.bicycles.dawn(g); }
     if (g.kind === 'plants' && g.left === 0) g.over = true;
     if (g.kind === 'lemonade' && !g.over && g.cash < M.lemonade.cost(g)) { g.over = true; g.broke = true; }
     if (g.over && !g.bench) {
       g.bench = M[g.kind].bench(g);
       const total = M[g.kind].total(g), pct = pctOf(total, g.bench.total);
-      const prev = S.best[g.kind];
-      if (!prev || total > prev.total) { S.best[g.kind] = { total, pct }; store.set('mp-best', S.best); }
+      const prev = S.best[g.kind], rec = g.done ? { total, pct, won: g.done.won, q: g.log.length } : { total, pct };
+      // a won race beats any race that was lost
+      const score = b => b.total + (b.won ? 1e12 : 0);
+      if (!prev || score(rec) > score(prev)) { S.best[g.kind] = rec; store.set('mp-best', S.best); }
     }
   }
   const pctOf = (t, b) => b > 0 ? Math.max(0, Math.round(t / b * 100)) : 0;
@@ -798,6 +951,14 @@ h1, h2, h3, p { margin: 0; }
   function controlsFor(g) {
     if (g.kind === 'apples') return [{ k: 'price', label: 'Price per apple', post: '¢', min: 1, max: 99 }];
     if (g.kind === 'plants') return [{ k: 'ads', label: 'Spend on ads', pre: '$', min: 0, max: 80 }];
+    if (g.kind === 'bicycles') {
+      // no bikes get made while the factory is on strike, and no price goes up during a freeze
+      return [
+        ...(g.strike === g.day ? [] : [{ k: 'make', label: `Bikes to make, $${g.U} each`, min: 0, max: 400, wide: true }]),
+        { k: 'ads', label: 'Spend on ads', pre: '$', min: 0, max: 2000, by: 10, w: 4.4 },
+        { k: 'price', label: 'Price per bike', pre: '$', min: 100, max: M.bicycles.frozen(g) ? g.cap[0] : 400 }
+      ];
+    }
     const c = M.lemonade.cost(g);
     return [
       { k: 'make', label: 'Glasses to make', min: 0, max: Math.max(1, Math.min(400, Math.floor(g.cash / c))), wide: true },
@@ -810,10 +971,10 @@ h1, h2, h3, p { margin: 0; }
       <label for="in-${c.k}">${c.label}</label>
       <div class="ctl-row">
         <button type="button" class="step" data-step="-1" data-k="${c.k}" aria-label="Lower: ${c.label}" title="Hold to keep going. Shift-click for 10.">−</button>
-        <span class="num">${c.pre ? `<span class="unit">${c.pre}</span>` : ''}<input id="in-${c.k}" data-k="${c.k}" type="number" inputmode="numeric" min="${c.min}" max="${c.max}" step="1" value="${v}" ${c.wide ? 'style="width:3.6ch"' : ''}>${c.post ? `<span class="unit">${c.post}</span>` : ''}</span>
+        <span class="num">${c.pre ? `<span class="unit">${c.pre}</span>` : ''}<input id="in-${c.k}" data-k="${c.k}" type="number" inputmode="numeric" min="${c.min}" max="${c.max}" step="1" value="${v}" ${c.w || c.wide ? `style="width:${c.w || 3.6}ch"` : ''}>${c.post ? `<span class="unit">${c.post}</span>` : ''}</span>
         <button type="button" class="step" data-step="1" data-k="${c.k}" aria-label="Raise: ${c.label}" title="Hold to keep going. Shift-click for 10.">+</button>
       </div>
-      <input type="range" id="rg-${c.k}" data-k="${c.k}" min="${c.min}" max="${c.max}" step="1" value="${v}" aria-label="${c.label}">
+      <input type="range" id="rg-${c.k}" data-k="${c.k}" min="${c.min}" max="${c.max}" step="${c.by || 1}" value="${v}" aria-label="${c.label}">
     </div>`;
   }
   function noteFor(g) {
@@ -823,6 +984,15 @@ h1, h2, h3, p { margin: 0; }
     if (g.kind === 'plants') {
       const daysLeft = DAYS - g.day + 1, pace = Math.ceil(g.left / daysLeft);
       return { html: `To sell every plant by day 10, you need about <strong>${pace} sales a day</strong>. Ad money comes out of today's sales.` };
+    }
+    if (g.kind === 'bicycles') {
+      const B = M.bicycles, { ads, price } = g.input, make = g.strike === g.day ? 0 : g.input.make, cash = g.co[0].cash;
+      const spend = (make * g.U + ads) * 100 + B.FIXED, stock = g.co[0].inv + make;
+      let html = `${make ? `${num(make)} ${plural(make, 'bike')} × $${g.U}` : 'No new bikes'} + ${shortMoney(ads * 100)} of ads + $250 to run the factory = <strong>${money(spend)}</strong>. You have ${money(cash)}.`;
+      if (spend > cash) html += " If sales don't cover the rest, the bank lends it at 5% interest.";
+      html += ` That makes <strong>${num(stock)} ${plural(stock, 'bike')}</strong> to sell at $${price}${price <= g.U ? `, which is no more than the $${g.U} each one costs to make` : ''}.`;
+      if (B.frozen(g)) html += ` Prices are frozen, so you can't charge more than $${g.cap[0]}.`;
+      return { html };
     }
     const c = M.lemonade.cost(g), { make, signs } = g.input, spend = M.lemonade.spend(g);
     const line = `Today's cost: ${make} × ${c}¢ + ${signs} ${plural(signs, 'sign')} × 15¢ = <strong>${money(spend)}</strong>. You have ${money(g.cash)}.`;
@@ -839,9 +1009,9 @@ h1, h2, h3, p { margin: 0; }
     $('#view').innerHTML = `
       <div class="home">
         <section class="hero">
-          <p class="eyebrow">Three stalls · ten market days each</p>
+          <p class="eyebrow">Four stalls · one new idea at each</p>
           <h1 class="title">The Market Place</h1>
-          <p class="lede">Run an apple stand, a tomato plant stand, and a lemonade stand. Each stall adds one new idea about selling: first price, then advertising, then deciding how much to make.</p>
+          <p class="lede">Run an apple stand, a tomato plant stand, a lemonade stand, and a bicycle company. Each stall adds one new idea about selling: first price, then advertising, then deciding how much to make, and last, beating a rival.</p>
         </section>
         <section class="stalls" aria-label="Market stalls">
           ${stallCards()}
@@ -858,15 +1028,17 @@ h1, h2, h3, p { margin: 0; }
               <button class="btn" type="submit">Play this code</button>
             </div>
           </div>
-          <p class="code-msg" id="code-msg" aria-live="polite">Playing a code starts all three stalls over with that season.</p>
+          <p class="code-msg" id="code-msg" aria-live="polite">Playing a code starts all four stalls over with that season.</p>
         </form>
       </div>`;
   }
   const stallCards = () => Object.values(STALLS).map(stallCard).join('');
   function stallCard(s) {
     const g = S.games[s.key], b = S.best[s.key] && Number.isFinite(S.best[s.key].total) ? S.best[s.key] : null;
-    const label = !g || !g.log.length ? 'Open stall' : g.over ? 'See season results' : `Continue on day ${g.day}`;
-    const best = b ? `Best season: <strong>${money(b.total)}</strong> · ${b.pct}% · ${rating(b.pct)}` : 'Not played yet';
+    const label = !g || !g.log.length ? 'Open stall' : g.over ? 'See season results' : `Continue on ${STALLS[s.key].unit || 'day'} ${g.day}`;
+    const best = !b ? 'Not played yet' : s.key === 'bicycles'
+      ? `Best season: <strong>${money(M.bicycles.START + b.total)}</strong> in assets · ${b.won ? `won in quarter ${b.q}` : `${b.pct}% of the way`}`
+      : `Best season: <strong>${money(b.total)}</strong> · ${b.pct}% · ${rating(b.pct)}`;
     return `<article class="stall-card st-${s.key}">
       <div class="awning" aria-hidden="true"></div>
       <div class="card-body">
@@ -900,6 +1072,13 @@ h1, h2, h3, p { margin: 0; }
         ['Days left', g.over ? 0 : DAYS - g.log.length],
         ['Profit so far', money(m.total(g))]
       ];
+    } else if (g.kind === 'bicycles') {
+      items = [
+        ['Your assets', money(m.assets(g, 0))],
+        ["Rival's assets", money(m.assets(g, 1))],
+        ['Cash', money(g.co[0].cash)],
+        ['Bikes on hand', num(g.co[0].inv)]
+      ];
     } else {
       const d = g.day - 1;
       items = [
@@ -916,15 +1095,16 @@ h1, h2, h3, p { margin: 0; }
     const s = STALLS[g.kind], n = noteFor(g);
     return `<form class="board" id="dayform" novalidate>
       <h2 class="chalk-h">${s.boardTitle}</h2>
+      ${g.news && g.news.length ? `<ul class="news" aria-label="News this quarter">${g.news.map(x => `<li>${x.text}</li>`).join('')}</ul>` : ''}
       <div class="ctls">${controlsFor(g).map(c => ctlHTML(c, g.input[c.k])).join('')}</div>
       <p class="board-note${n.err ? ' err' : ''}" id="note" aria-live="polite">${n.html}</p>
-      <button class="btn btn-open" type="submit" id="openbtn" ${n.err ? 'disabled' : ''}>Open for day ${g.day}</button>
+      <button class="btn btn-open" type="submit" id="openbtn" ${n.err ? 'disabled' : ''}>${s.go || 'Open for day'} ${g.day}</button>
     </form>`;
   }
 
   function reportHTML(g) {
     const m = M[g.kind], s = STALLS[g.kind], total = m.total(g), b = g.bench, pct = pctOf(total, b.total);
-    let label, bench, lesson, vs;
+    let label, bench, lesson, vs, big = total, head = "Season's end";
     if (g.kind === 'apples') {
       label = 'Total income'; vs = 'of the best possible';
       bench = `Charging ${b.price}¢ every day would have brought in ${money(b.total)}.`;
@@ -935,6 +1115,15 @@ h1, h2, h3, p { margin: 0; }
       bench = `A steady ${shortMoney(b.ads * 100)} a day on ads would have earned ${money(b.total)}.`;
       lesson = (wilted > 0 ? `${num(wilted)} ${plural(wilted, 'plant')} wilted unsold. ` : `You sold every plant${g.log.length < DAYS ? ` by day ${g.log.length}` : ''}. `) +
         'Each extra dollar of advertising brought in fewer new buyers than the dollar before it. Once you are on pace to sell out, more ads only cost money.';
+    } else if (g.kind === 'bicycles') {
+      const d = g.done, q = g.log.length, goal = shortMoney(m.GOAL), yours = money(m.assets(g, 0)), theirs = money(m.assets(g, 1));
+      label = 'Your assets'; big = m.assets(g, 0); vs = `of the way to ${goal}`;
+      head = d.won ? 'You won the race' : `${esc(g.rival)} won the race`;
+      bench = d.why === 'broke' ? `Your company went bankrupt in quarter ${q}.` :
+        d.why === 'rival-broke' ? `${esc(g.rival)} went bankrupt in quarter ${q}, so you win.` :
+        d.why === 'goal' ? (d.won ? `You reached ${goal} first, in quarter ${q}. ${esc(g.rival)} had ${theirs}.` : `${esc(g.rival)} reached ${goal} first, in quarter ${q}. You had ${yours}.`) :
+        `After ${q} quarters nobody had reached ${goal}. ${d.won ? 'You finished ahead' : `${esc(g.rival)} finished ahead`}, ${d.won ? yours : theirs} to ${d.won ? theirs : yours}.`;
+      lesson = "A price well under your rival's wins some of their buyers, but every bike still has to sell for more than it costs to make. Ads split the buyers between you, so spending more than your rival helps, until extra ads stop bringing in new buyers. Bikes left over cost 5% of their value each quarter, so make about as many as you can sell.";
     } else {
       label = 'Profit for the season'; vs = 'of a perfect weather forecaster';
       bench = `A seller who knew the weather ahead of time could have made ${money(b.total)}.`;
@@ -945,10 +1134,10 @@ h1, h2, h3, p { margin: 0; }
       ? `<button class="btn btn-ghost" type="button" data-open="${s.next}">Next stall: ${STALLS[s.next].name}</button>`
       : `<button class="btn btn-ghost" type="button" data-home>Back to the market</button>`;
     return `<section class="board report" aria-live="polite">
-      <h2 class="chalk-h">Season's end</h2>
+      <h2 class="chalk-h">${head}</h2>
       <div style="display:flex;flex-direction:column;gap:6px">
         <p class="report-label">${label}</p>
-        <p class="report-big" data-count="${total}">${money(total)}</p>
+        <p class="report-big" data-count="${big}">${money(big)}</p>
       </div>
       <div class="meter" role="img" aria-label="${pct}% ${vs}"><span style="width:${Math.min(100, pct)}%"></span></div>
       <p class="report-pct"><strong>${pct}%</strong> ${vs} · ${rating(pct)}</p>
@@ -966,6 +1155,10 @@ h1, h2, h3, p { margin: 0; }
   function wiControls(g) {
     if (g.kind === 'apples') return [{ k: 'price', label: 'Same price every day', min: 1, max: Math.min(99, appleXMax(g)), fmt: v => v + '¢' }];
     if (g.kind === 'plants') return [{ k: 'ads', label: 'Same ads every day', min: 0, max: Math.min(80, plantXMax(g)), fmt: v => '$' + v }];
+    if (g.kind === 'bicycles') return [
+      { k: 'markup', label: 'Price over cost, every quarter', min: 0, max: 80, fmt: v => '+$' + v },
+      { k: 'ads', label: 'Ads every quarter', min: 0, max: 1500, by: 10, fmt: v => '$' + v }
+    ];
     return [
       { k: 'price', label: 'Price every day', min: 1, max: 99, fmt: v => v + '¢' },
       { k: 'signs', label: 'Signs every day', min: 0, max: 12, fmt: v => String(v) }
@@ -975,7 +1168,7 @@ h1, h2, h3, p { margin: 0; }
   function wiState(g) {
     if (!g.wi) {
       g.wi = {};
-      for (const c of wiControls(g)) g.wi[c.k] = clamp(Math.round(g.log.reduce((s, r) => s + r[c.k], 0) / Math.max(1, g.log.length)), c.min, c.max);
+      for (const c of wiControls(g)) { const by = c.by || 1; g.wi[c.k] = clamp(Math.round(g.log.reduce((s, r) => s + r[c.k], 0) / Math.max(1, g.log.length) / by) * by, c.min, c.max); }
     }
     return g.wi;
   }
@@ -995,6 +1188,17 @@ h1, h2, h3, p { margin: 0; }
         lead: `Spending ${shortMoney(w.ads * 100)} on ads every day would have made`,
         lines: [`${fate} ${vsYou(r.total)}`, w.ads === b.ads ? 'This is the best steady ad budget for this season.' : `The best steady budget, ${shortMoney(b.ads * 100)} a day, makes ${money(b.total)}.`] };
     }
+    if (g.kind === 'bicycles') {
+      const r = m.seasonAt(g, w.markup, w.ads), b = g.wiBest || (g.wiBest = m.bestPlan(g)), goal = shortMoney(m.GOAL), n = g.log.length;
+      const race = r.goal[0] && (!r.goal[1] || r.goal[0] <= r.goal[1]) ? `You'd have reached ${goal} in quarter ${r.goal[0]}.` :
+        r.goal[1] ? `${esc(g.rival)} would still have reached ${goal} first, in quarter ${r.goal[1]}.` :
+        `Nobody would have reached ${goal} in ${n} ${plural(n, 'quarter')}, and ${esc(g.rival)} would have had ${money(r.rival)}.`;
+      const vs = r.total === yours ? "That's exactly where you ended." : `That's ${money(Math.abs(r.total - yours))} ${r.total > yours ? 'more' : 'less'} than you ended with.`;
+      return { total: r.total, big: m.START + r.total, days: r.assets, pct: pctOf(r.total, b.total), vs: 'of the best steady plan',
+        lead: `With the bikes you made, pricing $${w.markup} over cost and spending $${w.ads} on ads every quarter would have left you with`,
+        lines: [`${race} ${vs}`, w.markup === b.markup && w.ads === b.ads ? 'This is the best steady plan for the bikes you made.' :
+          `The best steady plan for your bikes, $${b.markup} over cost with $${b.ads} of ads, ends at ${money(m.START + b.total)}.`] };
+    }
     const r = m.seasonAt(g, w.price, w.signs), b = g.wiBest || (g.wiBest = m.bestPlan(g));
     return { total: r.total, days: r.days, pct: pctOf(r.total, b.total), vs: 'of the best plan for your batches',
       lead: `With your batches, charging ${w.price}¢ and putting up ${w.signs} ${plural(w.signs, 'sign')} every day would have made`,
@@ -1005,11 +1209,11 @@ h1, h2, h3, p { margin: 0; }
     const w = wiState(g);
     return `<section class="board whatif" aria-labelledby="wi-h">
       <h2 class="chalk-h" id="wi-h">What if…</h2>
-      <p class="wi-lede">${g.kind === 'lemonade' ? 'Keep the batches you made, then pick one price and one number of signs for every day.' : 'Pick one plan and play it every day of this same season.'} The ring on the chart moves with it.</p>
+      <p class="wi-lede">${g.kind === 'lemonade' ? 'Keep the batches you made, then pick one price and one number of signs for every day.' : g.kind === 'bicycles' ? 'Keep the bikes you made, then pick one markup over the cost of a bike and one ad budget for every quarter.' : 'Pick one plan and play it every day of this same season.'} The ${g.kind === 'bicycles' ? 'rings' : 'ring'} on the chart ${g.kind === 'bicycles' ? 'move' : 'moves'} with it.</p>
       <div class="ctls">${wiControls(g).map(c => `<div class="ctl">
         <label for="wi-${c.k}">${c.label}</label>
         <p class="num wi-num" id="wi-${c.k}-v" aria-hidden="true">${c.fmt(w[c.k])}</p>
-        <input type="range" id="wi-${c.k}" data-wi="${c.k}" min="${c.min}" max="${c.max}" step="1" value="${w[c.k]}" aria-valuetext="${c.fmt(w[c.k])}">
+        <input type="range" id="wi-${c.k}" data-wi="${c.k}" min="${c.min}" max="${c.max}" step="${c.by || 1}" value="${w[c.k]}" aria-valuetext="${c.fmt(w[c.k])}">
       </div>`).join('')}</div>
       <div class="wi-res" aria-live="polite" aria-atomic="true"><p class="wi-lead" id="wi-lead"></p><p class="wi-big" id="wi-big"></p></div>
       <div class="meter" id="wi-meter" role="img"><span></span></div>
@@ -1025,7 +1229,7 @@ h1, h2, h3, p { margin: 0; }
       $(`#wi-${c.k}`).setAttribute('aria-valuetext', v);
     }
     $('#wi-lead').textContent = r.lead;
-    $('#wi-big').textContent = money(r.total);
+    $('#wi-big').textContent = money(r.big != null ? r.big : r.total);
     const meter = $('#wi-meter');
     meter.setAttribute('aria-label', `${r.pct}% ${r.vs}`);
     meter.firstElementChild.style.width = Math.min(100, r.pct) + '%';
@@ -1047,6 +1251,19 @@ h1, h2, h3, p { margin: 0; }
       main = r.left === 0 ? `You sold your last plant! ${num(r.sold)} went home with gardeners today.` :
         `You spent ${shortMoney(r.ads * 100)} on ads and sold ${num(r.sold)} ${plural(r.sold, 'plant')}. ${num(r.left)} left.`;
       rows = [['Plants sold', num(r.sold)], ['Sales', money(r.income)], ['Ads', money(-r.ads * 100)], ['Profit', money(r.profit), r.profit]];
+    } else if (g.kind === 'bicycles') {
+      const rv = r.rival;
+      if (r.haul) main = 'The transport strike kept every bike out of the stores, so neither company sold any.';
+      else {
+        main = `${num(r.want)} ${plural(r.want, 'buyer')} wanted your bikes at $${r.price}` +
+          (r.want > r.stock ? `, but you only had ${num(r.stock)}.` : r.want ? ', and you sold to every one.' : '.') +
+          ` ${esc(g.rival)} sold ${num(rv.sold)} at $${rv.price}.`;
+      }
+      if (r.interest) main += ` You ran out of cash, so the bank lent you money and charged ${money(r.interest)} interest.`;
+      rows = [['Bikes sold', `${num(r.sold)} of ${num(r.stock)}`], ['Sales', money(r.sales)], [`Cost of bikes sold, $${r.U} each`, money(-r.cogs)],
+        ['Ads', money(-r.ads * 100)], ['Running the factory', money(-M.bicycles.FIXED)], ['Warehouse charge', money(-r.storage)]];
+      if (r.interest) rows.push(['Loan interest', money(-r.interest)]);
+      rows.push(['Profit', money(r.profit), r.profit]);
     } else {
       const w = WX[r.wx], fw = WX[r.fwx];
       main = `It was ${w.name.toLowerCase()}, ${r.temp}°F${r.wx !== r.fwx ? ` (the forecast said ${fw.name.toLowerCase()})` : ''}. ${num(r.want)} ${plural(r.want, 'person', 'people')} wanted lemonade at ${r.price}¢. `;
@@ -1057,14 +1274,14 @@ h1, h2, h3, p { margin: 0; }
     }
     const last = rows.length - 1;
     return `<section class="receipt" aria-live="polite">
-      <p class="receipt-h">Day ${r.day} receipt</p>
+      <p class="receipt-h">${capFirst(unitOf(g))} ${r.day} receipt</p>
       <p class="receipt-main">${main}</p>
       <dl>${rows.map((x, i) => `<div${i === last ? ' class="total"' : ''}><dt>${x[0]}</dt><dd${x[2] != null ? ` data-count="${x[2]}"` : ''}>${x[1]}</dd></div>`).join('')}</dl>
     </section>`;
   }
 
   function ledgerHTML(g) {
-    if (!g.log.length) return '<p class="empty">Each day you open, a line is added here.</p>';
+    if (!g.log.length) return `<p class="empty">Each ${unitOf(g)} you ${g.kind === 'bicycles' ? 'run' : 'open'}, a line is added here.</p>`;
     let head, row;
     if (g.kind === 'apples') {
       head = ['Day', 'Price', 'Sold', 'Income'];
@@ -1072,6 +1289,9 @@ h1, h2, h3, p { margin: 0; }
     } else if (g.kind === 'plants') {
       head = ['Day', 'Ads', 'Sold', 'Left', 'Profit'];
       row = r => [r.day, shortMoney(r.ads * 100), num(r.sold), num(r.left), money(r.profit)];
+    } else if (g.kind === 'bicycles') {
+      head = ['Qtr', 'Made', 'Price', 'Ads', 'Sold', 'Profit', 'Assets', 'Rival price', 'Rival assets'];
+      row = r => [r.day, num(r.make), '$' + r.price, shortMoney(r.ads * 100), num(r.sold), money(r.profit), money(r.assets), '$' + r.rival.price, money(r.rival.assets)];
     } else {
       head = ['Day', 'Weather', 'Made', 'Price', 'Signs', 'Sold', 'Profit', 'Cash'];
       row = r => [r.day, `<span class="wx">${ic(WX[r.wx].k, 15)}${WX[r.wx].name}</span>`, num(r.make), `${r.price}¢`, r.signs, num(r.sold), money(r.profit), money(r.cash)];
@@ -1087,9 +1307,11 @@ h1, h2, h3, p { margin: 0; }
   function chartMeta(g) {
     if (g.kind === 'apples') return ['Income for each price you tried', 'Each dot is one day. Look for the shape.'];
     if (g.kind === 'plants') return ['Plants sold for each ad budget', 'Each dot is one day. A hollow dot means you ran out of plants.'];
+    if (g.kind === 'bicycles') return ['Assets after each quarter', `The race to ${shortMoney(M.bicycles.GOAL)}. Assets are your cash plus what your unsold bikes cost to make.`];
     return ['Profit by day', 'Bars below the line are days you lost money.'];
   }
   function chartKeyHTML(g) {
+    if (g.kind === 'bicycles') return `<p class="chart-key"><span><i class="k-dot"></i>You</span><span><i class="k-dot k-rv"></i>${esc(g.rival)}</span>${g.over ? '<span><i class="k-ring"></i>What if</span>' : ''}</p>`;
     const yours = g.kind === 'lemonade' ? '<span><i class="k-bar"></i>Your profit</span>' : '<span><i class="k-dot"></i>Your days</span>';
     const usual = g.kind === 'lemonade' ? '' : `<span><i class="k-curve"></i>${g.kind === 'apples' ? 'Usual income' : 'Usual sales'}</span>`;
     return `<p class="chart-key">${yours}${usual}<span><i class="k-ring"></i>What if</span></p>`;
@@ -1104,12 +1326,12 @@ h1, h2, h3, p { margin: 0; }
         <header class="fascia">
           <button class="back" type="button" data-home>← All stalls</button>
           <h1 class="sign">${g.kind === 'lemonade' && standName() ? esc(standName()) : s.name}</h1>
-          <p class="daypill">${g.over ? 'Season over' : `Day ${g.day} of ${DAYS}`}</p>
+          <p class="daypill">${g.over ? 'Season over' : `${capFirst(unitOf(g))} ${g.day} of ${roundsOf(g)}`}</p>
         </header>
         <div class="stall-grid">
           <div id="scene-slot"></div>
           <div class="counter">
-            <p class="brief">${s.brief}</p>
+            <p class="brief">${typeof s.brief === 'function' ? esc(s.brief(g)) : s.brief}</p>
             ${g.code ? `<p class="season-code">Season code <span class="code">${g.code}</span>. Share it, and anyone can play this same season by entering it on the home page.</p>` : ''}
             ${g.kind === 'lemonade' ? `<div class="namefield"><label for="stand-name">Name your stand</label><input id="stand-name" type="text" maxlength="22" autocomplete="off" spellcheck="false" placeholder="Lemonade" value="${esc(S.standName || '')}"></div>` : ''}
             ${factsHTML(g)}
@@ -1120,7 +1342,7 @@ h1, h2, h3, p { margin: 0; }
             <div class="db-head"><h2 class="db-title">Day book</h2><p class="db-sub">${sub}</p></div>
             <figure class="chart" id="chart">
               <figcaption>${cap}</figcaption>
-              ${g.over ? chartKeyHTML(g) : ''}
+              ${g.over || g.kind === 'bicycles' ? chartKeyHTML(g) : ''}
               <div class="chart-svg"></div>
               <div class="tip" hidden></div>
             </figure>
@@ -1272,7 +1494,42 @@ h1, h2, h3, p { margin: 0; }
       }
       return scatter(W, { pts, xMax, yMax, xFmt: v => '$' + v, yFmt: v => num(v), xTitle: 'Ad spending', curve, peak, peakLabel, mark, aria: 'Plants sold per day plotted against ad spending' });
     }
+    if (g.kind === 'bicycles') return race(W, g, g.over ? wiResult(g).days : null);
     return bars(W, g, g.over ? wiResult(g).days : null);
+  }
+
+  /* the bike race: each company's assets after every quarter, with the goal across the top; wi adds what-if rings */
+  function race(W, g, wi) {
+    const B = M.bicycles, H = 260, ml = 54, mr = 16, mt = 18, mb = 42, Q = B.QUARTERS;
+    const vals = [B.START, B.GOAL].concat(g.log.map(r => r.assets), g.log.map(r => r.rival.assets), wi || []);
+    let lo = Math.min(...vals), hi = Math.max(...vals);
+    const st = niceStep(hi - lo, 4);
+    lo = Math.floor(lo / st) * st; hi = Math.ceil(hi / st) * st;
+    const X = q => ml + q / Q * (W - ml - mr), Y = v => mt + (hi - v) / (hi - lo) * (H - mt - mb);
+    const k = v => '$' + (v / 100000).toLocaleString('en-US', { maximumFractionDigits: 1 }) + 'k';
+    let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Assets after each quarter for you and ${esc(g.rival)}">`;
+    for (let v = lo; v <= hi + 1e-9; v += st) {
+      s += `<line x1="${ml}" x2="${W - mr}" y1="${Y(v)}" y2="${Y(v)}" class="grid"/>`;
+      s += `<text x="${ml - 8}" y="${Y(v) + 4}" class="tick" text-anchor="end">${k(v)}</text>`;
+    }
+    s += `<line x1="${ml}" x2="${W - mr}" y1="${Y(lo)}" y2="${Y(lo)}" class="axis"/>`;
+    for (let q = 0; q <= Q; q += W < 440 ? 4 : 2) s += `<text x="${X(q)}" y="${H - mb + 18}" class="tick" text-anchor="middle">${q}</text>`;
+    s += `<text x="${W - mr}" y="${H - 4}" class="axis-title" text-anchor="end">Quarter →</text>`;
+    s += `<line x1="${ml}" x2="${W - mr}" y1="${Y(B.GOAL)}" y2="${Y(B.GOAL)}" class="goal"/>`;
+    s += `<text x="${ml + 8}" y="${Y(B.GOAL) - 8}" class="lbl">Goal ${shortMoney(B.GOAL)}</text>`;
+    const path = vs => 'M' + [B.START].concat(vs).map((v, i) => X(i).toFixed(1) + ' ' + Y(v).toFixed(1)).join('L');
+    if (g.log.length) {
+      s += `<path class="ln rv" d="${path(g.log.map(r => r.rival.assets))}"/><path class="ln" d="${path(g.log.map(r => r.assets))}"/>`;
+      if (wi) s += `<path class="wi-path" d="${path(wi)}"/>`;
+    } else s += `<text x="${(ml + W - mr) / 2}" y="${(mt + H - mb) / 2 + 30}" class="empty-msg" text-anchor="middle">Run your first quarter to start the race.</text>`;
+    const band = (W - ml - mr) / Q;
+    g.log.forEach((r, i) => {
+      const x = X(r.day), tip = `Quarter ${r.day} · You ${money(r.assets)} · ${g.rival} ${money(r.rival.assets)}` + (wi ? ` · what if: ${money(wi[i])}` : '');
+      s += `<g data-tip="${esc(tip)}"><title>${esc(tip)}</title><rect class="hit" x="${x - band / 2}" y="${mt}" width="${band}" height="${H - mt - mb}"/>` +
+        `<circle class="dot rv" cx="${x}" cy="${Y(r.rival.assets)}" r="4.5"/><circle class="dot" cx="${x}" cy="${Y(r.assets)}" r="${i === g.log.length - 1 ? 6.5 : 5}"/>` +
+        (wi ? `<circle class="wi-ring" cx="${x}" cy="${Y(wi[i])}" r="5"/>` : '') + '</g>';
+    });
+    return s + '</svg>';
   }
   /* x ranges for the two scatter charts; after the season they also cover the best plan, and the What if sliders stay inside them */
   const appleXMax = g => Math.max(60, ...g.log.map(r => r.price + 5), g.over ? g.Z + 4 : 0);
@@ -1305,6 +1562,7 @@ h1, h2, h3, p { margin: 0; }
   const rr = (ctx, x, y, w, h, r) => { ctx.beginPath(); if (ctx.roundRect) ctx.roundRect(x, y, w, h, r); else ctx.rect(x, y, w, h); };
   const standName = () => String(S.standName || '').trim();
   const adSignCount = ads => Math.min(8, Math.ceil(ads / 10));
+  const bikeSigns = ads => Math.min(4, Math.ceil(ads / 250));
   function lockBoard(label) {
     const f = $('#dayform');
     if (!f) return;
@@ -1379,6 +1637,34 @@ h1, h2, h3, p { margin: 0; }
         return { wx: r.wx, stock: r.make, cap: r.make, price: r.price, signs: r.signs, drain: true, leftover: 'Poured out', showOf: true, want: r.want,
           wxText: `${WX[r.wx].name}, ${r.temp}°F` + (r.wx !== r.fwx ? ` (forecast said ${WX[r.fwx].name.toLowerCase()})` : '') };
       }
+    },
+    bicycles: {
+      awning: 'bike', missed: 'Missed out', tag: p => '$' + p, closing: 'End of the quarter',
+      clock: f => `Week ${Math.min(13, 1 + Math.floor(f * 13))}`,
+      sign: () => 'BICYCLES',
+      // winter, spring, summer, fall
+      wx: q => [2, 1, 0, 1][(q - 1) % 4],
+      rival(g, price, stock) { return { name: g.rival, price, level: clamp(stock / 120, 0, 1) }; },
+      idle(g) {
+        const B = M.bicycles, you = g.co[0], them = g.co[1];
+        if (g.over) {
+          const r = g.log[g.log.length - 1];
+          return { wx: this.wx(r.day), level: clamp(you.inv / 120, 0, 1), price: r.price, signs: 0, closed: true, rival: this.rival(g, them.price, them.inv),
+            status: `Season over · ${g.done.won ? 'You won the race' : `${g.rival} won the race`}`,
+            ticker: `<span>Closed for the season</span><span>Your assets <b>${money(B.assets(g, 0))}</b></span><span>${esc(g.rival)} <b>${money(B.assets(g, 1))}</b></span>`,
+            aria: `Your bicycle stand and ${g.rival}'s, closed for the season` };
+        }
+        const { ads, price } = g.input, make = g.strike === g.day ? 0 : g.input.make, ready = you.inv + make;
+        const rp = them.price || Math.round(g.U * g.aim);
+        return { wx: this.wx(g.day), level: clamp(ready / 120, 0, 1), price, signs: bikeSigns(ads), ads, closed: false, rival: this.rival(g, rp, them.inv),
+          status: `Start of quarter ${g.day} · ${num(you.inv)} ${plural(you.inv, 'bike')} in the warehouse`,
+          ticker: `<span>Ready <b>${num(ready)}</b> ${plural(ready, 'bike')}</span><span>Price <b>$${price}</b></span><span>Ads <b>${shortMoney(ads * 100)}</b></span><span>${esc(g.rival)} <b>$${rp}</b></span>`,
+          aria: `Your bicycle stand at the start of quarter ${g.day}, with ${ready} bikes ready at $${price}, next to ${g.rival}'s stand at $${rp}` };
+      },
+      day(g, r) {
+        return { wx: this.wx(r.day), stock: r.stock, cap: r.stock, price: r.price, each: r.price * 100, signs: bikeSigns(r.ads), ads: r.ads, drain: false, leftover: 'Bikes left', showOf: true, want: r.want,
+          rival: { want: r.rival.want, stock: r.rival.stock, price: r.rival.price, name: g.rival }, wxText: r.haul ? 'Transport strike' : '' };
+      }
     }
   };
 
@@ -1437,7 +1723,7 @@ h1, h2, h3, p { margin: 0; }
       const skip = this.root.querySelector('#sc-skip'), rep = this.root.querySelector('#sc-replay');
       skip.hidden = !(this.on && this.anim && !REDUCED);
       rep.hidden = !(this.on && !this.anim && last);
-      if (last) rep.textContent = `Watch day ${last.day} again`;
+      if (last) rep.textContent = `Watch ${unitOf(this.g)} ${last.day} again`;
     },
     /* sizes the canvas to its column; returns true only when the size actually changed */
     resize() {
@@ -1460,7 +1746,7 @@ h1, h2, h3, p { margin: 0; }
         sky: ['hot', 'sunny', 'cloudy', 'rainy'].map(k => [v(`--sky-${k}-1`), v(`--sky-${k}-2`)]),
         sun: v('--sun'), cloud: v('--cloud'), cloudDark: v('--cloud-dark'), rain: v('--rain'),
         hill: v('--hill'), grass: v('--grass'), walk: v('--walk'), walkLine: v('--walk-line'),
-        wood: v('--wood'), woodDark: v('--wood-dark'), counter: v('--counter'), lemon: v('--lemon'), plant: v('--plant'), pot: v('--pot'),
+        wood: v('--wood'), woodDark: v('--wood-dark'), counter: v('--counter'), lemon: v('--lemon'), plant: v('--plant'), pot: v('--pot'), bike: v('--bike'), muted: v('--muted'),
         canvas: v('--canvas'), ink: v('--scene-ink'), glass: v('--glass'), board: v('--board'), chalk: v('--chalk'), red: v('--apple'),
         shirts: [v('--apple'), v('--plant'), v('--shirt-3'), v('--shirt-4')],
         skins: [v('--skin-1'), v('--skin-2'), v('--skin-3'), v('--skin-4')],
@@ -1494,19 +1780,24 @@ h1, h2, h3, p { margin: 0; }
     /* one market day, played out */
     play(r, onDone) {
       this.stop();
-      const spec = SCENES[this.g.kind].day(this.g, r);
-      const V = Math.min(spec.want, 40), base = V ? Math.floor(spec.want / V) : 0, extra = V ? spec.want % V : 0;
+      const spec = SCENES[this.g.kind].day(this.g, r), rv = spec.rival;
+      // at most 40 people walk by; with a rival stand they are shared out by how many buyers each stand had
+      const all = spec.want + (rv ? rv.want : 0), cap = Math.min(all, 40);
       const walk = .95 * clamp(this.W / 650, .8, 1.5), walkers = [];
-      for (let i = 0; i < V; i++) {
-        const ts = Math.max(0, .15 + (i + rand(-.35, .35)) / V * 4.3);
-        walkers.push({ ts, ta: ts + walk, tl: ts + walk + .4, tg: ts + walk * 2 + .4,
-          from: Math.random() < .5 ? -1 : 1, side: rand(-1, 1), batch: base + (i < extra ? 1 : 0),
-          size: rand(.82, 1.06), shirt: randInt(0, 3), skin: randInt(0, 3), umb: randInt(0, 3),
-          hair: Math.random() < .75, seed: Math.random(), done: false, bought: 0, sad: false });
-      }
+      [[spec.want, false], [rv ? rv.want : 0, true]].forEach(([want, rival]) => {
+        const V = want ? Math.min(want, Math.max(1, Math.round(cap * want / all))) : 0, base = V ? Math.floor(want / V) : 0, extra = V ? want % V : 0;
+        for (let i = 0; i < V; i++) {
+          const ts = Math.max(0, .15 + (i + rand(-.35, .35)) / V * 4.3);
+          walkers.push({ ts, ta: ts + walk, tl: ts + walk + .4, tg: ts + walk * 2 + .4, rival,
+            from: Math.random() < .5 ? -1 : 1, side: rand(-1, 1), batch: base + (i < extra ? 1 : 0),
+            size: rand(.82, 1.06), shirt: randInt(0, 3), skin: randInt(0, 3), umb: randInt(0, 3),
+            hair: Math.random() < .75, seed: Math.random(), done: false, bought: 0, sad: false });
+        }
+      });
       walkers.sort((a, b) => a.ta - b.ta);
       const endOpen = Math.max(4.8, ...walkers.map(w => w.tg));
-      this.anim = { r, spec, onDone, walkers, coins: [], cust: 0, sold: 0, left: spec.stock, cash: 0, thirsty: 0, endOpen, endT: endOpen + 1.5, start: 0, t: 0 };
+      this.anim = { r, spec, onDone, walkers, coins: [], cust: 0, sold: 0, left: spec.stock, cash: 0, thirsty: 0,
+        rleft: rv ? rv.stock : 0, rsold: 0, endOpen, endT: endOpen + 1.5, start: 0, t: 0 };
       this.syncButtons();
       if (!this.on || !this.W) return this.skip();
       const box = this.root.getBoundingClientRect();
@@ -1537,10 +1828,16 @@ h1, h2, h3, p { margin: 0; }
     },
     /* quiet: settling a skipped day all at once, so no pile of sale beeps */
     process(t, quiet) {
-      const A = this.anim, price = A.spec.price;
+      // each sale's takings in cents; bikes are priced in whole dollars
+      const A = this.anim, price = A.spec.each || A.spec.price;
       for (const w of A.walkers) {
         if (w.done || w.ta > t) continue;
         w.done = true;
+        if (w.rival) {
+          const got = Math.min(w.batch, A.rleft);
+          A.rleft -= got; A.rsold += got; w.bought = got; w.sad = !got;
+          continue;
+        }
         const got = Math.min(w.batch, A.left);
         A.left -= got; A.sold += got; A.cust += w.batch; A.cash += got * price; A.thirsty += w.batch - got; w.bought = got;
         if (!got) { w.sad = true; continue; }
@@ -1575,25 +1872,27 @@ h1, h2, h3, p { margin: 0; }
     replay() {
       const r = this.g && this.g.log[this.g.log.length - 1];
       if (!r || this.anim) return;
-      lockBoard(`Replaying day ${r.day}…`);
+      lockBoard(`Replaying ${unitOf(this.g)} ${r.day}…`);
       this.play(r, () => renderStall(false));
     },
     animState(t) {
       const A = this.anim, sp = A.spec, close = sp.drain ? clamp((t - A.endOpen) / 1.1, 0, 1) : 0;
-      return { kind: this.g.kind, wx: sp.wx, level: sp.cap ? A.left / sp.cap * (1 - close) : 0, price: sp.price, signs: sp.signs, ads: sp.ads,
+      const rv = sp.rival && { name: sp.rival.name, price: sp.rival.price, level: clamp(A.rleft / 120, 0, 1) };
+      return { kind: this.g.kind, wx: sp.wx, level: sp.cap ? A.left / sp.cap * (1 - close) : 0, price: sp.price, signs: sp.signs, ads: sp.ads, rival: rv,
         closed: t >= A.endOpen, soldOut: sp.stock === 0 || A.left === 0, walkers: A.walkers, coins: A.coins, t };
     },
     text() {
-      const A = this.anim, r = A.r, sp = A.spec, kind = this.g.kind, t = Math.min(A.t, A.endT), closing = t >= A.endOpen;
+      const A = this.anim, r = A.r, sp = A.spec, kind = this.g.kind, K = SCENES[kind], t = Math.min(A.t, A.endT), closing = t >= A.endOpen;
       const mins = 540 + Math.min(1, t / A.endOpen) * 480, q = Math.floor(mins / 15) * 15, h = Math.floor(q / 60), m = q % 60;
-      const clock = `${((h + 11) % 12) + 1}:${String(m).padStart(2, '0')} ${h < 12 ? 'AM' : 'PM'}`;
-      const status = `Day ${r.day} · ${closing ? 'Closing time' : clock}` + (sp.wxText ? ` · ${sp.wxText}` : '');
+      const clock = K.clock ? K.clock(Math.min(1, t / A.endOpen)) : `${((h + 11) % 12) + 1}:${String(m).padStart(2, '0')} ${h < 12 ? 'AM' : 'PM'}`;
+      const status = `${capFirst(unitOf(this.g))} ${r.day} · ${closing ? K.closing || 'Closing time' : clock}` + (sp.wxText ? ` · ${sp.wxText}` : '');
       let tk = `<span>Customers <b>${num(A.cust)}</b></span><span>Sold <b>${num(A.sold)}</b>${sp.showOf ? ` of ${num(sp.stock)}` : ''}</span><span>Taken in <b>${money(A.cash)}</b></span>`;
       if (sp.ads != null) tk += `<span>Ads <b>${shortMoney(sp.ads * 100)}</b></span>`;
       if (A.thirsty) tk += `<span>${SCENES[kind].missed} <b>${num(A.thirsty)}</b></span>`;
       if (closing && A.left > 0) tk += `<span>${sp.leftover} <b>${num(A.left)}</b></span>`;
+      if (sp.rival) tk += `<span>${esc(sp.rival.name)} sold <b>${num(A.rsold)}</b></span>`;
       this.setText(status, tk);
-      this.label(`Day ${r.day} at the ${STALLS[kind].name.toLowerCase()} stand: ${A.sold} sold so far`);
+      this.label(`${capFirst(unitOf(this.g))} ${r.day} at the ${STALLS[kind].name.toLowerCase()} stand: ${A.sold} sold so far`);
     },
 
     /* drawing */
@@ -1601,6 +1900,8 @@ h1, h2, h3, p { margin: 0; }
       const ctx = this.ctx, c = this.colors(), W = this.W, H = this.H, u = H / 260;
       const G = { W, H, u, sx: W / 2, sw: clamp(W * .34, 150 * u, 230 * u), horizon: H * .55, walkTop: H * .8, feet: H * .95,
         awTop: H * .07, awBot: H * .18, cTop: H * .42, cBot: H * .8 };
+      // the rival's smaller stand, at the right edge
+      G.rw = clamp(W * .17, 70 * u, 120 * u); G.rx = W - G.rw / 2 - 16 * u;
       ctx.clearRect(0, 0, W, H);
       const [s1, s2] = c.sky[st.wx], gr = ctx.createLinearGradient(0, 0, 0, G.horizon);
       gr.addColorStop(0, s1); gr.addColorStop(1, s2);
@@ -1611,6 +1912,7 @@ h1, h2, h3, p { margin: 0; }
       this.scenery(ctx, G, c, st.kind);
       const pill = this.adSigns(ctx, G, c, st);
       this.stand(ctx, G, c, st);
+      if (st.rival) this.rivalStand(ctx, G, c, st.rival, st.closed);
       if (st.walkers.length) this.people(ctx, G, c, st);
       if (st.coins) this.coins(ctx, G, c, st);
       if (st.wx === 3) this.rain(ctx, G, c, dt);
@@ -1692,11 +1994,11 @@ h1, h2, h3, p { margin: 0; }
     },
     adSigns(ctx, G, c, st) {
       const u = G.u, n = st.signs || 0, lemon = st.kind === 'lemonade';
-      const fill = lemon ? c.lemon : c.canvas, arrow = lemon ? c.ink : c.plant;
+      const fill = lemon ? c.lemon : c.canvas, arrow = lemon ? c.ink : st.kind === 'bicycles' ? c.bike : c.plant;
       let drawn = 0;
       for (let i = 0; i < SIGN_X.length && drawn < n; i++) {
         const x = SIGN_X[i] * G.W;
-        if (Math.abs(x - G.sx) < G.sw / 2 + 26 * u) continue;
+        if (Math.abs(x - G.sx) < G.sw / 2 + 26 * u || (st.rival && x > G.sx)) continue;
         drawn++;
         const base = G.walkTop - 3 * u - (i % 2) * 7 * u, dir = x < G.sx ? 1 : -1, ay = base - 36 * u;
         ctx.fillStyle = c.woodDark; ctx.fillRect(x - 1.5 * u, base - 30 * u, 3 * u, 30 * u);
@@ -1707,7 +2009,8 @@ h1, h2, h3, p { margin: 0; }
         ctx.moveTo(x + 4 * u * dir, ay - 5 * u); ctx.lineTo(x + 9 * u * dir, ay); ctx.lineTo(x + 4 * u * dir, ay + 5 * u);
         ctx.stroke();
       }
-      if (st.kind === 'plants' && st.ads != null) return st.ads ? `Ads today: ${shortMoney(st.ads * 100)}` : 'No ads today';
+      const when = st.kind === 'bicycles' ? 'this quarter' : 'today';
+      if (st.ads != null) return st.ads ? `Ads ${when}: ${shortMoney(st.ads * 100)}` : `No ads ${when}`;
       if (n > drawn) return `+${n - drawn} more ${plural(n - drawn, 'sign')}`;
       return null;
     },
@@ -1748,7 +2051,7 @@ h1, h2, h3, p { margin: 0; }
       const nw = ctx.measureText(name).width;
       if (nw > maxW) { fs = Math.max(6.5 * u, fs * maxW / nw); ctx.font = `${fs}px ${c.fDisplay}`; }
       ctx.fillText(name, sx, by + bh * .36, maxW);
-      ctx.font = `${Math.round(26 * u)}px ${c.fChalk}`; ctx.fillText(st.closed ? 'Closed' : `${st.price}¢`, sx, by + bh * .88, maxW);
+      ctx.font = `${Math.round(26 * u)}px ${c.fChalk}`; ctx.fillText(st.closed ? 'Closed' : K.tag ? K.tag(st.price) : `${st.price}¢`, sx, by + bh * .88, maxW);
       if (st.soldOut && !st.closed) {
         ctx.save(); ctx.translate(sx, by + bh * .55); ctx.rotate(-.1);
         ctx.fillStyle = c.red; ctx.fillRect(-bw * .56, -10 * u, bw * 1.12, 20 * u);
@@ -1775,10 +2078,54 @@ h1, h2, h3, p { margin: 0; }
           ctx.strokeStyle = c.woodDark; ctx.lineWidth = 1.5 * u; ctx.strokeRect(cx - cw / 2, top - ch, cw, ch);
           ctx.beginPath(); ctx.moveTo(cx - cw / 2, top - ch / 2); ctx.lineTo(cx + cw / 2, top - ch / 2); ctx.stroke();
         });
+      } else if (st.kind === 'bicycles') {
+        const n = Math.ceil(3 * st.level - 1e-6);
+        for (let i = 0; i < n; i++) this.bike(ctx, L + sw * (.2 + .3 * i), top, 1.15 * u, c, c.bike, 1);
       } else {
         const n = Math.ceil(7 * st.level - 1e-6), step = (sw - 24 * u) / 6;
         for (let i = 0; i < n; i++) this.pot(ctx, L + 12 * u + i * step, top, u, c);
       }
+    },
+    /* a bicycle standing on base, facing dir (1 = right) */
+    bike(ctx, x, base, s, c, col, dir) {
+      const d = dir || 1, P = (dx, dy) => [x + dx * s * d, base + dy * s];
+      ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+      ctx.strokeStyle = c.ink; ctx.lineWidth = 1.6 * s;
+      [-9, 9].forEach(dx => { ctx.beginPath(); ctx.arc(...P(dx, -6), 5.5 * s, 0, Math.PI * 2); ctx.stroke(); });
+      ctx.strokeStyle = col; ctx.lineWidth = 2 * s; ctx.beginPath();
+      ctx.moveTo(...P(-9, -6)); ctx.lineTo(...P(-1, -6)); ctx.lineTo(...P(-4, -14)); ctx.lineTo(...P(6, -14)); ctx.lineTo(...P(-1, -6));
+      ctx.moveTo(...P(-9, -6)); ctx.lineTo(...P(-4, -14)); ctx.moveTo(...P(9, -6)); ctx.lineTo(...P(6, -17));
+      ctx.stroke();
+      ctx.strokeStyle = c.ink; ctx.lineWidth = 1.8 * s; ctx.beginPath();
+      ctx.moveTo(...P(-7, -16)); ctx.lineTo(...P(-2, -16)); ctx.moveTo(...P(5, -18)); ctx.lineTo(...P(9, -18));
+      ctx.stroke();
+    },
+    rivalStand(ctx, G, c, rv, closed) {
+      const u = G.u, w = G.rw, x = G.rx, L = x - w / 2, aTop = G.awTop + 20 * u, aBot = aTop + 10 * u, cTop = G.cTop + 8 * u;
+      ctx.globalAlpha = .18; ctx.fillStyle = c.ink;
+      ctx.beginPath(); ctx.ellipse(x, G.cBot + 2 * u, w * .6, 5 * u, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.globalAlpha = 1;
+      ctx.fillStyle = c.woodDark; ctx.fillRect(L + 4 * u, aBot, 4 * u, cTop - aBot); ctx.fillRect(L + w - 8 * u, aBot, 4 * u, cTop - aBot);
+      const n = 4, aL = L - 8 * u, aW = w + 16 * u, sW = aW / n;
+      for (let i = 0; i < n; i++) {
+        ctx.fillStyle = i % 2 ? c.canvas : c.muted;
+        ctx.fillRect(aL + i * sW, aTop, sW + .5, aBot - aTop);
+        ctx.beginPath(); ctx.arc(aL + i * sW + sW / 2, aBot, sW / 2, 0, Math.PI); ctx.fill();
+      }
+      ctx.fillStyle = c.wood; ctx.fillRect(L, cTop, w, G.cBot - cTop);
+      ctx.fillStyle = c.counter; rr(ctx, L - 6 * u, cTop - 7 * u, w + 12 * u, 8 * u, 2 * u); ctx.fill();
+      const nb = Math.ceil(2 * rv.level - 1e-6);
+      for (let i = 0; i < nb; i++) this.bike(ctx, x + (nb === 1 ? 0 : (i ? 1 : -1) * w * .24), cTop - 7 * u, .85 * u, c, c.muted, -1);
+      const bw = w * .82, bh = (G.cBot - cTop) * .62, bx = x - bw / 2, by = cTop + (G.cBot - cTop) * .14, maxW = bw * .88;
+      rr(ctx, bx, by, bw, bh, 3 * u); ctx.fillStyle = c.board; ctx.fill();
+      ctx.strokeStyle = c.woodDark; ctx.lineWidth = 2 * u; ctx.stroke();
+      ctx.fillStyle = c.chalk; ctx.textAlign = 'center'; ctx.textBaseline = 'alphabetic';
+      let fs = 8 * u;
+      ctx.font = `${fs}px ${c.fDisplay}`;
+      const nw = ctx.measureText(rv.name.toUpperCase()).width;
+      if (nw > maxW) { fs = Math.max(5 * u, fs * maxW / nw); ctx.font = `${fs}px ${c.fDisplay}`; }
+      ctx.fillText(rv.name.toUpperCase(), x, by + bh * .36, maxW);
+      ctx.font = `${Math.round(18 * u)}px ${c.fChalk}`; ctx.fillText(closed ? 'Closed' : '$' + rv.price, x, by + bh * .86, maxW);
     },
     cup(ctx, x, base, s, c) {
       ctx.beginPath();
@@ -1801,6 +2148,7 @@ h1, h2, h3, p { margin: 0; }
     },
     held(ctx, kind, x, base, s, c) {
       if (kind === 'lemonade') return this.cup(ctx, x, base, s * .9, c);
+      if (kind === 'bicycles') return;
       if (kind === 'apples') {
         rr(ctx, x - 5 * s, base - 11 * s, 10 * s, 11 * s, 1.5 * s); ctx.fillStyle = c.counter; ctx.fill();
         ctx.strokeStyle = c.ink; ctx.lineWidth = s; ctx.stroke();
@@ -1824,7 +2172,7 @@ h1, h2, h3, p { margin: 0; }
       const t = st.t, rainy = st.wx === 3, off = 30 * G.u;
       for (const w of st.walkers) {
         if (t < w.ts || t > w.tg) continue;
-        const xStart = w.from < 0 ? -off : G.W + off, xEnd = w.from < 0 ? G.W + off : -off, xStop = G.sx + w.side * G.sw * .34;
+        const xStart = w.from < 0 ? -off : G.W + off, xEnd = w.from < 0 ? G.W + off : -off, xStop = w.rival ? G.rx + w.side * G.rw * .3 : G.sx + w.side * G.sw * .34;
         let x, walking = true;
         if (t < w.ta) x = xStart + (xStop - xStart) * (t - w.ts) / (w.ta - w.ts);
         else if (t < w.tl) { x = xStop; walking = false; }
@@ -1850,7 +2198,9 @@ h1, h2, h3, p { margin: 0; }
       if (w.hair) { ctx.fillStyle = c.ink; ctx.beginPath(); ctx.arc(x, fy - 62 * s, 8.8 * s, Math.PI, Math.PI * 2); ctx.fill(); }
       ctx.strokeStyle = shirt; ctx.lineWidth = 4 * s;
       ctx.beginPath(); ctx.moveTo(x + f * 4 * s, fy - 46 * s);
-      if (holding) { ctx.lineTo(x + f * 13 * s, fy - 39 * s); ctx.stroke(); this.held(ctx, kind, x + f * 16 * s, fy - 34 * s, s, c); }
+      // a new bike gets walked home beside its owner, hand on the handlebars
+      if (holding && kind === 'bicycles') { ctx.lineTo(x + f * 15 * s, fy - 27 * s); ctx.stroke(); this.bike(ctx, x + f * 9 * s, fy, 1.3 * s, c, w.rival ? c.muted : c.bike, f); }
+      else if (holding) { ctx.lineTo(x + f * 13 * s, fy - 39 * s); ctx.stroke(); this.held(ctx, kind, x + f * 16 * s, fy - 34 * s, s, c); }
       else { ctx.lineTo(x + f * 4 * s + ph * 5 * s, fy - 30 * s); ctx.stroke(); }
       if (rainy) {
         const ux = x - f * 3 * s, uy = fy - 86 * s;
@@ -1932,7 +2282,7 @@ h1, h2, h3, p { margin: 0; }
     saveGames();
     inp.value = '';
     $('.stalls').innerHTML = stallCards();
-    msg.textContent = `Season ${code} is ready at all three stalls. Open any stall to start.`;
+    msg.textContent = `Season ${code} is ready at all four stalls. Open any stall to start.`;
   }
 
   document.addEventListener('click', e => {
@@ -1971,9 +2321,10 @@ h1, h2, h3, p { margin: 0; }
     const g = cur(), k = t.dataset.k;
     if (!g || g.over || Scene.anim || !(k in g.input)) return false;
     const before = g.input[k];
-    setInput(g, k, before + t.dataset.step * (shift ? 10 : 1), t);
+    setInput(g, k, before + t.dataset.step * (shift ? 10 : 1) * stepOf(g, k), t);
     return g.input[k] !== before;
   }
+  const stepOf = (g, k) => (controlsFor(g).find(c => c.k === k) || {}).by || 1;
   const endHold = () => { if (press) clearTimeout(press.timer); };
   document.addEventListener('pointerdown', e => {
     endHold();
@@ -2002,7 +2353,7 @@ h1, h2, h3, p { margin: 0; }
     const big = { PageUp: 10, PageDown: -10 }[e.key] || (e.shiftKey ? { ArrowUp: 10, ArrowDown: -10 }[e.key] : 0);
     if (!big) return;
     e.preventDefault();
-    setInput(g, t.dataset.k, g.input[t.dataset.k] + big, null);
+    setInput(g, t.dataset.k, g.input[t.dataset.k] + big * stepOf(g, t.dataset.k), null);
   });
 
   function setInput(g, k, v, src) {
