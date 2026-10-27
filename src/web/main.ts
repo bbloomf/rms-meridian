@@ -227,6 +227,8 @@ const short = (id: CharId) => CAST[id].short;
 const nameList = (ids: CharId[]) => ids.map(short).join(", ");
 const windowLabel = () => `${SLOTS[c.window[0]].label} and ${SLOTS[c.window[c.window.length - 1]].label}`;
 const cap = (s: string) => s[0].toUpperCase() + s.slice(1);
+/** Every action is spent but the accusation hasn't been made: only free moves are left. */
+const outOfTime = () => !state.over && state.remaining === 0;
 
 // ── Briefing ──────────────────────────────────────────────────────────────
 
@@ -303,18 +305,19 @@ function shellHTML(): string {
 /** The changing part of the header; the brand beside it is drawn once, in shellHTML. */
 function headerHTML(): string {
   const pips = Array.from({ length: AP_BUDGET }, (_, i) => `<span class="pip${i < AP_BUDGET - state.remaining ? " spent" : ""}"></span>`).join("");
-  return `<div class="meter" role="img" aria-label="${state.remaining} of ${AP_BUDGET} actions left"><div class="pips">${pips}</div><span><strong>${state.remaining}</strong> left</span></div>
+  const meter = outOfTime() ? "<strong>Out of actions</strong>" : `<strong>${state.remaining}</strong> left`;
+  return `<div class="meter${outOfTime() ? " empty" : ""}" role="img" aria-label="${state.remaining} of ${AP_BUDGET} actions left"><div class="pips">${pips}</div><span>${meter}</span></div>
     <div class="bar-actions">
       ${button("How to play", "rules", {}, { cls: "ghost" })}
       ${state.over ? "" : button(saved.moves.length === 0 ? "Where do I start?" : "What next?", "hint", {}, { cls: `ghost hint-btn${hintOpen ? " on" : ""}`, pressed: hintOpen })}
-      ${state.over ? button("See verdict", "result", {}, { cls: "primary" }) : button("Accuse", "accuse", {}, { cls: "primary" })}
+      ${state.over ? button("See verdict", "result", {}, { cls: "primary" }) : button("Accuse", "accuse", {}, { cls: `primary${outOfTime() ? " due" : ""}` })}
     </div>`;
 }
 
 function noticeHTML(): string {
   if (state.over) return "";
   if (state.remaining === 0) {
-    return `<div class="notice midnight"><p>It's midnight. The Captain is at the wireless, waiting for a name.</p>${button("Make your accusation", "accuse", {}, { cls: "primary" })}</div>`;
+    return `<div class="notice midnight" role="status"><p><strong>You're out of actions.</strong> It's midnight, and the Captain is at the wireless, waiting for a name. You can't search, ask or confront any more; small talk is still free.</p>${button("Make your accusation", "accuse", {}, { cls: "primary" })}</div>`;
   }
   if (carriedNote && !notice) {
     return `<div class="notice info"><p>You hadn't finished yesterday's daily case, so it's still open. Today's will keep.</p>${button("Start today's instead", "today", {}, { cls: "ghost" })}${button("&times;", "dismiss", {}, { cls: "ghost icon", label: "Dismiss" })}</div>`;
@@ -380,7 +383,7 @@ function timelineHTML(): string {
     .join("");
 
   return `<section class="card timeline">
-    <div class="card-head"><h2>Timeline</h2><p class="muted">Click a square to ask where someone was. Accounts that name a witness are true.</p></div>
+    <div class="card-head"><h2>Timeline</h2><p class="muted">${outOfTime() ? "No time left for questions." : "Click a square to ask where someone was."} Accounts that name a witness are true.</p></div>
     <div class="table-wrap"><table>
       <thead><tr><th scope="col"><span class="sr">Person</span></th>${head}</tr></thead>
       <tbody>
@@ -402,7 +405,7 @@ function cellHTML(who: CharId, slot: number, proven: { room: RoomId; by: CharId[
   if (!answer) {
     const ask = state.over
       ? ""
-      : button(`Ask <span class="cost">1</span>`, "ask", { who, slot }, { cls: "ask", label: `Ask ${CAST[who].name} where ${CAST[who].pronouns.subject} was at ${SLOTS[slot].label}` });
+      : button(`Ask <span class="cost">1</span>`, "ask", { who, slot }, { cls: "ask", disabled: outOfTime(), label: `Ask ${CAST[who].name} where ${CAST[who].pronouns.subject} was at ${SLOTS[slot].label}` });
     return `<td class="${tod} open">${seen}${ask}</td>`;
   }
 
@@ -412,6 +415,7 @@ function cellHTML(who: CharId, slot: number, proven: { room: RoomId; by: CharId[
     !provenTrue && !conf && !state.over
       ? button(`Confront <span class="cost">1</span>`, "confront-start", { who, slot }, {
           cls: `confront${confronting?.who === who && confronting.slot === slot ? " active" : ""}`,
+          disabled: outOfTime(),
           label: `Confront ${CAST[who].name} about ${SLOTS[slot].label}`,
         })
       : "";
@@ -460,7 +464,7 @@ function confrontPickerHTML(): string {
 const tileCache = new Map<string, string>();
 
 function tileKey(room: RoomId): string {
-  return `${room}|${JSON.stringify(state.searched[room] ?? null)}|${justSearched === room}|${state.over}`;
+  return `${room}|${JSON.stringify(state.searched[room] ?? null)}|${justSearched === room}|${state.over}|${outOfTime()}`;
 }
 
 function roomTileHTML(room: RoomId): string {
@@ -474,7 +478,7 @@ function roomTileHTML(room: RoomId): string {
     ${roomPic(room)}
     <h3>${esc(r.name)}${r.crewOnly ? ' <span class="tag crew">crew only</span>' : ""}</h3>
     <p class="kept muted">${kept.length ? `Kept here: ${esc(kept.map((w) => WEAPONS[w].name).join(", "))}` : "No weapons kept here"}</p>
-    ${result ? `<p class="finding">${esc(describeSearch(result))}</p>` : state.over ? "" : button(`Search <span class="cost">1</span>`, "search", { room }, { cls: "search", label: `Search ${r.name}` })}
+    ${result ? `<p class="finding">${esc(describeSearch(result))}</p>` : state.over ? "" : button(`Search <span class="cost">1</span>`, "search", { room }, { cls: "search", disabled: outOfTime(), label: `Search ${r.name}` })}
   </div>`;
   tileCache.set(key, html);
   return html;
@@ -506,7 +510,7 @@ function dossierHTML(): string {
     .map((s) => button(`${portrait(s)}<span>${esc(short(s))}</span>`, "select", { who: s }, { cls: "tab", pressed: s === selected, label: CAST[s].name }))
     .join("");
   const slotButtons = SLOTS.map((s, slot) =>
-    button(s.label, "ask", { who: selected, slot }, { cls: "chip", disabled: state.over || !!state.answers[selected]?.[slot], label: `Ask where ${p.pronouns.subject} was at ${s.label}` }),
+    button(s.label, "ask", { who: selected, slot }, { cls: "chip", disabled: state.over || outOfTime() || !!state.answers[selected]?.[slot], label: `Ask where ${p.pronouns.subject} was at ${s.label}` }),
   ).join("");
   const people = [c.victim, ...c.suspects.filter((s) => s !== selected)];
   const chats = people
@@ -518,7 +522,7 @@ function dossierHTML(): string {
       <div class="dossier-head">${portrait(selected, "lg")}<div><h2>${esc(p.name)}</h2><p class="muted">${esc(cap(p.role))}</p>
         <p class="temper">${p.holdsFirm ? "Proud. Never backs down, guilty or not." : "Will crack if caught in a lie, unless guilty."}</p></div></div>
       <blockquote>${esc(state.greetings[selected] ?? "")}</blockquote>
-      <p class="label">Where were you at&hellip; <span class="cost">1 each</span></p>
+      <p class="label">Where were you at&hellip; ${outOfTime() ? '<span class="cost">none left</span>' : '<span class="cost">1 each</span>'}</p>
       <div class="chips">${slotButtons}</div>
       <p class="label">What do you make of&hellip; <span class="free">free</span></p>
       <div class="chips">${chats}</div>

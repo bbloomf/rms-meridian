@@ -399,6 +399,27 @@ button.icon {
   box-shadow: 0 0 0 1px rgba(216, 183, 122, 0.4) inset;
 }
 
+/* Every action spent: the empty pips go red and the count becomes words. */
+.meter.empty {
+  color: #f2a79e;
+}
+
+.meter.empty .pip.spent {
+  box-shadow: 0 0 0 1px rgba(242, 167, 158, 0.75) inset;
+}
+
+/* The accusation is all that's left. */
+.bar button.due {
+  box-shadow: 0 0 0 2px var(--navy), 0 0 0 4px #f2a79e;
+  animation: due 1.6s ease-in-out infinite;
+}
+
+@keyframes due {
+  50% {
+    box-shadow: 0 0 0 2px var(--navy), 0 0 0 7px rgba(242, 167, 158, 0.35);
+  }
+}
+
 .bar-actions {
   display: flex;
   gap: 8px;
@@ -563,8 +584,17 @@ button.icon {
 
 .notice.midnight {
   background: var(--paper);
-  border-color: var(--brass);
-  font-style: italic;
+  border-color: var(--red);
+  border-left-width: 5px;
+  box-shadow: var(--shadow);
+}
+
+.notice.midnight strong {
+  display: block;
+  font-family: var(--display);
+  font-weight: 400;
+  font-size: 1.2rem;
+  color: var(--red);
 }
 
 .notice.info {
@@ -722,6 +752,21 @@ button.search {
   border-style: dashed;
   color: var(--muted);
   background: transparent;
+}
+
+/* Out of actions: the paid moves stay on the page but plainly can't be used. */
+button.ask:disabled,
+button.search:disabled,
+button.confront:disabled,
+.chip:disabled {
+  cursor: not-allowed;
+}
+
+button:disabled .cost {
+  background: transparent;
+  color: var(--muted);
+  box-shadow: 0 0 0 1px var(--line) inset;
+  text-decoration: line-through;
 }
 
 button.ask:hover:not(:disabled),
@@ -2775,7 +2820,8 @@ body.cinema-open {
   .room.just,
   .room.just .finding,
   .hint-card,
-  .hinted {
+  .hinted,
+  .bar button.due {
     animation: none !important;
   }
 
