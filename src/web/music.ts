@@ -19,7 +19,9 @@
 // Browsers usually refuse to start audio before the player has clicked
 // anything, so the intro asks soundBlocked() first and waits for a click if
 // need be. The score is also scheduled from an offset: unmuting part-way
-// through starts at the matching moment instead of from the top.
+// through starts at the matching moment instead of from the top. Notes are
+// built a moment before they sound rather than all at once: the whole score
+// is over a thousand nodes, more than a Chromebook can render in real time.
 
 const SOUND_KEY = "meridian-sound"; // not "meridian:", which main.ts prunes as saves
 export const soundWanted = (): boolean => {
@@ -645,11 +647,19 @@ function play(ctx: BaseAudioContext, dry: AudioNode, wet: AudioNode, note: Note,
 
 // ── Playback ──────────────────────────────────────────────────────────────
 
+/** A score set out on a context, ready to be played into it. */
+export interface Performance {
+  master: GainNode;
+  /** Builds the notes that start before context time `until`. Says whether any are left. */
+  cue(until: number): boolean;
+}
+
 /**
- * Schedules `score` on `c` from score time `elapsed`, starting at context
- * time `now`, and returns its master gain. Works offline too, for rendering.
+ * Sets out `score` on `c` from score time `elapsed`, to start at context time
+ * `now`. Nothing sounds until it's cued: offline, cue(Infinity) to render it
+ * all; live, keep cueing a little ahead of the music.
  */
-export function perform(c: BaseAudioContext, now: number, elapsed = 0, score = THEME): GainNode {
+export function perform(c: BaseAudioContext, now: number, elapsed = 0, score = THEME): Performance {
   const master = c.createGain();
   master.gain.value = 0.8;
   master.connect(c.createDynamicsCompressor()).connect(c.destination);
@@ -658,14 +668,26 @@ export function perform(c: BaseAudioContext, now: number, elapsed = 0, score = T
   back.gain.value = 0.45;
   wet.connect(hall(c, 3.6)).connect(back).connect(master);
   // Notes already over are skipped; long ones under way join part-way.
-  for (const note of score.notes) {
-    const from = Math.max(note.at, elapsed);
-    const len = note.at + note.len - from;
-    if (len < 0.15 || (from > note.at && !SUSTAINED.includes(note.v))) continue;
-    play(c, master, wet, note, now + from - elapsed, from, len);
-  }
-  return master;
+  const queue = score.notes
+    .map((note) => ({ note, from: Math.max(note.at, elapsed) }))
+    .filter(({ note, from }) => note.at + note.len - from >= 0.15 && (from === note.at || SUSTAINED.includes(note.v)))
+    .sort((a, b) => a.from - b.from);
+  let i = 0;
+  return {
+    master,
+    cue(until) {
+      for (; i < queue.length && now + queue[i].from - elapsed < until; i++) {
+        const { note, from } = queue[i];
+        play(c, master, wet, note, now + from - elapsed, from, note.at + note.len - from);
+      }
+      return i < queue.length;
+    },
+  };
 }
+
+/** How far ahead of the music notes are built, and how often more are. */
+const AHEAD = 1.5;
+const CUE_EVERY = 250;
 
 /** How long the score runs, reverb tail included. */
 export const THEME_LENGTH = END + TAIL;
@@ -728,6 +750,8 @@ function conduct(score: Score, onChange: (playing: boolean) => void): Theme | nu
       strike(c);
       playing = true;
       onChange(true);
+      // If the system takes the sound away, offer it again rather than claim it's playing.
+      c.onstatechange = () => ctx === c && c.state !== "running" && silence(0);
     };
     if (c.state === "running") go();
     else c.resume().then(go, () => {});
@@ -736,7 +760,11 @@ function conduct(score: Score, onChange: (playing: boolean) => void): Theme | nu
   /** Schedules the score on `c` from wherever it has got to. */
   const strike = (c: AudioContext) => {
     const elapsed = (performance.now() - begun) / 1000;
-    master = perform(c, c.currentTime + 0.05, elapsed, score);
+    const p = perform(c, c.currentTime + 0.05, elapsed, score);
+    master = p.master;
+    // Until a skip, a mute or the end replaces this master.
+    const feed = () => master === p.master && p.cue(c.currentTime + AHEAD) && setTimeout(feed, CUE_EVERY);
+    feed();
     setTimeout(() => ctx === c && silence(0.1), (end + TAIL - elapsed) * 1000);
   };
 
