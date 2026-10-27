@@ -2027,9 +2027,10 @@ body.cinema-open {
   animation: fade-out 0.35s ease-in forwards;
 }
 
-.cinema.skip *,
-.cinema.skip *::before,
-.cinema.skip *::after {
+/* Except the verdict's effects (.v), which start with the stamp either way. */
+.cinema.skip :not(.v),
+.cinema.skip :not(.v)::before,
+.cinema.skip :not(.v)::after {
   animation-delay: 0s !important;
   animation-duration: 0s !important;
 }
@@ -2044,7 +2045,7 @@ body.cinema-open {
   color: var(--paper);
 }
 
-.intro .c-sound {
+.cinema .c-sound {
   position: absolute;
   left: 16px;
   bottom: 16px;
@@ -2269,6 +2270,8 @@ body.cinema-open {
 }
 
 .accusation .c-stage {
+  position: relative;
+  z-index: 1;
   width: min(760px, 100% - 32px);
   text-align: center;
 }
@@ -2423,12 +2426,185 @@ body.cinema-open {
   animation: slam 0.45s cubic-bezier(0.3, 1.5, 0.5, 1) 7.3s both;
 }
 
-.c-stamp.ok {
+.solved .c-stamp {
   color: #a6d8ab;
 }
 
-.c-stamp.bad {
+.partial .c-stamp {
+  color: #f0c674;
+}
+
+.wrong .c-stamp {
   color: #f08a80;
+}
+
+/* ── The verdict: each effect starts as the stamp lands (.verdict) ── */
+
+.c-verdict {
+  position: relative;
+  display: inline-block;
+}
+
+.c-glow {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  z-index: -1;
+  width: 1100px;
+  height: 1100px;
+  margin: -550px 0 0 -550px;
+  border-radius: 50%;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Case closed: a sunburst behind the stamp, cards that shine, and confetti. */
+.solved .c-glow {
+  background: radial-gradient(circle, rgba(255, 214, 140, 0.32), rgba(255, 214, 140, 0.08) 30%, transparent 60%);
+}
+
+.solved .c-glow::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  border-radius: 50%;
+  background: repeating-conic-gradient(rgba(255, 220, 150, 0.13) 0 5deg, transparent 5deg 15deg);
+  -webkit-mask: radial-gradient(circle, #000 8%, transparent 55%);
+  mask: radial-gradient(circle, #000 8%, transparent 55%);
+}
+
+.solved.verdict .c-glow {
+  animation: bloom 1.2s ease-out 0.1s forwards, swell-up 1.4s ease-out 2.75s;
+}
+
+.solved.verdict .c-glow::before {
+  animation: turn 40s linear infinite;
+}
+
+.c-slot {
+  border-radius: var(--radius);
+}
+
+.solved.verdict .c-slot {
+  animation: shine 1s ease-out both;
+  animation-delay: calc(0.25s + var(--k) * 0.15s);
+}
+
+.c-confetti {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.c-confetti i {
+  position: absolute;
+  top: -30px;
+  left: var(--x);
+  width: 8px;
+  height: 13px;
+  border-radius: 1px;
+  background: var(--brass);
+  opacity: 0;
+}
+
+.c-confetti i:nth-child(5n + 1) { background: var(--paper); }
+.c-confetti i:nth-child(5n + 2) { background: #f08a80; }
+.c-confetti i:nth-child(5n + 3) { background: #a6d8ab; }
+.c-confetti i:nth-child(5n + 4) { background: #8fb4e8; }
+
+.c-confetti i:nth-child(3n) {
+  width: 3px;
+  height: 28px;
+  border-radius: 2px;
+}
+
+.verdict .c-confetti i {
+  animation: confetti var(--t) cubic-bezier(0.25, 0.1, 0.6, 1) var(--d) both;
+}
+
+/* Not quite: the stamp comes loose on one pin, wrong cards shake, the light wavers. */
+.partial .c-glow {
+  background: radial-gradient(circle, rgba(240, 198, 116, 0.22), transparent 45%);
+}
+
+.partial.verdict .c-glow {
+  animation: waver 2.4s ease-in-out 0.1s forwards;
+}
+
+.partial .c-verdict {
+  transform-origin: 8% 25%;
+}
+
+.partial.verdict .c-verdict {
+  animation: come-loose 1.6s ease-in-out 0.55s both;
+}
+
+.partial.verdict .c-slot.ok {
+  animation: nod 0.9s ease-out both;
+  animation-delay: calc(0.3s + var(--k) * 0.15s);
+}
+
+.partial.verdict .c-slot.bad {
+  animation: shake 0.5s ease-in-out both;
+  animation-delay: calc(0.3s + var(--k) * 0.15s);
+}
+
+/* Wrong on every count: the room jolts, the lights go down, the cards wilt and the fog rolls in. */
+.wrong.verdict .c-stage {
+  animation: shake 0.5s ease-in-out;
+}
+
+.wrong.verdict .c-row {
+  animation: lights-down 1.6s ease-in 0.5s both;
+}
+
+.wrong.verdict .c-slot {
+  animation: wilt 0.9s cubic-bezier(0.5, 0, 0.75, 1) both;
+  animation-delay: calc(0.6s + var(--k) * 0.2s);
+}
+
+.c-slot:nth-child(1) { --tilt: -5deg; }
+.c-slot:nth-child(2) { --tilt: 2deg; }
+.c-slot:nth-child(3) { --tilt: 5deg; }
+
+.c-fog {
+  position: absolute;
+  inset: 0;
+  z-index: 2;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.c-fog::before,
+.c-fog::after {
+  content: "";
+  position: absolute;
+  opacity: 0;
+}
+
+.c-fog::before {
+  inset: 0;
+  background: radial-gradient(ellipse at 50% 40%, transparent 25%, rgba(3, 8, 20, 0.8));
+}
+
+.c-fog::after {
+  inset: 10% -40% -10%;
+  background:
+    radial-gradient(ellipse 30% 22% at 20% 70%, rgba(200, 214, 235, 0.22), transparent),
+    radial-gradient(ellipse 35% 18% at 55% 85%, rgba(200, 214, 235, 0.2), transparent),
+    radial-gradient(ellipse 28% 25% at 80% 60%, rgba(200, 214, 235, 0.16), transparent),
+    radial-gradient(ellipse 40% 20% at 40% 45%, rgba(200, 214, 235, 0.1), transparent);
+  filter: blur(18px);
+}
+
+.wrong.verdict .c-fog::before {
+  animation: bloom 1.6s ease-in 0.4s forwards;
+}
+
+.wrong.verdict .c-fog::after {
+  animation: fog-in 5s ease-out 1.2s forwards, fog-drift 14s ease-in-out 6.2s infinite alternate;
 }
 
 @keyframes sail {
@@ -2494,6 +2670,74 @@ body.cinema-open {
   }
 }
 
+@keyframes bloom {
+  to { opacity: 1; }
+}
+
+@keyframes swell-up {
+  40% { transform: scale(1.12); filter: brightness(1.6); }
+}
+
+@keyframes turn {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes shine {
+  40% {
+    transform: translateY(-8px);
+    box-shadow: 0 0 0 3px rgba(166, 216, 171, 0.7), 0 0 34px rgba(255, 214, 140, 0.7);
+  }
+}
+
+@keyframes confetti {
+  from { opacity: 1; transform: translate(0, 0) rotate(0) rotateY(0); }
+  85% { opacity: 1; }
+  to { opacity: 0; transform: translate(var(--w), 105vh) rotate(var(--s)) rotateY(900deg); }
+}
+
+@keyframes waver {
+  20% { opacity: 0.9; }
+  35% { opacity: 0.3; }
+  50% { opacity: 0.75; }
+  70% { opacity: 0.4; }
+  to { opacity: 0.6; }
+}
+
+@keyframes come-loose {
+  25% { transform: rotate(13deg); }
+  45% { transform: rotate(6deg); }
+  62% { transform: rotate(10deg); }
+  80% { transform: rotate(8deg); }
+  to { transform: rotate(9deg); }
+}
+
+@keyframes nod {
+  40% {
+    transform: translateY(-5px);
+    box-shadow: 0 0 0 3px rgba(166, 216, 171, 0.6);
+  }
+}
+
+@keyframes lights-down {
+  to { filter: brightness(0.45) saturate(0.4); }
+}
+
+@keyframes wilt {
+  to {
+    opacity: 0.6;
+    transform: translateY(6px) rotate(var(--tilt));
+  }
+}
+
+@keyframes fog-in {
+  from { opacity: 0; transform: translateX(-18%); }
+  to { opacity: 1; transform: translateX(0); }
+}
+
+@keyframes fog-drift {
+  to { transform: translateX(8%); }
+}
+
 @media (max-width: 640px) {
   .portrait.xl {
     width: 3.2em;
@@ -2515,6 +2759,10 @@ body.cinema-open {
 
   .c-stamp {
     font-size: 1.5rem;
+  }
+
+  .wrong .c-stamp {
+    font-size: 1.2rem;
   }
 }
 

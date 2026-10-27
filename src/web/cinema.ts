@@ -2,14 +2,16 @@
 // accusation. They live outside #app so the page can re-render underneath.
 // Timing is all CSS (animation delays in style.css); skipping adds .skip,
 // which jumps every animation to its end state, and .waiting holds them all
-// on the first frame.
+// on the first frame. The accusation's verdict effects (marked .v) are the
+// exception: they start when .verdict is added, as the stamp lands, and play
+// out in full even after a skip.
 
 import { CAST, ROOMS, WEAPONS } from "../data.ts";
 import type { CharId, RoomId, WeaponId } from "../data.ts";
 import { portrait } from "./art.ts";
 import { nightScene } from "./liner.ts";
-import { playTheme, soundBlocked } from "./music.ts";
-import type { Theme } from "./music.ts";
+import { VERDICT_AT, playAccusationMusic, playTheme, soundBlocked } from "./music.ts";
+import type { Theme, Verdict } from "./music.ts";
 import { weaponPic } from "./weapons.ts";
 
 export const reducedMotion = (): boolean => matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -124,31 +126,68 @@ export interface AccusationScene {
   reply: string;
 }
 
+const STAMP: Record<Verdict, string> = { solved: "Case closed", partial: "Not quite", wrong: "Wrong on every count" };
+
+/** Paper streamers and confetti for a case closed: half with the stamp, half with the last chord. */
+const confetti = (n: number) =>
+  Array.from({ length: n }, (_, i) => {
+    const r = (lo: number, hi: number) => (lo + Math.random() * (hi - lo)).toFixed(2);
+    const d = i % 2 ? r(0, 1) : r(2.7, 3.7);
+    return `<i class="v" style="--x:${r(0, 100)}%;--d:${d}s;--t:${r(2.6, 4.2)}s;--s:${r(-300, 300)}deg;--w:${r(-70, 70)}px"></i>`;
+  }).join("");
+
 export function playAccusation(a: AccusationScene): Promise<void> {
+  const right = [a.right.who, a.right.weapon, a.right.room].filter(Boolean).length;
+  const verdict: Verdict = right === 3 ? "solved" : right ? "partial" : "wrong";
   const at = a.suspects.indexOf(a.who);
   const row = a.suspects
     .map((s, i) => `<div class="c-suspect${s === a.who ? " accused" : ""}" style="--i:${i}">${portrait(s, "xl")}<span>${esc(CAST[s].short)}</span></div>`)
     .join("");
   const card = (k: number, label: string, value: string, ok: boolean, pic = "") =>
-    `<div class="c-card ${ok ? "ok" : "bad"}" style="--k:${k}"><div class="c-face front">${label}</div><div class="c-face back"><span>${label}</span>${pic}<strong>${esc(value)}</strong><b>${ok ? "&#10003;" : "&#10007;"}</b></div></div>`;
+    `<div class="c-slot v ${ok ? "ok" : "bad"}" style="--k:${k}"><div class="c-card ${ok ? "ok" : "bad"}" style="--k:${k}"><div class="c-face front">${label}</div><div class="c-face back"><span>${label}</span>${pic}<strong>${esc(value)}</strong><b>${ok ? "&#10003;" : "&#10007;"}</b></div></div></div>`;
   const W = WEAPONS[a.weapon].name;
-  const html = `<div class="c-stage">
+  const html = `${verdict === "solved" ? `<div class="c-confetti" aria-hidden="true">${confetti(70)}</div>` : ""}
+    ${verdict === "wrong" ? '<div class="c-fog v" aria-hidden="true"></div>' : ""}
+    <div class="c-stage v">
       <p class="c-place">The Grand Saloon. A quarter to midnight.</p>
-      <div class="c-row" style="--n:${a.suspects.length};--at:${at}"><div class="spot"></div>${row}</div>
+      <div class="c-row v" style="--n:${a.suspects.length};--at:${at}"><div class="spot"></div>${row}</div>
       <p class="c-words">&ldquo;${esc(CAST[a.who].name)}. With the ${esc(W)}, ${ROOMS[a.room].on ? "on" : "in"} the ${esc(ROOMS[a.room].name)}.&rdquo;</p>
       <p class="c-reply">&ldquo;${esc(a.reply)}&rdquo;</p>
       <div class="c-cards">${card(0, "Killer", CAST[a.who].short, a.right.who)}${card(1, "Weapon", W[0].toUpperCase() + W.slice(1), a.right.weapon, weaponPic(a.weapon))}${card(2, "Room", ROOMS[a.room].name, a.right.room)}</div>
-      <div class="c-stamp ${a.solved ? "ok" : "bad"}">${a.solved ? "Case closed" : "Wrong name"}</div>
+      <div class="c-verdict v"><div class="c-glow v" aria-hidden="true"></div><div class="c-stamp">${STAMP[verdict]}</div></div>
     </div>
+    <button type="button" class="c-sound" hidden></button>
     <button type="button" class="c-skip" data-cinema>Skip</button>`;
-  return mount("accusation", "The accusation", html, (el, close) => {
+  return mount(`accusation ${verdict}`, "The accusation", html, (el, close) => {
     const btn = el.querySelector<HTMLButtonElement>("[data-cinema]")!;
+    const sound = el.querySelector<HTMLButtonElement>(".c-sound")!;
+    const show = (on: boolean) => {
+      sound.hidden = false;
+      sound.textContent = on ? "\u266A Mute" : "\u266A Play music";
+    };
+    // The music starts now, inside the click that made the accusation.
+    const music = playAccusationMusic(verdict, (at + 0.5) / a.suspects.length, show);
+    if (music) {
+      show(music.playing);
+      sound.addEventListener("click", () => (music.playing ? music.mute() : music.unmute()));
+    }
+    // The stamp lands: let the verdict play out, and if the scene was skipped, its cue too.
+    const land = () => {
+      if (el.classList.contains("verdict")) return;
+      el.classList.add("verdict");
+      music?.skipTo(VERDICT_AT);
+    };
     const ready = () => {
       el.classList.add("skip");
+      land();
       btn.textContent = "See the verdict";
       btn.classList.add("primary");
     };
-    btn.addEventListener("click", () => (el.classList.contains("skip") ? close() : ready()));
+    // The cue plays on under the verdict; it's only a few seconds long.
+    btn.addEventListener("click", () => (el.classList.contains("skip") ? (music?.finish(), close()) : ready()));
+    el.addEventListener("animationstart", (e) => {
+      if ((e.target as HTMLElement).classList.contains("c-stamp")) land();
+    });
     el.addEventListener("animationend", (e) => {
       if ((e.target as HTMLElement).classList.contains("c-stamp")) ready();
     });

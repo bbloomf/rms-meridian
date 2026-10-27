@@ -7,6 +7,15 @@
 // Then a celesta picks the tune out in G minor over tremolo low strings,
 // shivering high violins and muted horns.
 //
+// The accusation opens on suspense that doesn't give the answer away: a low
+// D held under it all, a celesta ticking from side to side with the
+// spotlight's sweep, a timpani heartbeat, and a stroke for each card that
+// turns. Then it ends on one of three short cues, struck with the verdict
+// stamp. Solved, the farewell comes home at last to the cadence the opening
+// denied it. Half right, a lone horn starts it again and stops on the leading
+// note. Wrong, it sinks on the celesta in G minor and a ship's whistle sounds
+// out in the fog: the wrong name is on its way to New York.
+//
 // Browsers usually refuse to start audio before the player has clicked
 // anything, so the intro asks soundBlocked() first and waits for a click if
 // need be. The score is also scheduled from an offset: unmuting part-way
@@ -64,7 +73,9 @@ type Voice =
   | "celesta"
   | "timp"
   | "swell" // suspended cymbal rolled with soft mallets
-  | "tamtam";
+  | "crash" // a pair of clash cymbals
+  | "tamtam"
+  | "foghorn"; // a ship's whistle, a long way off
 interface Note {
   v: Voice;
   at: number; // seconds from the start of the intro
@@ -77,11 +88,17 @@ interface Note {
 /** Where each section sits on the stage. */
 const SEATS: Record<Voice, number> = {
   violins: -0.45, hightrem: -0.5, harp: -0.6, celesta: -0.2, strings: 0, horn: 0.3,
-  brass: 0.15, lowtrem: 0.45, timp: 0.1, swell: 0, tamtam: -0.1,
+  brass: 0.15, lowtrem: 0.45, timp: 0.1, swell: 0, crash: 0.05, tamtam: -0.1, foghorn: 0.35,
 };
 
 /** Voices whose notes are long enough to join part-way through on a late unmute. */
-const SUSTAINED: Voice[] = ["strings", "lowtrem", "hightrem", "swell", "tamtam"];
+const SUSTAINED: Voice[] = ["strings", "lowtrem", "hightrem", "swell", "tamtam", "foghorn"];
+
+/** A piece of music: its notes, and when the last of them has died away. */
+export interface Score {
+  notes: Note[];
+  end: number;
+}
 
 const Q = 0.42; // one beat of the farewell
 const T0 = 0.35; // the overlay has faded in
@@ -164,7 +181,152 @@ const NIGHT: Note[] = [
   { v: "celesta", at: 8.1, len: 1, n: "Db5", vol: 0.5 },
 ];
 
-const SCORE: Note[] = [...MAIN_TITLE, ...SCREAM, ...NIGHT];
+const THEME: Score = { notes: [...MAIN_TITLE, ...SCREAM, ...NIGHT], end: END };
+
+// ── The accusation ────────────────────────────────────────────────────────
+// Times match the accusation's animation delays in style.css.
+
+export type Verdict = "solved" | "partial" | "wrong";
+
+const SWEEP = 1.4; // the spotlight starts across the suspects (.spot)
+const PICK = 3.4; // and comes to rest on the accused (.c-suspect)
+const FLIPS = [0, 1, 2].map((k) => 5.6 + k * 0.5 + 0.35); // each card shows its face, halfway through its flip (.c-card)
+/** When the stamp lands (.c-stamp) and the verdict's cue begins. */
+export const VERDICT_AT = 7.3;
+
+/**
+ * Where the spotlight is, from -1 (far left) to 1 (far right), `t` seconds
+ * into the scene: across to the right, then back to the accused, whose seat
+ * is `rest` along the row.
+ */
+function spotlight(t: number, rest: number): number {
+  const u = Math.min(1, Math.max(0, (t - SWEEP) / (PICK - SWEEP)));
+  const p = u * u * (3 - 2 * u); // near enough ease-in-out
+  const x = p < 0.55 ? p / 0.55 : 1 + (rest - 1) * ((p - 0.55) / 0.45);
+  return x * 2 - 1;
+}
+
+/** Suspense on a D, the note G major and G minor share, so it gives nothing away. */
+function suspense(rest: number): Note[] {
+  return [
+    // Cellos and basses hold a low D from the first frame to the stamp, and fade under the verdict.
+    ...["D1", "D2"].map((n): Note => ({ v: "lowtrem", at: 0.2, len: VERDICT_AT + 3.3, n, vol: 0.75 })),
+    // A harp note for each suspect stepping out of the dark.
+    ...["D3", "F3", "Ab3", "B3", "D4"].map((n, i): Note => ({ v: "harp", at: 0.6 + i * 0.12, len: 1.4, n, vol: 0.35 })),
+
+    // The spotlight's sweep: the celesta ticks a semitone back and forth, following it across the stage.
+    ...Array.from({ length: 10 }, (_, i): Note => {
+      const at = SWEEP + 0.1 + i * 0.19;
+      return { v: "celesta", at, len: 0.4, n: i % 2 ? "Bb5" : "A5", vol: 0.45, pan: 0.8 * spotlight(at, rest) };
+    }),
+    // A heartbeat on the timpani, quickening as the light slows.
+    ...[SWEEP, SWEEP + 0.7, SWEEP + 1.3, SWEEP + 1.75].flatMap((t, i): Note[] => [
+      { v: "timp", at: t, len: 0.5, n: "D2", vol: 0.3 + i * 0.04 },
+      { v: "timp", at: t + 0.16, len: 0.4, n: "D2", vol: 0.2 + i * 0.03 },
+    ]),
+    { v: "swell", at: SWEEP + 1.1, len: PICK - SWEEP - 1.1, vol: 0.5 },
+
+    // The light stops on someone: a stab with the E flat grating against the D.
+    ...chord("strings", PICK, 0.6, ["D2", "A2", "D3", "Eb4"], 0.9),
+    ...chord("brass", PICK, 0.6, ["D3", "A3", "Eb4"], 0.35),
+    { v: "timp", at: PICK, len: 1.2, n: "D2", vol: 0.7 },
+    // Then a hush: high violins shivering, creeping up a semitone, and muted horns under the words.
+    { v: "hightrem", at: PICK + 0.2, len: 2, n: "D6", vol: 0.55 },
+    { v: "hightrem", at: PICK + 2, len: VERDICT_AT - PICK - 2, n: "Eb6", vol: 0.7 },
+    ...chord("horn", 3.8, 1.3, ["D3", "A3"], 0.3),
+
+    // Each card turning over: a timpani stroke and a harp note, a step higher each time.
+    ...FLIPS.flatMap((t, k): Note[] => [
+      { v: "timp", at: t, len: 0.8, n: "D2", vol: 0.45 + k * 0.1 },
+      { v: "harp", at: t, len: 1.2, n: ["D3", "F3", "Ab3"][k], vol: 0.55 },
+    ]),
+    // And a roll into the stamp, cut off as it lands.
+    { v: "swell", at: FLIPS[2], len: VERDICT_AT - FLIPS[2], vol: 0.9 },
+    ...Array.from({ length: 7 }, (_, i): Note => ({ v: "timp", at: FLIPS[2] + 0.06 + i * 0.045, len: 0.3, n: "D2", vol: 0.25 + i * 0.07 })),
+  ];
+}
+
+// ── The verdicts ──────────────────────────────────────────────────────────
+// Each starts as the stamp lands, at 0.
+
+const B = 0.45; // one beat of a verdict
+const bar = (b: number) => 0.55 + b * B; // beats after the stamp's hit
+
+// The farewell's second half, ending on the tonic this time.
+const HOME: [string, number][] = [
+  ["B4", 1], ["D5", 0.5], ["C5", 0.5], ["B4", 1], ["G4", 1],
+  ["A4", 0.75], ["B4", 0.25], ["C5", 0.5], ["A4", 0.5], ["G4", 3],
+];
+
+const SOLVED: Note[] = [
+  // The stamp: cymbals, timpani and the brass on a bright G major chord.
+  { v: "crash", at: 0, len: 2.2, vol: 0.8 },
+  { v: "timp", at: 0, len: 1.4, n: "G2", vol: 0.8 },
+  ...chord("brass", 0, 0.55, ["G2", "D3", "G3", "B3", "D4", "G4"], 0.8),
+  ...ripple(0.05, ["G3", "B3", "D4", "G4", "B4", "D5", "G5"], 0.03, 0.6),
+
+  ...line("horn", bar(0), B, HOME),
+  ...line("violins", bar(0), B, up(HOME), 0.6),
+
+  // G, E minor, C, D7, and home to G.
+  ...chord("strings", bar(0), 2 * B, ["G1", "G2", "D3", "B3", "G4"]),
+  ...chord("strings", bar(2), 2 * B, ["E2", "E3", "B3", "G4"]),
+  ...chord("strings", bar(4), B, ["C2", "C3", "G3", "E4"]),
+  ...chord("strings", bar(5), B, ["D2", "D3", "A3", "C4", "F#4"], 1.1),
+  ...chord("strings", bar(6), 3.5 * B, ["G1", "G2", "D3", "B3", "G4", "D5"], 1.2),
+  ...ripple(bar(2), ["E3", "G3", "B3", "E4"], 0.06, 0.45),
+  ...ripple(bar(4), ["C4", "E4", "G4", "C5"], 0.06, 0.45),
+
+  // A timpani roll into the last chord, and everyone on it.
+  ...Array.from({ length: 9 }, (_, i): Note => ({ v: "timp", at: bar(5) + i * 0.048, len: 0.4, n: "D2", vol: 0.2 + i * 0.06 })),
+  ...chord("brass", bar(5), 0.4, ["D3", "A3", "D4", "F#4"], 0.5),
+  ...chord("brass", bar(6), 2.2, ["G2", "D3", "G3", "B3", "D4", "G4"], 1.1),
+  { v: "timp", at: bar(6), len: 2, n: "G2", vol: 1 },
+  { v: "crash", at: bar(6), len: 3, vol: 1 },
+  ...ripple(bar(6), ["G2", "B2", "D3", "G3", "B3", "D4", "G4", "B4", "D5", "G5"], 0.025, 0.6),
+];
+
+const PARTIAL: Note[] = [
+  // The stamp lands on a soft timpani and E minor: not what was hoped for.
+  { v: "timp", at: 0, len: 1.2, n: "E2", vol: 0.45 },
+  ...chord("strings", 0, 1.8, ["E2", "B2", "G3", "E4"], 0.8),
+  ...ripple(0.02, ["E3", "G3", "B3", "E4"], 0.05, 0.45),
+
+  // A lone horn tries the farewell again, loses its nerve and stops on the leading note.
+  ...line("horn", bar(1), B, [["D4", 0.5], ["G4", 1], ["G4", 0.5], ["A4", 0.5], ["B4", 1.5], ["A4", 0.5], ["G4", 0.5], ["E4", 0.5], ["F#4", 3]], 0.7),
+  ...chord("strings", bar(1.5), 2 * B, ["G2", "D3", "B3"], 0.7),
+  ...chord("strings", bar(3.5), 2 * B, ["C2", "G2", "E3", "G3"], 0.7),
+  ...chord("strings", bar(5.5), B, ["A1", "A2", "E3", "C4"], 0.7),
+  // D7 over C in the bass, left hanging.
+  ...chord("strings", bar(6.5), 3.5 * B, ["C2", "C3", "D4", "A4"], 0.75),
+  { v: "hightrem", at: bar(6.5), len: 3.5 * B, n: "A5", vol: 0.6 },
+  // The celesta asks the question nobody answers.
+  ...line("celesta", bar(7.5), B, [["D5", 0.5], ["E5", 0.5], ["A5", 2]], 0.8),
+];
+
+const WRONG: Note[] = [
+  // The stamp lands like the scream did: low brass on a broken chord and the tam-tam.
+  ...chord("brass", 0, 1.4, ["G2", "Db3", "G3", "Bb3"], 0.9),
+  { v: "timp", at: 0, len: 2.2, n: "G1", vol: 0.9 },
+  { v: "tamtam", at: 0.02, len: 5, vol: 0.8 },
+  ...["G1", "D2"].map((n): Note => ({ v: "lowtrem", at: 0.4, len: 7, n, vol: 0.8 })),
+
+  // The farewell on the celesta in G minor, sinking where it used to rise,
+  // over muted horns sliding down a semitone at a time.
+  ...line("celesta", 0.9, M, [["D4", 1], ["G4", 1], ["Bb4", 1], ["A4", 0.5], ["G4", 0.5], ["F#4", 1], ["Eb4", 1], ["D4", 2]], 1.1),
+  ...line("celesta", 0.9, M, [["D3", 1], ["G3", 1], ["Bb3", 1], ["A3", 0.5], ["G3", 0.5], ["F#3", 1], ["Eb3", 1], ["D3", 2]], 0.55),
+  ...line("horn", 1.9, 0.6, [["Bb3", 1], ["A3", 1], ["Ab3", 1], ["G3", 2]], 0.35),
+
+  // Out in the fog, a ship's whistle.
+  { v: "foghorn", at: 5, len: 2.6, n: "G2" },
+  { v: "foghorn", at: 5, len: 2.6, n: "Bb2", vol: 0.8 },
+];
+
+const VERDICTS: Record<Verdict, Score> = {
+  solved: { notes: SOLVED, end: bar(9.5) + 0.6 },
+  partial: { notes: PARTIAL, end: bar(10) + 0.6 },
+  wrong: { notes: WRONG, end: 8 },
+};
 
 // ── The instruments ──────────────────────────────────────────────────────
 
@@ -418,6 +580,41 @@ function play(ctx: BaseAudioContext, dry: AudioNode, wet: AudioNode, note: Note,
       run([src], end + 0.1);
       break;
     }
+    case "crash": {
+      // Clash cymbals: a bright splash that hisses away.
+      const src = noise(ctx, 2);
+      src.loop = true;
+      const hp = ctx.createBiquadFilter();
+      hp.type = "highpass";
+      hp.frequency.setValueAtTime(2500, t);
+      hp.frequency.exponentialRampToValueAtTime(5000, end);
+      const g = ctx.createGain();
+      g.gain.setValueAtTime(0, t);
+      g.gain.linearRampToValueAtTime(0.11 * vol, t + 0.004);
+      g.gain.exponentialRampToValueAtTime(0.035 * vol, t + 0.25);
+      g.gain.exponentialRampToValueAtTime(0.0005, end);
+      src.connect(hp).connect(g);
+      route(g, 0.65);
+      run([src]);
+      break;
+    }
+    case "foghorn": {
+      // A steam whistle in the fog: reeds that sag in pitch as the steam catches,
+      // swell slowly and take a long time to stop.
+      const g = envelope(ctx, t, 0.5, 0.07 * vol, end, 1.4);
+      const lp = lowpass(ctx, 520, 2.5);
+      const reeds = section(ctx, f, 3, 9, lp);
+      for (const o of reeds) {
+        o.frequency.setValueAtTime(f * 0.96, t);
+        o.frequency.exponentialRampToValueAtTime(f, t + 0.35);
+        o.frequency.setValueAtTime(f, end - 1);
+        o.frequency.exponentialRampToValueAtTime(f * 0.97, end);
+      }
+      lp.connect(g);
+      route(g, 0.95);
+      run(reeds);
+      break;
+    }
     case "tamtam": {
       // A tam-tam struck hard: a low shimmer that blooms after the hit and takes ages to die.
       const src = noise(ctx, 2);
@@ -449,10 +646,10 @@ function play(ctx: BaseAudioContext, dry: AudioNode, wet: AudioNode, note: Note,
 // ── Playback ──────────────────────────────────────────────────────────────
 
 /**
- * Schedules the score on `c` from score time `elapsed`, starting at context
+ * Schedules `score` on `c` from score time `elapsed`, starting at context
  * time `now`, and returns its master gain. Works offline too, for rendering.
  */
-export function perform(c: BaseAudioContext, now: number, elapsed = 0): GainNode {
+export function perform(c: BaseAudioContext, now: number, elapsed = 0, score = THEME): GainNode {
   const master = c.createGain();
   master.gain.value = 0.8;
   master.connect(c.createDynamicsCompressor()).connect(c.destination);
@@ -461,7 +658,7 @@ export function perform(c: BaseAudioContext, now: number, elapsed = 0): GainNode
   back.gain.value = 0.45;
   wet.connect(hall(c, 3.6)).connect(back).connect(master);
   // Notes already over are skipped; long ones under way join part-way.
-  for (const note of SCORE) {
+  for (const note of score.notes) {
     const from = Math.max(note.at, elapsed);
     const len = note.at + note.len - from;
     if (len < 0.15 || (from > note.at && !SUSTAINED.includes(note.v))) continue;
@@ -473,7 +670,10 @@ export function perform(c: BaseAudioContext, now: number, elapsed = 0): GainNode
 /** How long the score runs, reverb tail included. */
 export const THEME_LENGTH = END + TAIL;
 
+/** Music that can be muted and unmuted while it plays. */
 export interface Theme {
+  /** Jumps ahead to `t` seconds into the score, if it hasn't got there yet. */
+  skipTo(t: number): void;
   /** Whether the browser is letting it be heard. */
   readonly playing: boolean;
   /** Starts (or restarts) the sound from wherever the intro has got to. Call from a click. */
@@ -489,10 +689,29 @@ export interface Theme {
  * Starts the theme now if the browser allows it and the player hasn't turned
  * sound off. `onChange` hears when it starts or stops being audible.
  */
-export function playTheme(onChange: (playing: boolean) => void): Theme | null {
+export const playTheme = (onChange: (playing: boolean) => void): Theme | null => conduct(THEME, onChange);
+
+/**
+ * Starts the accusation's music: the suspense, then at VERDICT_AT the cue for
+ * `verdict`. `rest` is how far along the row the accused sits, from 0 to 1,
+ * where the spotlight stops. Call it from the click that makes the
+ * accusation, since some browsers only let sound begin inside a click.
+ */
+export const playAccusationMusic = (verdict: Verdict, rest: number, onChange: (playing: boolean) => void): Theme | null =>
+  conduct(accusationScore(verdict, rest), onChange);
+
+/** The accusation's whole score, for perform(). */
+export function accusationScore(verdict: Verdict, rest: number): Score {
+  const cue = VERDICTS[verdict];
+  const notes = [...suspense(rest), ...cue.notes.map((n) => ({ ...n, at: n.at + VERDICT_AT }))];
+  return { notes, end: VERDICT_AT + cue.end };
+}
+
+function conduct(score: Score, onChange: (playing: boolean) => void): Theme | null {
   const Ctx = audioContext();
   if (!Ctx) return null;
-  const begun = performance.now();
+  const { end } = score;
+  let begun = performance.now();
   let ctx: AudioContext | null = null;
   let master: GainNode | null = null;
   let playing = false;
@@ -502,20 +721,23 @@ export function playTheme(onChange: (playing: boolean) => void): Theme | null {
     if (stopped || playing) return;
     ctx ??= new Ctx();
     const at = (performance.now() - begun) / 1000;
-    if (at >= END) return;
+    if (at >= end) return;
     const c = ctx;
     const go = () => {
       if (stopped || playing || c.state !== "running") return;
-      const now = c.currentTime + 0.05;
-      const elapsed = (performance.now() - begun) / 1000;
-      master = perform(c, now, elapsed);
+      strike(c);
       playing = true;
       onChange(true);
-      const ending = c;
-      setTimeout(() => ctx === ending && silence(0.1), (END + TAIL - elapsed) * 1000);
     };
     if (c.state === "running") go();
     else c.resume().then(go, () => {});
+  };
+
+  /** Schedules the score on `c` from wherever it has got to. */
+  const strike = (c: AudioContext) => {
+    const elapsed = (performance.now() - begun) / 1000;
+    master = perform(c, c.currentTime + 0.05, elapsed, score);
+    setTimeout(() => ctx === c && silence(0.1), (end + TAIL - elapsed) * 1000);
   };
 
   const silence = (fade: number) => {
@@ -540,6 +762,18 @@ export function playTheme(onChange: (playing: boolean) => void): Theme | null {
   return {
     get playing() {
       return playing;
+    },
+    skipTo(t) {
+      // A moment's slack, so a jump to where it already nearly is doesn't stutter.
+      if ((performance.now() - begun) / 1000 > t - 0.25) return;
+      begun = performance.now() - t * 1000;
+      if (!ctx || !master) return;
+      // Cut off what's sounding and pick the score up again from `t`.
+      const g = master.gain;
+      g.cancelScheduledValues(ctx.currentTime);
+      g.setValueAtTime(g.value, ctx.currentTime);
+      g.linearRampToValueAtTime(0, ctx.currentTime + 0.12);
+      strike(ctx);
     },
     unmute() {
       rememberSound(true);
